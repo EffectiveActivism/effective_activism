@@ -1,0 +1,27 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.import_type.csv
+    - field.field.import.csv.field_file_csv
+  module:
+    - user
+id: import.csv.default
+targetEntityType: import
+bundle: csv
+mode: default
+content:
+  parent:
+    type: entity_reference_entity_id
+    weight: 0
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+  user_id:
+    label: hidden
+    type: author
+    weight: 1
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  field_file_csv: true

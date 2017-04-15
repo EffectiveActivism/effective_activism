@@ -1,0 +1,12 @@
+effective_activism.import_type.*:
+  type: config_entity
+  label: 'Import type config'
+  mapping:
+    id:
+      type: string
+      label: 'ID'
+    label:
+      type: label
+      label: 'Label'
+    uuid:
+      type: string

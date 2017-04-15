@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.data_type.signatures
+    - field.field.data.signatures.field_signatures
+  module:
+    - user
+id: data.signatures.default
+targetEntityType: data
+bundle: signatures
+mode: default
+content:
+  field_signatures:
+    weight: 1
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
+hidden: {  }

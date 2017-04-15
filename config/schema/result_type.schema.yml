@@ -1,0 +1,31 @@
+effective_activism.result_type.*:
+  type: config_entity
+  label: 'Result type config'
+  mapping:
+    id:
+      type: string
+      label: 'ID'
+    label:
+      type: label
+      label: 'Label'
+    importname:
+      type: string
+      label: 'Import name'
+    description:
+      type: string
+      label: 'Description'
+    datatypes:
+      type: sequence
+      label: 'Data types'
+      sequence:
+        type: string
+    organization:
+      type: integer
+      label: 'Organization'
+    groups:
+      type: sequence
+      label: 'Groups'
+      sequence:
+        type: integer
+    uuid:
+      type: string

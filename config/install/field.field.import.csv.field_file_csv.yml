@@ -1,0 +1,26 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.import_type.csv
+    - field.storage.import.field_file_csv
+  module:
+    - file
+id: import.csv.field_file_csv
+field_name: field_file_csv
+entity_type: import
+bundle: csv
+label: 'CSV file'
+description: 'Upload a CSV formatted file.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  file_directory: 'import/csv/[date:custom:Y]-[date:custom:m]'
+  file_extensions: csv
+  max_filesize: ''
+  description_field: false
+  handler: 'default:file'
+  handler_settings: {  }
+field_type: file

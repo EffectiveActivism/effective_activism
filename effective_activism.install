@@ -1,0 +1,92 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the effective_activism module.
+ */
+
+use Drupal\effective_activism\Constant;
+
+/**
+ * Implements hook_schema().
+ *
+ * Defines the database tables used by this module.
+ *
+ * @see hook_schema()
+ * @ingroup effective_activism
+ */
+function effective_activism_schema() {
+  $schema = [
+    Constant::LOCATION_CACHE_TABLE => [
+      'description' => 'Caches valid Google addresses',
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'not null' => TRUE,
+          'description' => 'Primary Key: Unique ID.',
+        ],
+        'address' => [
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+          'description' => 'Google-formatted address.',
+        ],
+        'lat' => [
+          'type' => 'float',
+          'size' => 'big',
+          'not null' => FALSE,
+          'description' => 'Latitude of address.',
+        ],
+        'lon' => [
+          'type' => 'float',
+          'size' => 'big',
+          'not null' => FALSE,
+          'description' => 'Longitude of address.',
+        ],
+      ],
+      'primary key' => ['id'],
+      'indexes' => [
+        'address' => ['address'],
+      ],
+    ],
+    Constant::INVITATION_TABLE => [
+      'description' => 'Stores invitations to groups',
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'not null' => TRUE,
+          'description' => 'Primary Key: Unique ID.',
+        ],
+        'created' => [
+          'type' => 'int',
+          'not null' => TRUE,
+          'description' => 'Creation timestamp.',
+        ],
+        'entity_type' => [
+          'type' => 'varchar',
+          'length' => 32,
+          'not null' => TRUE,
+          'description' => 'The entity type',
+        ],
+        'entity_id' => [
+          'type' => 'int',
+          'not null' => TRUE,
+          'description' => 'The entity id.',
+        ],
+        'email' => [
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+          'description' => 'The e-mail address of the user.',
+        ],
+      ],
+      'primary key' => ['id'],
+      'indexes' => [
+        'email' => ['email'],
+        'entity_type' => ['entity_type'],
+        'entity_id' => ['entity_id'],
+      ],
+    ],
+  ];
+  return $schema;
+}

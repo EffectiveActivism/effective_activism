@@ -1,0 +1,8 @@
+<?php
+
+/**
+ * @file
+ * Contains effective_activism.module.
+ */
+
+include drupal_get_path('module', 'effective_activism') . '/includes/hooks.inc';

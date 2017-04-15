@@ -1,0 +1,6 @@
+langcode: en
+status: true
+dependencies: {  }
+id: signatures
+label: Signatures
+description: 'Type in the number of signatures received at the event.'

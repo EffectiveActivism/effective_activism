@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.data_type.leaflets
+    - field.field.data.leaflets.field_leaflets
+id: data.leaflets.default
+targetEntityType: data
+bundle: leaflets
+mode: default
+content:
+  field_leaflets:
+    weight: 26
+    settings:
+      placeholder: 'Leaflets'
+    third_party_settings: {  }
+    type: number
+hidden: {  }

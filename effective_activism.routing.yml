@@ -1,0 +1,8 @@
+
+# Location autocomplete.
+effective_activism.location.autocomplete:
+  path: '/locations/autocomplete'
+  defaults:
+    _controller: '\Drupal\effective_activism\Controller\LocationController::autocomplete'
+  requirements:
+    _user_is_logged_in: 'TRUE'

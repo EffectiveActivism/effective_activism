@@ -1,0 +1,9 @@
+autocomplete:
+  js:
+    assets/js/autocomplete.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/drupalSettings
+    - core/drupal.ajax
+    - core/jquery.ui.autocomplete

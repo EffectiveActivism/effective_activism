@@ -1,0 +1,24 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.data_type.leaflets
+    - field.storage.data.field_leaflets
+id: data.leaflets.field_leaflets
+field_name: field_leaflets
+entity_type: data
+bundle: leaflets
+label: Leaflets
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  min: 0
+  max: 99999999
+  prefix: ''
+  suffix: ''
+field_type: integer
