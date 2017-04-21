@@ -1,0 +1,5 @@
+{
+    "require": {
+        "drmonty/leaflet": "1.0.*"
+    }
+}
