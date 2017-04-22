@@ -50,7 +50,7 @@ class ImportOverviewController extends ListBaseController {
   public function routeCallback(Group $group) {
     $content['#theme'] = self::THEME_ID;
     $content['#storage']['entities']['group'] = $group;
-    $content['#storage']['entities']['imports'] = GroupHelper::getImports($group);
+    $content['#storage']['entities']['imports'] = GroupHelper::getImportsPaged($group);
     $content['#cache'] = [
       'max-age' => self::CACHE_MAX_AGE,
       'tags' => self::CACHE_TAGS,

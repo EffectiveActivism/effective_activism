@@ -7,6 +7,7 @@
 
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\effective_activism\Hook\ElementInfoAlterHook;
 use Drupal\effective_activism\Hook\EntityInsertHook;
 use Drupal\effective_activism\Hook\FormAlterHook;
 use Drupal\effective_activism\Hook\InlineEntityFormEntityFormAlterHook;
@@ -30,5 +31,15 @@ function effective_activism_entity_insert(EntityInterface $entity) {
   $hook = EntityInsertHook::getInstance();
   $hook->invoke([
     'entity' => $entity,
+  ]);
+}
+
+/**
+ * Implements hook_element_info_alter().
+ */
+function effective_activism_element_info_alter(array &$types) {
+  $hook = ElementInfoAlterHook::getInstance();
+  $hook->invoke([
+    'types' => &$types,
   ]);
 }

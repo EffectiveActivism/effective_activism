@@ -1,0 +1,55 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "hash": "7a6a650125415ba3c51873cdb7fd6ad0",
+    "content-hash": "b89ccadf2675dc4f26c89bf6afa6e5c8",
+    "packages": [
+        {
+            "name": "drmonty/leaflet",
+            "version": "1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mrohnstock/leaflet.git",
+                "reference": "280b058d1ebf8f1ca89c23df4fcca089acb4fafb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mrohnstock/leaflet/zipball/280b058d1ebf8f1ca89c23df4fcca089acb4fafb",
+                "reference": "280b058d1ebf8f1ca89c23df4fcca089acb4fafb",
+                "shasum": ""
+            },
+            "type": "component",
+            "extra": {
+                "component": {
+                    "scripts": [
+                        "js/leaflet.js"
+                    ],
+                    "files": [
+                        "js/*.js",
+                        "css/*.css",
+                        "images/*.png"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "JavaScript library for mobile-friendly interactive maps http://leafletjs.com",
+            "homepage": "http://leafletjs.com/",
+            "keywords": [
+                "gis",
+                "map"
+            ],
+            "time": "2017-01-23 11:36:06"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}
