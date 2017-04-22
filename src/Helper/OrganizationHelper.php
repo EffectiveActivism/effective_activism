@@ -37,6 +37,27 @@ class OrganizationHelper {
   }
 
   /**
+   * Get organization groups paged for use in overviews.
+   *
+   * @param Organization $organization
+   *   The organization to get groups from.
+   * @param int $page_count
+   *   How many entities to include.
+   * @param bool $$load_entities
+   *   Wether to return full entity objects or entity ids.
+   *
+   * @return array
+   *   An array of groups related to the organization.
+   */
+  public static function getGroupsPaged(Organization $organization, $page_count = 20, $load_entities = TRUE) {
+    $query = \Drupal::entityQuery('group')
+      ->condition('organization', $organization->id())
+      ->pager($page_count);
+    $result = $query->execute();
+    return $load_entities ? Group::loadMultiple($result) : array_values($result);
+  }
+
+  /**
    * Get all organizations.
    *
    * @param int $position

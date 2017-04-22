@@ -37,6 +37,27 @@ class GroupHelper {
   }
 
   /**
+   * Get group events paged for use in overviews.
+   *
+   * @param Group $group
+   *   The group to get events from.
+   * @param int $page_count
+   *   How many entities to include.
+   * @param bool $$load_entities
+   *   Wether to return full entity objects or entity ids.
+   *
+   * @return array
+   *   An array of events related to the group.
+   */
+  public static function getEventsPaged(Group $group, $page_count = 20, $load_entities = TRUE) {
+    $query = \Drupal::entityQuery('event')
+      ->condition('parent', $group->id())
+      ->pager($page_count);
+    $result = $query->execute();
+    return $load_entities ? Event::loadMultiple($result) : array_values($result);
+  }
+
+  /**
    * Get group imports.
    *
    * @param Group $group
@@ -57,6 +78,27 @@ class GroupHelper {
     if ($limit > 0) {
       $query->range($position, $limit + $position);
     }
+    $result = $query->execute();
+    return $load_entities ? Import::loadMultiple($result) : array_values($result);
+  }
+
+  /**
+   * Get group imports.
+   *
+   * @param Group $group
+   *   The group to get events from.
+   * @param int $page_count
+   *   How many entities to include.
+   * @param bool $load_entities
+   *   Wether to return full entity objects or entity ids.
+   *
+   * @return array
+   *   An array of events related to the group.
+   */
+  public static function getImportsPaged(Group $group, $page_count = 20, $load_entities = TRUE) {
+    $query = \Drupal::entityQuery('import')
+      ->condition('parent', $group->id())
+      ->pager($page_count);
     $result = $query->execute();
     return $load_entities ? Import::loadMultiple($result) : array_values($result);
   }

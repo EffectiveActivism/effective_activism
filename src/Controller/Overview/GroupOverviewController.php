@@ -50,7 +50,7 @@ class GroupOverviewController extends ListBaseController {
   public function routeCallback(Organization $organization) {
     $content['#theme'] = self::THEME_ID;
     $content['#storage']['entities']['organization'] = $organization;
-    $content['#storage']['entities']['groups'] = OrganizationHelper::getGroups($organization);
+    $content['#storage']['entities']['groups'] = OrganizationHelper::getGroupsPaged($organization);
     $content['#cache'] = [
       'max-age' => self::CACHE_MAX_AGE,
       'tags' => self::CACHE_TAGS,
