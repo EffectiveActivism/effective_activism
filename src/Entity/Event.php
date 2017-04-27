@@ -74,9 +74,9 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
    */
   public static function preCreate(EntityStorageInterface $storage_controller, array &$values) {
     parent::preCreate($storage_controller, $values);
-    $values += array(
+    $values += [
       'user_id' => \Drupal::currentUser()->id(),
-    );
+    ];
   }
 
   /**
@@ -148,119 +148,120 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
       ->setLabel(t('Title'))
       ->setDescription(t('The title of the event.'))
       ->setRevisionable(TRUE)
-      ->setSettings(array(
+      ->setSettings([
         'text_processing' => 0,
-      ))
+      ])
       ->setDefaultValue('')
-      ->setDisplayOptions('view', array(
+      ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'string',
         'weight' => array_search('title', self::WEIGHTS),
-      ))
-      ->setDisplayOptions('form', array(
+      ])
+      ->setDisplayOptions('form', [
         'type' => 'string_textfield',
         'weight' => array_search('title', self::WEIGHTS),
         'settings' => [
           'placeholder' => t('Title'),
         ],
-      ));
+      ]);
     $fields['start_date'] = BaseFieldDefinition::create('datetime')
       ->setLabel(t('Start date'))
       ->setDescription(t('The beginning of the event.'))
       ->setRevisionable(TRUE)
-      ->setSettings(array(
+      ->setSettings([
         'default_value' => '',
         'text_processing' => 0,
-      ))
-      ->setDefaultValue(array(
-        0 => array(
+      ])
+      ->setDefaultValue([
+        0 => [
           'default_date_type' => 'now',
           'default_date' => 'tomorrow noon',
-        ),
-      ))
-      ->setDisplayOptions('view', array(
+          'date_time_format' => 'H:i',
+        ],
+      ])
+      ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'datetime_default',
         'weight' => array_search('start_date', self::WEIGHTS),
-      ))
-      ->setDisplayOptions('form', array(
+      ])
+      ->setDisplayOptions('form', [
         'type' => 'datetime_default',
         'weight' => array_search('start_date', self::WEIGHTS),
-      ));
+      ]);
     $fields['end_date'] = BaseFieldDefinition::create('datetime')
       ->setLabel(t('End date'))
       ->setDescription(t('The end of the event.'))
       ->setRevisionable(TRUE)
-      ->setSettings(array(
+      ->setSettings([
         'default_value' => '',
         'text_processing' => 0,
-      ))
-      ->setDefaultValue(array(
-        0 => array(
+      ])
+      ->setDefaultValue([
+        0 => [
           'default_date_type' => 'now',
           'default_date' => 'tomorrow 13:00',
-        ),
-      ))
-      ->setDisplayOptions('view', array(
+        ],
+      ])
+      ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'datetime_default',
         'weight' => array_search('end_date', self::WEIGHTS),
-      ))
-      ->setDisplayOptions('form', array(
+      ])
+      ->setDisplayOptions('form', [
         'type' => 'datetime_default',
         'weight' => array_search('end_date', self::WEIGHTS),
-      ));
+      ]);
     $fields['location'] = BaseFieldDefinition::create('location')
       ->setLabel(t('Location'))
       ->setDescription(t('The location of the event.'))
       ->setRevisionable(TRUE)
-      ->setSettings(array(
+      ->setSettings([
         'text_processing' => 0,
-      ))
+      ])
       ->setDefaultValue('')
-      ->setDisplayOptions('view', array(
+      ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'location_default',
         'weight' => array_search('location', self::WEIGHTS),
-      ))
-      ->setDisplayOptions('form', array(
+      ])
+      ->setDisplayOptions('form', [
         'type' => 'location_default',
         'weight' => array_search('location', self::WEIGHTS),
-      ));
+      ]);
     $fields['description'] = BaseFieldDefinition::create('string_long')
       ->setLabel(t('Description'))
       ->setDescription(t('The description of the event.'))
       ->setRevisionable(TRUE)
-      ->setDisplayOptions('form', array(
+      ->setDisplayOptions('form', [
         'type' => 'string_textarea',
         'weight' => array_search('description', self::WEIGHTS),
-        'settings' => array(
+        'settings' => [
           'rows' => 6,
           'placeholder' => t('Description'),
-        ),
-      ))
-      ->setDisplayOptions('view', array(
+        ],
+      ])
+      ->setDisplayOptions('view', [
         'type' => 'basic_string',
         'weight' => array_search('description', self::WEIGHTS),
-      ));
+      ]);
     $fields['results'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Results'))
       ->setRevisionable(TRUE)
       ->setSetting('target_type', 'result')
       ->setSetting('handler', 'default')
       ->setCardinality(FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED)
-      ->setDisplayOptions('view', array(
+      ->setDisplayOptions('view', [
         'type' => 'string',
         'weight' => array_search('results', self::WEIGHTS),
-      ))
-      ->setDisplayOptions('form', array(
+      ])
+      ->setDisplayOptions('form', [
         'type' => 'inline_entity_form_complex',
-        'settings' => array(
+        'settings' => [
           'allow_new' => TRUE,
-          'allow_existing' => FALSE,
-        ),
+          'allow_existing' => TRUE,
+        ],
         'weight' => array_search('results', self::WEIGHTS),
-      ));
+      ]);
     $fields['parent'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Group'))
       ->setRevisionable(TRUE)
@@ -269,36 +270,36 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
       ->setSetting('handler', 'default')
       ->setCardinality(1)
       ->setRequired(TRUE)
-      ->setDisplayOptions('view', array(
+      ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'string',
         'weight' => array_search('parent', self::WEIGHTS),
-      ))
-      ->setDisplayOptions('form', array(
+      ])
+      ->setDisplayOptions('form', [
         'type' => 'group_selector',
         'weight' => array_search('parent', self::WEIGHTS),
-      ));
+      ]);
     $fields['external_uid'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Name'))
       ->setDescription(t('The external UID.'))
       ->setRevisionable(TRUE)
-      ->setSettings(array(
+      ->setSettings([
         'max_length' => 50,
         'text_processing' => 0,
-      ))
+      ])
       ->setDefaultValue('')
-      ->setDisplayOptions('view', array(
+      ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'hidden',
         'weight' => array_search('external_uid', self::WEIGHTS),
-      ))
-      ->setDisplayOptions('form', array(
+      ])
+      ->setDisplayOptions('form', [
         'type' => 'string_textfield',
         'weight' => array_search('external_uid', self::WEIGHTS),
         'settings' => [
           'placeholder' => t('External UID'),
         ],
-      ));
+      ]);
     $fields['import'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Import'))
       ->setRevisionable(TRUE)
@@ -307,21 +308,21 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
       ->setSetting('handler', 'default')
       ->setCardinality(1)
       ->setRequired(FALSE)
-      ->setDisplayOptions('view', array(
+      ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'string',
         'weight' => array_search('import', self::WEIGHTS),
-      ))
-      ->setDisplayOptions('form', array(
+      ])
+      ->setDisplayOptions('form', [
         'type' => 'entity_reference_autocomplete',
         'weight' => array_search('import', self::WEIGHTS),
-        'settings' => array(
+        'settings' => [
           'match_operator' => 'CONTAINS',
           'size' => '60',
           'autocomplete_type' => 'tags',
           'placeholder' => '',
-        ),
-      ));
+        ],
+      ]);
     $fields['user_id'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Authored by'))
       ->setDescription(t('The user ID of author of the Event entity.'))
@@ -329,20 +330,20 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
       ->setSetting('target_type', 'user')
       ->setSetting('handler', 'default')
       ->setDefaultValueCallback('Drupal\node\Entity\Node::getCurrentUserId')
-      ->setDisplayOptions('view', array(
+      ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'hidden',
-      ))
-      ->setDisplayOptions('form', array(
+      ])
+      ->setDisplayOptions('form', [
         'type' => 'entity_reference_autocomplete',
         'weight' => array_search('user_id', self::WEIGHTS),
-        'settings' => array(
+        'settings' => [
           'match_operator' => 'CONTAINS',
           'size' => '60',
           'autocomplete_type' => 'tags',
           'placeholder' => '',
-        ),
-      ));
+        ],
+      ]);
     $fields['status'] = BaseFieldDefinition::create('boolean')
       ->setLabel(t('Publishing status'))
       ->setDescription(t('A boolean indicating whether the Event is published.'))

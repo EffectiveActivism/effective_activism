@@ -28,6 +28,11 @@ class EventForm extends ContentEntityForm {
       'callback' => [$this, 'updateAvailableResultTypes'],
       'wrapper' => 'ajax',
     ];
+    // Never allow adding existing results. However, we have to enable the
+    // 'allow_existing' setting to force inline entity form to display
+    // the 'Remove' button.
+    unset($form['results']['widget']['actions']['ief_add_existing']);
+    // Retrieve group id.
     $gid = $form_state->getTemporaryValue('gid');
     // If the form is fresh, it has no parent group id. Use default value instead.
     if (empty($gid) && !empty($form['parent']['widget'][0]['target_id']['#default_value'])) {
