@@ -20,7 +20,7 @@ class OrganizationHelper {
    *   The position to start from.
    * @param int $limit
    *   The number of organizations to return.
-   * @param bool $$load_entities
+   * @param bool $load_entities
    *   Wether to return full entity objects or entity ids.
    *
    * @return array
@@ -43,7 +43,7 @@ class OrganizationHelper {
    *   The organization to get groups from.
    * @param int $page_count
    *   How many entities to include.
-   * @param bool $$load_entities
+   * @param bool $load_entities
    *   Wether to return full entity objects or entity ids.
    *
    * @return array
@@ -64,12 +64,11 @@ class OrganizationHelper {
    *   The position to start from.
    * @param int $limit
    *   The number of organizations to return.
-   * @param bool $$load_entities
+   * @param bool $load_entities
    *   Wether to return full entity objects or entity ids.
    *
    * @return array
    *   An array of organizations.
-   * 
    */
   public static function getOrganizations($position = 0, $limit = 0, $load_entities = TRUE) {
     $query = \Drupal::entityQuery('organization');
@@ -83,13 +82,13 @@ class OrganizationHelper {
   /**
    * Get events of all groups of the organization.
    *
-   * @param Group $group
-   *   The group to get events from.
+   * @param Organization $organization
+   *   The organization to get events from.
    * @param int $position
    *   The position to start from.
    * @param int $limit
    *   The number of events to return.
-   * @param bool $$load_entities
+   * @param bool $load_entities
    *   Wether to return full entity objects or entity ids.
    *
    * @return array
@@ -108,4 +107,5 @@ class OrganizationHelper {
     }
     return $load_entities ? Event::loadMultiple($result) : array_values($result);
   }
+
 }

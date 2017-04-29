@@ -20,6 +20,9 @@ class Publisher {
   private $entity;
   private $entities = [];
 
+  /**
+   * Constructor.
+   */
   public function __construct(EntityInterface $entity) {
     $this->entity = $entity;
     $this->entities = self::calculateEntities($entity);
@@ -123,8 +126,8 @@ class Publisher {
   /**
    * Publish an entity.
    *
-   * @param EntityInterface $entity
-   *   The entity to publish.
+   * @param array $item
+   *   An array containing an entity type and id.
    *
    * @return int
    *   The entity id.
@@ -139,8 +142,8 @@ class Publisher {
   /**
    * Unpublish an entity.
    *
-   * @param EntityInterface $entity
-   *   The entity to unpublish.
+   * @param array $item
+   *   An array containing an entity type and id.
    *
    * @return int
    *   The entity id.

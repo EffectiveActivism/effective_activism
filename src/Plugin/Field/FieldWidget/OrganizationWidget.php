@@ -2,7 +2,6 @@
 
 namespace Drupal\effective_activism\Plugin\Field\FieldWidget;
 
-use Drupal\effective_activism\Entity\Organization;
 use Drupal\effective_activism\Helper\AccountHelper;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
@@ -50,4 +49,5 @@ class OrganizationWidget extends WidgetBase {
     ];
     return $element;
   }
+
 }

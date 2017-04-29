@@ -40,7 +40,7 @@ class ImageController extends ElementBaseController {
     if (!empty($image_style)) {
       $element = [
         '#theme' => 'image_style',
-        '#width' =>  $image->getWidth(),
+        '#width' => $image->getWidth(),
         '#height' => $image->getHeight(),
         '#uri' => $uri,
         '#style_name' => $image_style,
@@ -49,7 +49,7 @@ class ImageController extends ElementBaseController {
     else {
       $element = [
         '#theme' => 'image',
-        '#width' =>  $image->getWidth(),
+        '#width' => $image->getWidth(),
         '#height' => $image->getHeight(),
         '#uri' => $uri,
       ];
@@ -68,4 +68,5 @@ class ImageController extends ElementBaseController {
     }
     return $content;
   }
+
 }

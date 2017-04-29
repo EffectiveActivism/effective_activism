@@ -2,12 +2,6 @@
 
 namespace Drupal\effective_activism\Hook;
 
-use Drupal;
-use Drupal\effective_activism\Constant;
-use Drupal\effective_activism\Entity\Group;
-use Drupal\effective_activism\Helper\ImportParser\CSVParser;
-use Drupal\effective_activism\Helper\ImportParser\ICalendarParser;
-
 /**
  * Implements hook_element_info_alter().
  */
@@ -37,4 +31,5 @@ class ElementInfoAlterHook implements HookInterface {
     $types = &$args['types'];
     $types['datetime']['#process'][] = '\Drupal\effective_activism\Helper\EventHelper::setDateFormat';
   }
+
 }

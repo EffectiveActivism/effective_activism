@@ -105,7 +105,8 @@ class ImportPublishForm extends ConfirmFormBase {
         'operations' => [[
           'Drupal\effective_activism\Helper\Publish\BatchProcess::unpublish',
           [$publisher],
-        ]],
+        ],
+        ],
         'finished' => 'Drupal\effective_activism\Helper\Publish\BatchProcess::unpublished',
       ];
       batch_set($batch);
@@ -117,7 +118,8 @@ class ImportPublishForm extends ConfirmFormBase {
         'operations' => [[
           'Drupal\effective_activism\Helper\Publish\BatchProcess::publish',
           [$publisher],
-        ]],
+        ],
+        ],
         'finished' => 'Drupal\effective_activism\Helper\Publish\BatchProcess::published',
       ];
       batch_set($batch);

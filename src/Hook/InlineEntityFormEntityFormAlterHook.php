@@ -2,8 +2,6 @@
 
 namespace Drupal\effective_activism\Hook;
 
-use Drupal\effective_activism\Constant;
-
 /**
  * Implements hook_inline_entity_form_entity_form_alter().
  */
@@ -58,4 +56,5 @@ class InlineEntityFormEntityFormAlterHook implements HookInterface {
       $entity_form['revision_log_message']['#attributes']['class'][] = 'hidden';
     }
   }
+
 }

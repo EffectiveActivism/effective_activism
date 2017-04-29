@@ -2,11 +2,7 @@
 
 namespace Drupal\effective_activism\Hook;
 
-use Drupal;
-use Drupal\effective_activism\Constant;
-use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Helper\ImportParser\CSVParser;
-use Drupal\effective_activism\Helper\ImportParser\ICalendarParser;
 
 /**
  * Implements hook_entity_insert().
@@ -57,7 +53,8 @@ class EntityInsertHook implements HookInterface {
           ];
           batch_set($batch);
         }
-      break;
+        break;
     }
   }
+
 }

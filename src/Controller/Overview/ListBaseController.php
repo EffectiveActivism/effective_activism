@@ -10,12 +10,15 @@ use Drupal\Core\Controller\ControllerBase;
 class ListBaseController extends ControllerBase {
 
   /**
-   * @var array
-   *   An array of entity objects.
+   * An array of entity objects.
    */
   protected $entities;
 
+  /**
+   * Constructor.
+   */
   public function __construct(array $entities = NULL) {
     $this->entities = $entities;
   }
+
 }

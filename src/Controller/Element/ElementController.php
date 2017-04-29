@@ -3,7 +3,6 @@
 namespace Drupal\effective_activism\Controller\Element;
 
 use Drupal;
-use Drupal\Core\Field\FieldItemList;
 use Drupal\Core\Url;
 
 /**
@@ -14,10 +13,10 @@ class ElementController extends ElementBaseController {
   /**
    * Returns a render array for an element.
    *
-   * @param array $field
-   *   The field to process.
-   * @param string $field_name
-   *   The field name.
+   * @param string $text
+   *   The element text.
+   * @param string $element_name
+   *   The element name.
    *
    * @return array
    *   A render array.
@@ -44,4 +43,5 @@ class ElementController extends ElementBaseController {
     }
     return $content;
   }
+
 }

@@ -98,4 +98,5 @@ class BatchProcess {
       drupal_set_message(t('An error occured during publishing.'), 'error');
     }
   }
+
 }
