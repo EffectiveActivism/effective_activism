@@ -14,6 +14,8 @@ class ContactInformationController extends ControllerBase {
 
   /**
    * The entity types supported by this controller.
+   *
+   * @var array
    */
   private $allowedentitytypes = [
     'organization',
@@ -22,6 +24,8 @@ class ContactInformationController extends ControllerBase {
 
   /**
    * The contact information field names.
+   *
+   * @var array
    */
   private $fieldnames = [
     'website',
@@ -33,7 +37,7 @@ class ContactInformationController extends ControllerBase {
   /**
    * Returns an array of fields for contact information.
    *
-   * @param EntityInterface $entity
+   * @param \Drupal\Core\Entity\EntityInterface $entity
    *   The entity to provide contact information for.
    *
    * @return array

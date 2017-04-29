@@ -38,12 +38,12 @@ class GroupWidget extends WidgetBase {
       $keys = array_keys($options);
       $default_value = reset($keys);
     }
-    $element['target_id'] = array(
+    $element['target_id'] = [
       '#title' => $this->t('Group'),
       '#type' => 'radios',
       '#default_value' => $default_value,
       '#options' => $options,
-    );
+    ];
     return $element;
   }
 

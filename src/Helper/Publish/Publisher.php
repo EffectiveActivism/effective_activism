@@ -132,7 +132,7 @@ class Publisher {
    * @return int
    *   The entity id.
    */
-  public static function publish($item) {
+  public static function publish(array $item) {
     $entity_storage = Drupal::entityTypeManager()->getStorage($item[0]);
     $entity = $entity_storage->load($item[1]);
     self::set($entity, self::PUBLISH);
@@ -148,7 +148,7 @@ class Publisher {
    * @return int
    *   The entity id.
    */
-  public static function unpublish($item) {
+  public static function unpublish(array $item) {
     $entity_storage = Drupal::entityTypeManager()->getStorage($item[0]);
     $entity = $entity_storage->load($item[1]);
     self::set($entity, self::UNPUBLISH);
@@ -158,7 +158,7 @@ class Publisher {
   /**
    * Set a publish state for an entity.
    *
-   * @param EntityInterface $entity
+   * @param \Drupal\Core\Entity\EntityInterface $entity
    *   The entity to set a state for.
    * @param bool $state
    *   The state to set.

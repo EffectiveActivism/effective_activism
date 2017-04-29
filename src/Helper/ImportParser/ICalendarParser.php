@@ -18,14 +18,14 @@ class ICalendarParser extends EntityParser implements ParserInterface {
   /**
    * Parent group.
    *
-   * @var Group
+   * @var \Drupal\effective_activism\Entity\Group
    */
   private $group;
 
   /**
    * Import entity.
    *
-   * @var Import
+   * @var \Drupal\effective_activism\Entity\Import
    */
   private $import;
 
@@ -78,9 +78,9 @@ class ICalendarParser extends EntityParser implements ParserInterface {
    *   An ICalendar URL.
    * @param array $filters
    *   Filters to apply.
-   * @param Group $group
+   * @param \Drupal\effective_activism\Entity\Group $group
    *   The parent group.
-   * @param Import $import
+   * @param \Drupal\effective_activism\Entity\Import $import
    *   The import entity.
    */
   public function __construct($url, array $filters, Group $group, Import $import = NULL) {
@@ -350,7 +350,7 @@ class ICalendarParser extends EntityParser implements ParserInterface {
       foreach ($lines as $line) {
         // Trim trailing whitespace.
         $line = rtrim($line);
-        $add  = $this->keyValueFromString($line);
+        $add = $this->keyValueFromString($line);
         if ($add === FALSE) {
           $this->addCalendarComponentWithKeyAndValue($component, FALSE, $line);
           continue;
@@ -361,19 +361,19 @@ class ICalendarParser extends EntityParser implements ParserInterface {
         if (!is_array($values)) {
           if (!empty($values)) {
             // Make an array as not already.
-            $values = array($values);
+            $values = [$values];
             // Empty placeholder array.
-            $blank_array = array();
+            $blank_array = [];
             array_push($values, $blank_array);
           }
           else {
             // Use blank array to ignore this line.
-            $values = array();
+            $values = [];
           }
         }
         elseif (empty($values[0])) {
           // Use blank array to ignore this line.
-          $values = array();
+          $values = [];
         }
         // Reverse so that our array of properties is processed first.
         $values = array_reverse($values);
@@ -428,7 +428,7 @@ class ICalendarParser extends EntityParser implements ParserInterface {
       case 'VEVENT':
         if (!isset($this->cal[$component][$this->eventCount - 1][$keyword . '_array'])) {
           // Create array().
-          $this->cal[$component][$this->eventCount - 1][$keyword . '_array'] = array();
+          $this->cal[$component][$this->eventCount - 1][$keyword . '_array'] = [];
         }
         if (is_array($value)) {
           // Add array of properties to the end.
@@ -445,7 +445,7 @@ class ICalendarParser extends EntityParser implements ParserInterface {
             $ord = (isset($value[0])) ? ord($value[0]) : NULL;
 
             // Is space or tab?.
-            if (in_array($ord, array(9, 32))) {
+            if (in_array($ord, [9, 32])) {
               // Only trim the first character.
               $value = substr($value, 1);
             }
@@ -509,12 +509,12 @@ class ICalendarParser extends EntityParser implements ParserInterface {
         $matches[0] = $properties[0];
         // Repeat removing first match.
         array_shift($properties);
-        $formatted = array();
+        $formatted = [];
         foreach ($properties as $property) {
           // Match semicolon separator outside of quoted substrings.
           preg_match_all('~[^\r\n";]+(?:"[^"\\\]*(?:\\\.[^"\\\]*)*"[^\r\n";]*)*~', $property, $attributes);
           // Remove multi-dimensional array and use the first key.
-          $attributes = (count($attributes) == 0) ? array($property) : reset($attributes);
+          $attributes = (count($attributes) == 0) ? [$property] : reset($attributes);
           foreach ($attributes as $attribute) {
             // Match equals sign separator outside of quoted substrings.
             preg_match_all('~[^\r\n"=]+(?:"[^"\\\]*(?:\\\.[^"\\\]*)*"[^\r\n"=]*)*~', $attribute, $values);

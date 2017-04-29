@@ -23,6 +23,8 @@ class ImageController extends ElementBaseController {
    *   The name of the element.
    * @param string $image_style
    *   The image style to display the image with.
+   * @param \Drupal\Core\Url $url
+   *   A url to link to.
    *
    * @return array
    *   A render array.

@@ -11,6 +11,8 @@ class ListBaseController extends ControllerBase {
 
   /**
    * An array of entity objects.
+   *
+   * @var array
    */
   protected $entities;
 

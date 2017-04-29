@@ -20,7 +20,7 @@ class InvitationHelper {
   /**
    * Check if e-mail address is invited.
    *
-   * @param EntityInterface $entity
+   * @param \Drupal\Core\Entity\EntityInterface $entity
    *   The organization id to check for.
    * @param string $email
    *   The email to check for.
@@ -28,7 +28,7 @@ class InvitationHelper {
    * @return int
    *   A status code.
    */
-  static public function isInvited(EntityInterface $entity, $email) {
+  public static function isInvited(EntityInterface $entity, $email) {
     $status = NULL;
     $account = user_load_by_mail($email);
     if ($account !== FALSE) {
@@ -71,7 +71,7 @@ class InvitationHelper {
   /**
    * Add an invitation for a user.
    *
-   * @param EntityInterface $entity
+   * @param \Drupal\Core\Entity\EntityInterface $entity
    *   The entity to add invitation for.
    * @param string $email
    *   The email address to invite.
@@ -79,7 +79,7 @@ class InvitationHelper {
    * @return bool|int
    *   The id of the invitation or FALSE if the operation failed.
    */
-  static public function addInvition(EntityInterface $entity, $email) {
+  public static function addInvition(EntityInterface $entity, $email) {
     try {
       return db_insert(Constant::INVITATION_TABLE)
         ->fields([
@@ -105,7 +105,7 @@ class InvitationHelper {
    * @return bool|int
    *   The number of deleted invitations or FALSE if the operation failed.
    */
-  static public function removeInvition($id) {
+  public static function removeInvition($id) {
     try {
       return db_delete(Constant::INVITATION_TABLE)
         ->condition('id', $id)
@@ -126,7 +126,7 @@ class InvitationHelper {
    * @return bool|array
    *   A list of invitations or FALSE if the operation failed.
    */
-  static public function getInvitations($email) {
+  public static function getInvitations($email) {
     try {
       return db_select(Constant::INVITATION_TABLE, 'invitation')
         ->fields('invitation')

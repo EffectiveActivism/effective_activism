@@ -48,14 +48,14 @@ class CSVParser extends EntityParser implements ParserInterface {
   /**
    * Parent group.
    *
-   * @var Group
+   * @var \Drupal\effective_activism\Entity\Group
    */
   private $group;
 
   /**
    * Import entity.
    *
-   * @var Import
+   * @var \Drupal\effective_activism\Entity\Import
    */
   private $import;
 
@@ -99,8 +99,10 @@ class CSVParser extends EntityParser implements ParserInterface {
    *
    * @param string $file
    *   A CSV file.
-   * @param Group $group
+   * @param \Drupal\effective_activism\Entity\Group $group
    *   The parent group id of the events.
+   * @param \Drupal\effective_activism\Entity\Import $import
+   *   The import entity.
    */
   public function __construct($file, Group $group, Import $import = NULL) {
     $this->filePath = File::load($file)->getFileUri();
