@@ -19,9 +19,9 @@ class DataAddController extends ControllerBase {
   /**
    * Initializes the controller.
    *
-   * @param EntityStorageInterface $storage
+   * @param \Drupal\Core\Entity\EntityStorageInterface $storage
    *   The storage for the Data entity.
-   * @param EntityStorageInterface $type_storage
+   * @param \Drupal\Core\Entity\EntityStorageInterface $type_storage
    *   The storage for the Data type.
    */
   public function __construct(EntityStorageInterface $storage, EntityStorageInterface $type_storage) {
@@ -59,20 +59,20 @@ class DataAddController extends ControllerBase {
       return $this->addForm($type, $request);
     }
     if (count($types) === 0) {
-      return array(
+      return [
         '#markup' => $this->t('You have not created any %bundle types yet. @link to add a new type.', [
           '%bundle' => 'Data',
           '@link' => $this->l($this->t('Go to the type creation page'), Url::fromRoute('entity.data_type.add_form')),
         ]),
-      );
+      ];
     }
-    return array('#theme' => 'data_content_add_list', '#content' => $types);
+    return ['#theme' => 'data_content_add_list', '#content' => $types];
   }
 
   /**
    * Presents the creation form for data entities of given bundle/type.
    *
-   * @param EntityInterface $data_type
+   * @param \Drupal\Core\Entity\EntityInterface $data_type
    *   The custom bundle to add.
    * @param \Symfony\Component\HttpFoundation\Request $request
    *   The current request object.
@@ -81,16 +81,16 @@ class DataAddController extends ControllerBase {
    *   A form array as expected by drupal_render().
    */
   public function addForm(EntityInterface $data_type, Request $request) {
-    $entity = $this->storage->create(array(
+    $entity = $this->storage->create([
       'type' => $data_type->id(),
-    ));
+    ]);
     return $this->entityFormBuilder()->getForm($entity);
   }
 
   /**
    * Provides the page title for this controller.
    *
-   * @param EntityInterface $data_type
+   * @param \Drupal\Core\Entity\EntityInterface $data_type
    *   The custom bundle/type being added.
    *
    * @return string
@@ -98,7 +98,7 @@ class DataAddController extends ControllerBase {
    */
   public function getAddFormTitle(EntityInterface $data_type) {
     return t('Create of bundle @label',
-      array('@label' => $data_type->label())
+      ['@label' => $data_type->label()]
     );
   }
 

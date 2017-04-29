@@ -45,11 +45,11 @@ class LocationHelper {
       if ($valid_addresses !== FALSE && in_array($address, $valid_addresses)) {
         // Get coordinates and store valid address in cache.
         $coordinates = self::getCoordinates($address);
-        $database->insert(Constant::LOCATION_CACHE_TABLE)->fields(array(
+        $database->insert(Constant::LOCATION_CACHE_TABLE)->fields([
           'address' => $address,
           'lat' => empty($coordinates['lat']) ? NULL : $coordinates['lat'],
           'lon' => empty($coordinates['lon']) ? NULL : $coordinates['lon'],
-        ))->execute();
+        ])->execute();
         $match = TRUE;
       }
     }
@@ -98,9 +98,9 @@ class LocationHelper {
       'lon' => '',
     ];
     if (!empty($address)) {
-      $query = array(
+      $query = [
         'address' => $address,
-      );
+      ];
       $json = self::request(self::GEOCODE_URL, $query);
       echo print_r($json, TRUE);
       if (

@@ -15,11 +15,11 @@ class GroupViewsData extends EntityViewsData implements EntityViewsDataInterface
    */
   public function getViewsData() {
     $data = parent::getViewsData();
-    $data['group']['table']['base'] = array(
+    $data['group']['table']['base'] = [
       'field' => 'id',
       'title' => $this->t('Group'),
       'help' => $this->t('The Group ID.'),
-    );
+    ];
     return $data;
   }
 

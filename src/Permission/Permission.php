@@ -16,7 +16,7 @@ class Permission {
   /**
    * Grants access if the user is manager of the organization.
    *
-   * @param Organization $organization
+   * @param \Drupal\effective_activism\Entity\Organization $organization
    *   The organization to check relationship for.
    * @param \Drupal\Core\Session\AccountInterface $account
    *   The account for which to check a permission.
@@ -42,7 +42,7 @@ class Permission {
   /**
    * Grants access if the user is organizer of the group.
    *
-   * @param Group $group
+   * @param \Drupal\effective_activism\Entity\Group $group
    *   The group to check relationship for.
    * @param \Drupal\Core\Session\AccountInterface $account
    *   The user for which to check a permission.
@@ -68,7 +68,7 @@ class Permission {
   /**
    * Grants access if the user is staff.
    *
-   * @param Organization $organization
+   * @param \Drupal\effective_activism\Entity\Organization $organization
    *   The organization to check relationship for.
    * @param \Drupal\Core\Session\AccountInterface $account
    *   The account for which to check a permission.

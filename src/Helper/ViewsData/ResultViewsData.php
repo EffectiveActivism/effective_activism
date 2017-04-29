@@ -15,11 +15,11 @@ class ResultViewsData extends EntityViewsData implements EntityViewsDataInterfac
    */
   public function getViewsData() {
     $data = parent::getViewsData();
-    $data['result']['table']['base'] = array(
+    $data['result']['table']['base'] = [
       'field' => 'id',
       'title' => $this->t('Result'),
       'help' => $this->t('The Result ID.'),
-    );
+    ];
     return $data;
   }
 

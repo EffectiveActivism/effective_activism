@@ -42,7 +42,7 @@ class GroupOverviewController extends ListBaseController {
   /**
    * A callback for routes.
    *
-   * @param Organization $organization
+   * @param \Drupal\effective_activism\Entity\Organization $organization
    *   The organization to render groups for.
    *
    * @return array

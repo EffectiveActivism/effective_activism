@@ -14,9 +14,9 @@ class FieldController extends ElementBaseController {
   /**
    * Returns a render array for an element.
    *
-   * @param FieldItemList $field
+   * @param \Drupal\Core\Field\FieldItemList $field
    *   The field to process.
-   * @param Url $url
+   * @param \Drupal\Core\Url $url
    *   An optional url to link the element to.
    *
    * @return array

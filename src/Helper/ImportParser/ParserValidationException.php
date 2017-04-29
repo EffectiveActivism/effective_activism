@@ -2,7 +2,7 @@
 
 namespace Drupal\effective_activism\Helper\ImportParser;
 
-use \Exception;
+use Exception;
 
 /**
  * Exception for parser validation errors.
@@ -53,6 +53,10 @@ class ParserValidationException extends Exception {
    *   The line of the data file where the exception was thrown.
    * @param int $column
    *   The column of the data file where the exception was thrown.
+   * @param string $value
+   *   Any value involved with the error.
+   * @param string $extra_information
+   *   Any extra information to pass along with the error.
    */
   public function __construct($errorCode, $line = NULL, $column = NULL, $value = NULL, $extra_information = NULL) {
     $this->errorCode = $errorCode;

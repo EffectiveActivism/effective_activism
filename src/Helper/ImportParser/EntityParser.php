@@ -70,7 +70,7 @@ abstract class EntityParser {
   /**
    * Validates an entity.
    *
-   * @param EntityInterface $entity
+   * @param \Drupal\Core\Entity\EntityInterface $entity
    *   Entity to validate.
    * @param array $fieldsToIgnore
    *   Validation errors to ignore.
@@ -97,7 +97,7 @@ abstract class EntityParser {
    *   Data to validate as result entity.
    * @param string $importName
    *   The import name.
-   * @param Group $group
+   * @param \Drupal\effective_activism\Entity\Group $group
    *   The group.
    *
    * @return bool
@@ -203,10 +203,10 @@ abstract class EntityParser {
    *   Values to import as a result entity.
    * @param string $importName
    *   The import name of the result entity.
-   * @param Group $group
+   * @param \Drupal\effective_activism\Entity\Group $group
    *   The group to import to.
    *
-   * @return Result|bool
+   * @return \Drupal\effective_activism\Entity\Result|bool
    *   The result entity or FALSE if import failed.
    */
   public function importResult(array $values, $importName, Group $group) {
@@ -252,7 +252,7 @@ abstract class EntityParser {
    * @param string $bundle
    *   The bundle of the result entity.
    *
-   * @return Data|bool
+   * @return \Drupal\effective_activism\Entity\Data|bool
    *   The data entity or FALSE if import failed.
    */
   public function importData($dataValue, $bundle) {
@@ -276,7 +276,7 @@ abstract class EntityParser {
    * @param array $values
    *   Values to import as a term.
    *
-   * @return Term|bool
+   * @return \Drupal\taxonomy\Entity\Term|bool
    *   The term entity or FALSE if import failed.
    */
   public function importTerm(array $values) {
@@ -304,7 +304,7 @@ abstract class EntityParser {
    * @param array $values
    *   Values to import as an event.
    *
-   * @return Event|bool
+   * @return \Drupal\effective_activism\Entity\Event|bool
    *   The event entity or FALSE if import failed.
    */
   public function importEvent(array $values) {

@@ -21,11 +21,11 @@ class LocationController {
    *   A JSON response containing the autocomplete suggestions for countries.
    */
   public function autocomplete(Request $request) {
-    $autocomplete_suggestions = array();
+    $autocomplete_suggestions = [];
     $string = $request->query->get('q');
     $suggestions = LocationHelper::getAddressSuggestions($string);
     foreach ($suggestions as $suggestion) {
-      $autocomplete_suggestions[] = array('value' => $suggestion, 'label' => $suggestion);
+      $autocomplete_suggestions[] = ['value' => $suggestion, 'label' => $suggestion];
     }
     return new JsonResponse($autocomplete_suggestions);
   }

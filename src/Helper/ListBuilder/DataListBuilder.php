@@ -35,9 +35,9 @@ class DataListBuilder extends EntityListBuilder {
       $row['type'] = $this->l(
         $entity_bundles[$entity->bundle()]['label'],
         new Url(
-          'entity.data.edit_form', array(
+          'entity.data.edit_form', [
             'data' => $entity->id(),
-          )
+          ]
         )
       );
       return $row + parent::buildRow($entity);

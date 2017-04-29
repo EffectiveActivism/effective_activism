@@ -14,9 +14,9 @@ class AccountHelper {
   /**
    * Checks if user account is manager of the organization.
    *
-   * @param Organization $organization
+   * @param \Drupal\effective_activism\Entity\Organization $organization
    *   The organization to check.
-   * @param AccountProxyInterface $account
+   * @param \Drupal\Core\Session\AccountProxyInterface $account
    *   The user account to check for.
    *
    * @return bool
@@ -39,9 +39,9 @@ class AccountHelper {
   /**
    * Checks if user account is manager of the group.
    *
-   * @param Group $group
+   * @param \Drupal\effective_activism\Entity\Group $group
    *   The organization to check.
-   * @param AccountProxyInterface $account
+   * @param \Drupal\Core\Session\AccountProxyInterface $account
    *   The user account to check for.
    *
    * @return bool
@@ -65,9 +65,9 @@ class AccountHelper {
   /**
    * Checks if user account is organizer of the group.
    *
-   * @param Group $group
+   * @param \Drupal\effective_activism\Entity\Group $group
    *   The group to check.
-   * @param AccountProxyInterface $account
+   * @param \Drupal\Core\Session\AccountProxyInterface $account
    *   The user account to check for.
    *
    * @return bool
@@ -90,9 +90,9 @@ class AccountHelper {
   /**
    * Checks if user account is organizer of the group.
    *
-   * @param Organization $organization
+   * @param \Drupal\effective_activism\Entity\Organization $organization
    *   The group to check.
-   * @param AccountProxyInterface $account
+   * @param \Drupal\Core\Session\AccountProxyInterface $account
    *   The user account to check for.
    *
    * @return bool
@@ -115,7 +115,7 @@ class AccountHelper {
   /**
    * Get organizations that a user account is manager of.
    *
-   * @param AccountProxyInterface $account
+   * @param \Drupal\Core\Session\AccountProxyInterface $account
    *   The user object to check relationship for.
    * @param bool $load_entities
    *   Wether to return fully loaded entities or ids.
@@ -136,7 +136,7 @@ class AccountHelper {
   /**
    * Get organizations that a user account is manager or organizer of.
    *
-   * @param AccountProxyInterface $account
+   * @param \Drupal\Core\Session\AccountProxyInterface $account
    *   The user object to check relationship for.
    * @param bool $load_entities
    *   Wether to return fully loaded entities or ids.
@@ -159,7 +159,7 @@ class AccountHelper {
   /**
    * Get groups that a user account is manager or organizer of.
    *
-   * @param AccountProxyInterface $account
+   * @param \Drupal\Core\Session\AccountProxyInterface $account
    *   The user object to check relationship for.
    * @param bool $load_entities
    *   Wether to return fully loaded entities or ids.
@@ -183,7 +183,7 @@ class AccountHelper {
   /**
    * Get groups that a user account is organizer of.
    *
-   * @param AccountProxyInterface $account
+   * @param \Drupal\Core\Session\AccountProxyInterface $account
    *   The user object to check relationship for.
    * @param bool $load_entities
    *   Wether to return fully loaded entities or ids.
