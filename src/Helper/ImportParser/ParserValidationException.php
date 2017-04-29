@@ -42,7 +42,7 @@ class ParserValidationException extends Exception {
    *
    * @var mixed
    */
-  private $extra_information;
+  private $extrainformation;
 
   /**
    * Constructs a ParserValidationException.
@@ -59,7 +59,7 @@ class ParserValidationException extends Exception {
     $this->dataLine = $line;
     $this->dataColumn = $column;
     $this->value = $value;
-    $this->extra_information = $extra_information;
+    $this->extrainformation = $extra_information;
     parent::__construct();
   }
 
@@ -110,7 +110,7 @@ class ParserValidationException extends Exception {
    *   The value.
    */
   public function getExtraInformation() {
-    return $this->extra_information;
+    return $this->extrainformation;
   }
 
 }

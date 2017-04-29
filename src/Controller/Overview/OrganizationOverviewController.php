@@ -2,8 +2,6 @@
 
 namespace Drupal\effective_activism\Controller\Overview;
 
-use Drupal\effective_activism\Helper\AccountHelper;
-
 /**
  * An overview of organizations.
  */
@@ -33,4 +31,5 @@ class OrganizationOverviewController extends ListBaseController {
     ];
     return $content;
   }
+
 }

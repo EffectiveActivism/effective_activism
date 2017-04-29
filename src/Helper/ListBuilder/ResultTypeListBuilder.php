@@ -4,10 +4,7 @@ namespace Drupal\effective_activism\Helper\ListBuilder;
 
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
-use Drupal\Core\Entity\EntityInterface;
-use Drupal\Core\Url;
 use Drupal\effective_activism\Constant;
-use Drupal\effective_activism\Entity\Organization;
 use Drupal\effective_activism\Helper\AccountHelper;
 
 /**

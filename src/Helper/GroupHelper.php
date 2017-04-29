@@ -20,7 +20,7 @@ class GroupHelper {
    *   The position to start from.
    * @param int $limit
    *   The number of events to return.
-   * @param bool $$load_entities
+   * @param bool $load_entities
    *   Wether to return full entity objects or entity ids.
    *
    * @return array
@@ -43,7 +43,7 @@ class GroupHelper {
    *   The group to get events from.
    * @param int $page_count
    *   How many entities to include.
-   * @param bool $$load_entities
+   * @param bool $load_entities
    *   Wether to return full entity objects or entity ids.
    *
    * @return array
@@ -66,7 +66,7 @@ class GroupHelper {
    *   The position to start from.
    * @param int $limit
    *   The number of events to return.
-   * @param bool $$load_entities
+   * @param bool $load_entities
    *   Wether to return full entity objects or entity ids.
    *
    * @return array
@@ -102,4 +102,5 @@ class GroupHelper {
     $result = $query->execute();
     return $load_entities ? Import::loadMultiple($result) : array_values($result);
   }
+
 }

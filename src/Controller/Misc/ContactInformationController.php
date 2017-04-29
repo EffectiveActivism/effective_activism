@@ -13,19 +13,17 @@ class ContactInformationController extends ControllerBase {
   const THEME_ID = 'contact_information';
 
   /**
-   * @var array
-   *   The entity types supported by this controller.
+   * The entity types supported by this controller.
    */
-  private $allowed_entity_types = [
+  private $allowedentitytypes = [
     'organization',
     'group',
   ];
 
   /**
-   * var array
-   *   The contact information field names.
+   * The contact information field names.
    */
-  private $field_names = [
+  private $fieldnames = [
     'website',
     'phone_number',
     'email_address',
@@ -44,8 +42,8 @@ class ContactInformationController extends ControllerBase {
   public function view(EntityInterface $entity) {
     $content['#theme'] = self::THEME_ID;
     // Do not process disallowed entities.
-    if (in_array($entity->getEntityTypeId(), $this->allowed_entity_types)) {
-      foreach ($this->field_names as $field_name) {
+    if (in_array($entity->getEntityTypeId(), $this->allowedentitytypes)) {
+      foreach ($this->fieldnames as $field_name) {
         $content['fields'][$field_name] = $entity->get($field_name);
       }
     }
@@ -63,13 +61,14 @@ class ContactInformationController extends ControllerBase {
    */
   public function form(array $form) {
     $content['#theme'] = self::THEME_ID;
-    if (!empty($form['#id']) && !in_array($form['#id'], array_map(function($entity) {
+    if (!empty($form['#id']) && !in_array($form['#id'], array_map(function ($entity) {
       return sprintf('%s_edit_form', $entity);
-    }, $this->allowed_entity_types))) {
-      foreach ($this->field_names as $field_name) {
+    }, $this->allowedentitytypes))) {
+      foreach ($this->fieldnames as $field_name) {
         $content['fields'][$field_name] = $form[$field_name];
       }
     }
     return $content;
   }
+
 }

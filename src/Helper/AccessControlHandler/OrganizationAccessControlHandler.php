@@ -44,4 +44,5 @@ class OrganizationAccessControlHandler extends EntityAccessControlHandler {
   protected function checkCreateAccess(AccountInterface $account, array $context, $entity_bundle = NULL) {
     return $account->isAuthenticated() ? AccessResult::allowed() : AccessResult::forbidden();
   }
+
 }

@@ -87,4 +87,5 @@ class OrganizationForm extends ContentEntityForm {
     }
     $form_state->setRedirect('entity.organization.canonical', ['organization' => $entity->id()]);
   }
+
 }

@@ -144,7 +144,7 @@ class CSVParser extends EntityParser implements ParserInterface {
               '@value' => $exception->getValue(),
               '@line' => $exception->getDataLine() + 1,
               '@column' => $exception->getDataColumn(),
-              '@suggestions' => '"' . implode('" ' . t('or') . ' "', $exception->getExtraInformation()) . '"',
+              '@suggestions' => '"' . implode(t('" or "'), $exception->getExtraInformation()) . '"',
             ]);
           }
           else {

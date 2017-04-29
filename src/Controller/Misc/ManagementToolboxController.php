@@ -4,7 +4,6 @@ namespace Drupal\effective_activism\Controller\Misc;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\effective_activism\Entity\Organization;
 use Drupal\effective_activism\Helper\AccountHelper;
 
 /**
@@ -16,6 +15,9 @@ class ManagementToolboxController extends ControllerBase {
 
   private $organization;
 
+  /**
+   * Cosntructor.
+   */
   public function __construct(EntityInterface $entity) {
     $this->entity = $entity;
   }
@@ -48,9 +50,6 @@ class ManagementToolboxController extends ControllerBase {
   /**
    * Returns an array of fields for contact information.
    *
-   * @param EntityInterface $entity
-   *   The entity to provide contact information for.
-   *
    * @return array
    *   A render array.
    */
@@ -59,4 +58,5 @@ class ManagementToolboxController extends ControllerBase {
     $content['#storage']['entity'] = $this->entity;
     return $content;
   }
+
 }

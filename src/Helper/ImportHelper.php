@@ -17,13 +17,13 @@ class ImportHelper {
   /**
    * Get group events.
    *
-   * @param Group $group
-   *   The group to get events from.
+   * @param Import $import
+   *   The import to get events from.
    * @param int $position
    *   The position to start from.
    * @param int $limit
    *   The number of events to return.
-   * @param bool $$load_entities
+   * @param bool $load_entities
    *   Wether to return full entity objects or entity ids.
    *
    * @return array
@@ -70,7 +70,7 @@ class ImportHelper {
    * @param FormStateInterface $form_state
    *   The form state to validate.
    */
-  public static function validateICalendar(array &$form, FormStateInterface $form_state) {
+  public static function validateIcalendar(array &$form, FormStateInterface $form_state) {
     $filter_title = $form_state->getValue('field_filter_title');
     $filter_description = $form_state->getValue('field_filter_title');
     $filter_date_start = $form_state->getValue('field_filter_date_start');

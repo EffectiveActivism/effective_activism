@@ -6,9 +6,7 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\effective_activism\Entity\Data;
 use Drupal\effective_activism\Entity\Event;
 use Drupal\effective_activism\Entity\Group;
-use Drupal\effective_activism\Entity\Person;
 use Drupal\effective_activism\Entity\Result;
-use Drupal\effective_activism\Entity\ResultType;
 use Drupal\effective_activism\Helper\ResultTypeHelper;
 use Drupal\taxonomy\Entity\Term;
 
@@ -320,4 +318,5 @@ abstract class EntityParser {
       return FALSE;
     }
   }
+
 }

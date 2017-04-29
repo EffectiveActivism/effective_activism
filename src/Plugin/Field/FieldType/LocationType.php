@@ -136,4 +136,5 @@ class LocationType extends FieldItemBase implements FieldItemInterface {
     }
     parent::setValue($values, $notify);
   }
+
 }

@@ -4,8 +4,6 @@ namespace Drupal\effective_activism\Controller\Overview;
 
 use Drupal\Core\Cache\Cache;
 use Drupal\effective_activism\Constant;
-use Drupal\effective_activism\Helper\GroupHelper;
-use Drupal\effective_activism\Controller\Element\ImageController;
 
 /**
  * Base controller class for lists.
@@ -22,8 +20,7 @@ class GroupListController extends ListBaseController {
   ];
 
   /**
-   * @var int
-   *   How many groups to display.
+   * How many groups to display.
    */
   const GROUP_DISPLAY_LIMIT = 5;
 
@@ -42,4 +39,5 @@ class GroupListController extends ListBaseController {
     ];
     return $content;
   }
+
 }

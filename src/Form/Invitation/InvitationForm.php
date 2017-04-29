@@ -120,4 +120,5 @@ class InvitationForm extends FormBase {
       InvitationHelper::removeInvition($invitation_id);
     }
   }
+
 }

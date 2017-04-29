@@ -225,7 +225,7 @@ class Group extends RevisionableContentEntityBase implements GroupInterface {
         'alt_field_required' => FALSE,
         'file_extensions' => 'png jpg jpeg',
       ])
-     ->setDisplayOptions('view', [
+      ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'default',
         'weight' => array_search('logo', self::WEIGHTS),
