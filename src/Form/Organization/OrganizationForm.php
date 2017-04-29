@@ -70,7 +70,7 @@ class OrganizationForm extends ContentEntityForm {
             'datatypes' => $settings['datatypes'],
             'organization' => $entity->id(),
             'groups' => [
-              $group->id(),
+              $group->id() => $group->id(),
             ],
           ]);
           if ($result_type->save() === SAVED_NEW) {
