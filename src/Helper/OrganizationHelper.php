@@ -14,7 +14,7 @@ class OrganizationHelper {
   /**
    * Get organization groups.
    *
-   * @param Organization $organization
+   * @param \Drupal\effective_activism\Entity\Organization $organization
    *   The organization to get groups from.
    * @param int $position
    *   The position to start from.
@@ -39,7 +39,7 @@ class OrganizationHelper {
   /**
    * Get organization groups paged for use in overviews.
    *
-   * @param Organization $organization
+   * @param \Drupal\effective_activism\Entity\Organization $organization
    *   The organization to get groups from.
    * @param int $page_count
    *   How many entities to include.
@@ -82,7 +82,7 @@ class OrganizationHelper {
   /**
    * Get events of all groups of the organization.
    *
-   * @param Organization $organization
+   * @param \Drupal\effective_activism\Entity\Organization $organization
    *   The organization to get events from.
    * @param int $position
    *   The position to start from.

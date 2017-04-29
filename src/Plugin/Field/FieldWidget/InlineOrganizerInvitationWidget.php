@@ -109,7 +109,7 @@ class InlineOrganizerInvitationWidget extends InlineEntityFormComplex {
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    *   The form state of the form.
    */
-  static public function invite(array $form, FormStateInterface $form_state) {
+  public static function invite(array $form, FormStateInterface $form_state) {
     $entity_id = $form_state->getTemporaryValue('entity_id');
     if (!empty($entity_id)) {
       $entity = Group::load($entity_id);

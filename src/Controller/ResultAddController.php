@@ -19,9 +19,9 @@ class ResultAddController extends ControllerBase {
   /**
    * Initializes the controller.
    *
-   * @param EntityStorageInterface $storage
+   * @param \Drupal\Core\Entity\EntityStorageInterface $storage
    *   The storage for the Result entity.
-   * @param EntityStorageInterface $type_storage
+   * @param \Drupal\Core\Entity\EntityStorageInterface $type_storage
    *   The storage for the Result type.
    */
   public function __construct(EntityStorageInterface $storage, EntityStorageInterface $type_storage) {
@@ -59,20 +59,20 @@ class ResultAddController extends ControllerBase {
       return $this->addForm($type, $request);
     }
     if (count($types) === 0) {
-      return array(
+      return [
         '#markup' => $this->t('You have not created any %bundle types yet. @link to add a new type.', [
           '%bundle' => 'Result',
           '@link' => $this->l($this->t('Go to the type creation page'), Url::fromRoute('entity.result_type.add_form')),
         ]),
-      );
+      ];
     }
-    return array('#theme' => 'result_content_add_list', '#content' => $types);
+    return ['#theme' => 'result_content_add_list', '#content' => $types];
   }
 
   /**
    * Presents the creation form for result entities of given bundle/type.
    *
-   * @param EntityInterface $result_type
+   * @param \Drupal\Core\Entity\EntityInterface $result_type
    *   The custom bundle to add.
    * @param \Symfony\Component\HttpFoundation\Request $request
    *   The current request object.
@@ -81,16 +81,16 @@ class ResultAddController extends ControllerBase {
    *   A form array as expected by drupal_render().
    */
   public function addForm(EntityInterface $result_type, Request $request) {
-    $entity = $this->storage->create(array(
+    $entity = $this->storage->create([
       'type' => $result_type->id(),
-    ));
+    ]);
     return $this->entityFormBuilder()->getForm($entity);
   }
 
   /**
    * Provides the page title for this controller.
    *
-   * @param EntityInterface $result_type
+   * @param \Drupal\Core\Entity\EntityInterface $result_type
    *   The custom bundle/type being added.
    *
    * @return string
@@ -98,7 +98,7 @@ class ResultAddController extends ControllerBase {
    */
   public function getAddFormTitle(EntityInterface $result_type) {
     return t('Create of bundle @label',
-      array('@label' => $result_type->label())
+      ['@label' => $result_type->label()]
     );
   }
 

@@ -38,10 +38,10 @@ class GroupHtmlRouteProvider extends DefaultHtmlRouteProvider {
   /**
    * Gets the collection route.
    *
-   * @param EntityTypeInterface $entity_type
+   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
    *   The entity type.
    *
-   * @return Route|null
+   * @return \Symfony\Component\Routing\Route|null
    *   The generated route, if available.
    */
   protected function getCollectionRoute(EntityTypeInterface $entity_type) {
@@ -61,10 +61,10 @@ class GroupHtmlRouteProvider extends DefaultHtmlRouteProvider {
   /**
    * Gets the add-form route.
    *
-   * @param EntityTypeInterface $entity_type
+   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
    *   The entity type.
    *
-   * @return Route|null
+   * @return \Symfony\Component\Routing\Route|null
    *   The generated route, if available.
    */
   protected function getAddFormRoute(EntityTypeInterface $entity_type) {
@@ -93,10 +93,10 @@ class GroupHtmlRouteProvider extends DefaultHtmlRouteProvider {
   /**
    * Gets the publish-form route.
    *
-   * @param EntityTypeInterface $entity_type
+   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
    *   The entity type.
    *
-   * @return Route|null
+   * @return \Symfony\Component\Routing\Route|null
    *   The generated route, if available.
    */
   protected function getPublishFormRoute(EntityTypeInterface $entity_type) {
@@ -124,10 +124,10 @@ class GroupHtmlRouteProvider extends DefaultHtmlRouteProvider {
   /**
    * Gets the events route.
    *
-   * @param EntityTypeInterface $entity_type
+   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
    *   The entity type.
    *
-   * @return Route|null
+   * @return \Symfony\Component\Routing\Route|null
    *   The generated route, if available.
    */
   protected function getImportsRoute(EntityTypeInterface $entity_type) {
@@ -155,10 +155,10 @@ class GroupHtmlRouteProvider extends DefaultHtmlRouteProvider {
   /**
    * Gets the events route.
    *
-   * @param EntityTypeInterface $entity_type
+   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
    *   The entity type.
    *
-   * @return Route|null
+   * @return \Symfony\Component\Routing\Route|null
    *   The generated route, if available.
    */
   protected function getEventsRoute(EntityTypeInterface $entity_type) {

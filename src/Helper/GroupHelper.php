@@ -14,7 +14,7 @@ class GroupHelper {
   /**
    * Get group events.
    *
-   * @param Group $group
+   * @param \Drupal\effective_activism\Entity\Group $group
    *   The group to get events from.
    * @param int $position
    *   The position to start from.
@@ -39,7 +39,7 @@ class GroupHelper {
   /**
    * Get group events paged for use in overviews.
    *
-   * @param Group $group
+   * @param \Drupal\effective_activism\Entity\Group $group
    *   The group to get events from.
    * @param int $page_count
    *   How many entities to include.
@@ -60,7 +60,7 @@ class GroupHelper {
   /**
    * Get group imports.
    *
-   * @param Group $group
+   * @param \Drupal\effective_activism\Entity\Group $group
    *   The group to get events from.
    * @param int $position
    *   The position to start from.
@@ -85,7 +85,7 @@ class GroupHelper {
   /**
    * Get group imports.
    *
-   * @param Group $group
+   * @param \Drupal\effective_activism\Entity\Group $group
    *   The group to get events from.
    * @param int $page_count
    *   How many entities to include.

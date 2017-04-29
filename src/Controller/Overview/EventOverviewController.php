@@ -41,7 +41,7 @@ class EventOverviewController extends ListBaseController {
   /**
    * A callback for routes.
    *
-   * @param Group $group
+   * @param \Drupal\effective_activism\Entity\Group $group
    *   The group to render events for.
    *
    * @return array

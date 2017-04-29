@@ -45,7 +45,7 @@ class ResultTypeForm extends EntityForm {
     // Build form.
     $form['#prefix'] = '<div id="ajax">';
     $form['#suffix'] = '</div>';
-    $form['label'] = array(
+    $form['label'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Label'),
       '#maxlength' => 255,
@@ -55,24 +55,24 @@ class ResultTypeForm extends EntityForm {
         'placeholder' => t('Label'),
       ],
       '#required' => TRUE,
-    );
-    $form['importname'] = array(
+    ];
+    $form['importname'] = [
       '#type' => 'machine_name',
       '#title' => $this->t('Import name'),
       '#description' => $this->t('This name is used when importing results of this type. Can only contain lowercase letters, numbers, and underscores.'),
       '#default_value' => $this->entity->get('importname'),
-      '#machine_name' => array(
+      '#machine_name' => [
         'exists' => '\Drupal\effective_activism\Helper\ResultTypeHelper::checkTypedImportNameExists',
         'label' => $this->t('Import name'),
-      ),
+      ],
       '#attributes' => [
         'placeholder' => t('Import name'),
       ],
       '#required' => TRUE,
       // Disallow changing import name after result type has been created.
       '#disabled' => empty($this->entity->id()) ? FALSE : TRUE,
-    );
-    $form['description'] = array(
+    ];
+    $form['description'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Description'),
       '#maxlength' => 255,
@@ -82,16 +82,16 @@ class ResultTypeForm extends EntityForm {
         'placeholder' => t('Description'),
       ],
       '#required' => FALSE,
-    );
-    $form['datatypes'] = array(
+    ];
+    $form['datatypes'] = [
       '#type' => 'checkboxes',
       '#title' => $this->t('Data types'),
       '#default_value' => empty($selected_datatypes) ? [] : $selected_datatypes,
       '#options' => $available_datatypes,
       '#description' => $this->t('Data types available for the Result type.'),
       '#required' => TRUE,
-    );
-    $form['organization'] = array(
+    ];
+    $form['organization'] = [
       '#type' => 'select',
       '#title' => $this->t('Organization'),
       '#default_value' => $selected_organization,
@@ -104,8 +104,8 @@ class ResultTypeForm extends EntityForm {
         'callback' => [$this, 'updateAvailableGroups'],
         'wrapper' => 'ajax',
       ],
-    );
-    $form['groups'] = array(
+    ];
+    $form['groups'] = [
       '#type' => 'select',
       '#title' => $this->t('Groups'),
       '#default_value' => $selected_groups,
@@ -113,7 +113,7 @@ class ResultTypeForm extends EntityForm {
       '#options' => $available_groups,
       '#multiple' => TRUE,
       '#required' => FALSE,
-    );
+    ];
     return $form;
   }
 
@@ -164,7 +164,7 @@ class ResultTypeForm extends EntityForm {
    *
    * @param array $form
    *   The form array.
-   * @param FormStateInterface $form_state
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
    *   The form state.
    *
    * @return array

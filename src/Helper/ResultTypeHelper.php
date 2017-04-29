@@ -21,7 +21,7 @@ class ResultTypeHelper {
    *   The value as typed by the user.
    * @param array $elements
    *   An array of form elements.
-   * @param FormStateInterface $form_state
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
    *   The form state.
    *
    * @return bool
@@ -87,7 +87,7 @@ class ResultTypeHelper {
    * @param int $organization_id
    *   The organization id.
    *
-   * @return ResultType
+   * @return \Drupal\effective_activism\Entity\ResultType
    *   The loaded result type entity.
    */
   public static function getResultTypeByImportName($import_name, $organization_id) {
@@ -101,7 +101,7 @@ class ResultTypeHelper {
   /**
    * Add a taxonomy field.
    *
-   * @param ResultType $result_type
+   * @param \Drupal\effective_activism\Entity\ResultType $result_type
    *   The result type to add field to.
    */
   public static function addTaxonomyField(ResultType $result_type) {
@@ -167,7 +167,7 @@ class ResultTypeHelper {
   /**
    * Keep result type fields updated.
    *
-   * @param ResultType $result_type
+   * @param \Drupal\effective_activism\Entity\ResultType $result_type
    *   The result type to update.
    */
   public static function updateBundleSettings(ResultType $result_type) {
@@ -181,14 +181,14 @@ class ResultTypeHelper {
           // Check if field exists and create as necessary.
           $field_storage = FieldStorageConfig::loadByName($entity_type_id, $field_name);
           if (empty($field_storage)) {
-            $field_storage = FieldStorageConfig::create(array(
+            $field_storage = FieldStorageConfig::create([
               'field_name' => $field_name,
               'entity_type' => $entity_type_id,
               'type' => 'entity_reference',
               'cardinality' => 1,
               'module' => 'core',
-              'settings' => array('target_type' => 'data'),
-            ))->save();
+              'settings' => ['target_type' => 'data'],
+            ])->save();
           }
           // Check if instance exists and create as necessary.
           $field = FieldConfig::loadByName($entity_type_id, $bundle_id, $field_name);
@@ -197,20 +197,20 @@ class ResultTypeHelper {
             $data_type_entity = DataType::load($data_type);
             $label = $data_type_entity->label();
             // Create field.
-            $field = FieldConfig::create(array(
+            $field = FieldConfig::create([
               'field_name' => $field_name,
               'entity_type' => $entity_type_id,
               'bundle' => $bundle_id,
               'label' => $label,
-            ));
+            ]);
             $field->setRequired(TRUE)
               ->setSetting('target_type', 'data')
               ->setSetting('handler', 'default')
-              ->setSetting('handler_settings', array(
-                'target_bundles' => array(
+              ->setSetting('handler_settings', [
+                'target_bundles' => [
                   $data_type => $data_type,
-                ),
-              ))->save();
+                ],
+              ])->save();
           }
           // Unhide any fields that already exists.
           self::enableFieldDisplay($field);
@@ -232,28 +232,28 @@ class ResultTypeHelper {
   /**
    * Set field display to simple inline entity form and require field.
    *
-   * @param FieldConfig $field
+   * @param \Drupal\field\Entity\FieldConfig $field
    *   The field to enable.
    */
   private static function enableFieldDisplay(FieldConfig $field) {
     // Set form display settings.
     entity_get_form_display($field->getTargetEntityTypeId(), $field->getTargetBundle(), 'default')
-      ->setComponent($field->getName(), array(
+      ->setComponent($field->getName(), [
         'type' => 'inline_entity_form_simple',
-      ))
+      ])
       ->save();
     // Set view display settings.
     entity_get_display($field->getTargetEntityTypeId(), $field->getTargetBundle(), 'default')
-      ->setComponent($field->getName(), array(
+      ->setComponent($field->getName(), [
         'type' => 'entity_reference_entity_view',
-      ))
+      ])
       ->save();
   }
 
   /**
    * Set field display to hidden and do not require field.
    *
-   * @param FieldConfig $field
+   * @param \Drupal\field\Entity\FieldConfig $field
    *   The field to disable.
    */
   private static function disableFieldDisplay(FieldConfig $field) {

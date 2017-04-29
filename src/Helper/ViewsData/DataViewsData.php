@@ -15,11 +15,11 @@ class DataViewsData extends EntityViewsData implements EntityViewsDataInterface 
    */
   public function getViewsData() {
     $data = parent::getViewsData();
-    $data['data']['table']['base'] = array(
+    $data['data']['table']['base'] = [
       'field' => 'id',
       'title' => $this->t('Data'),
       'help' => $this->t('The Data ID.'),
-    );
+    ];
     return $data;
   }
 

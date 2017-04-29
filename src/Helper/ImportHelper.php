@@ -17,7 +17,7 @@ class ImportHelper {
   /**
    * Get group events.
    *
-   * @param Import $import
+   * @param \Drupal\effective_activism\Entity\Import $import
    *   The import to get events from.
    * @param int $position
    *   The position to start from.
@@ -44,7 +44,7 @@ class ImportHelper {
    *
    * @param array $form
    *   The form array.
-   * @param FormStateInterface $form_state
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
    *   The form state to validate.
    */
   public static function validateCsv(array &$form, FormStateInterface $form_state) {
@@ -67,7 +67,7 @@ class ImportHelper {
    *
    * @param array $form
    *   The form array.
-   * @param FormStateInterface $form_state
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
    *   The form state to validate.
    */
   public static function validateIcalendar(array &$form, FormStateInterface $form_state) {

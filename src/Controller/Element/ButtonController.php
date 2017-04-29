@@ -17,7 +17,7 @@ class ButtonController extends ElementBaseController {
    *   The button text.
    * @param string $element_name
    *   The element name.
-   * @param Url $url
+   * @param \Drupal\Core\Url $url
    *   The url to link to.
    *
    * @return array

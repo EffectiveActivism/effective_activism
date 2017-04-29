@@ -78,9 +78,9 @@ class Group extends RevisionableContentEntityBase implements GroupInterface {
    */
   public static function preCreate(EntityStorageInterface $storage_controller, array &$values) {
     parent::preCreate($storage_controller, $values);
-    $values += array(
+    $values += [
       'user_id' => \Drupal::currentUser()->id(),
-    );
+    ];
   }
 
   /**
@@ -165,21 +165,21 @@ class Group extends RevisionableContentEntityBase implements GroupInterface {
       ->setSetting('target_type', 'user')
       ->setSetting('handler', 'default')
       ->setDefaultValueCallback('Drupal\node\Entity\Node::getCurrentUserId')
-      ->setDisplayOptions('view', array(
+      ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'author',
         'weight' => array_search('user_id', self::WEIGHTS),
-      ))
-      ->setDisplayOptions('form', array(
+      ])
+      ->setDisplayOptions('form', [
         'type' => 'entity_reference_autocomplete',
         'weight' => array_search('user_id', self::WEIGHTS),
-        'settings' => array(
+        'settings' => [
           'match_operator' => 'CONTAINS',
           'size' => '60',
           'autocomplete_type' => 'tags',
           'placeholder' => '',
-        ),
-      ));
+        ],
+      ]);
     $fields['organization'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Organization'))
       ->setDescription(t('The organization of the group.'))
@@ -187,36 +187,36 @@ class Group extends RevisionableContentEntityBase implements GroupInterface {
       ->setSetting('target_type', 'organization')
       ->setSetting('handler', 'default')
       ->setCardinality(1)
-      ->setDisplayOptions('view', array(
+      ->setDisplayOptions('view', [
         'type' => 'string',
         'weight' => array_search('organization', self::WEIGHTS),
-      ))
-      ->setDisplayOptions('form', array(
+      ])
+      ->setDisplayOptions('form', [
         'type' => 'organization_selector',
         'weight' => array_search('organization', self::WEIGHTS),
-      ));
+      ]);
     $fields['title'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Title'))
       ->setDescription(t('The title of the group.'))
       ->setRevisionable(TRUE)
       ->setRequired(TRUE)
-      ->setSettings(array(
+      ->setSettings([
         'max_length' => 50,
         'text_processing' => 0,
-      ))
+      ])
       ->setDefaultValue('')
-      ->setDisplayOptions('view', array(
+      ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'string',
         'weight' => array_search('title', self::WEIGHTS),
-      ))
-      ->setDisplayOptions('form', array(
+      ])
+      ->setDisplayOptions('form', [
         'type' => 'string_textfield',
         'weight' => array_search('title', self::WEIGHTS),
         'settings' => [
           'placeholder' => t('Title'),
         ],
-      ));
+      ]);
     $fields['logo'] = BaseFieldDefinition::create('image')
       ->setLabel(t('Logo'))
       ->setDescription(t('Upload a logo for the group.'))
@@ -241,137 +241,137 @@ class Group extends RevisionableContentEntityBase implements GroupInterface {
       ->setLabel(t('Website'))
       ->setDescription(t('The website of the group.'))
       ->setRevisionable(TRUE)
-      ->setSettings(array(
+      ->setSettings([
         'max_length' => 50,
         'text_processing' => 0,
-      ))
+      ])
       ->setDefaultValue('')
-      ->setDisplayOptions('view', array(
+      ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'string',
         'weight' => array_search('website', self::WEIGHTS),
-      ))
-      ->setDisplayOptions('form', array(
+      ])
+      ->setDisplayOptions('form', [
         'type' => 'string_textfield',
         'weight' => array_search('website', self::WEIGHTS),
         'settings' => [
           'placeholder' => t('Website'),
         ],
-      ));
+      ]);
     $fields['phone_number'] = BaseFieldDefinition::create('telephone')
       ->setLabel(t('Phone number'))
       ->setDescription(t('The phone number of the group.'))
       ->setRevisionable(TRUE)
-      ->setSettings(array(
+      ->setSettings([
         'max_length' => 50,
         'text_processing' => 0,
-      ))
+      ])
       ->setDefaultValue('')
-      ->setDisplayOptions('view', array(
+      ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'string',
         'weight' => array_search('phone_number', self::WEIGHTS),
-      ))
-      ->setDisplayOptions('form', array(
+      ])
+      ->setDisplayOptions('form', [
         'type' => 'telephone_default',
         'weight' => array_search('phone_number', self::WEIGHTS),
         'settings' => [
           'placeholder' => t('Phone number'),
         ],
-      ));
+      ]);
     $fields['email_address'] = BaseFieldDefinition::create('email')
       ->setLabel(t('E-mail address'))
       ->setDescription(t('The e-mail address of the group.'))
       ->setRevisionable(TRUE)
-      ->setSettings(array(
+      ->setSettings([
         'max_length' => 50,
         'text_processing' => 0,
-      ))
+      ])
       ->setDefaultValue('')
-      ->setDisplayOptions('view', array(
+      ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'string',
         'weight' => array_search('email_address', self::WEIGHTS),
-      ))
-      ->setDisplayOptions('form', array(
+      ])
+      ->setDisplayOptions('form', [
         'type' => 'email_default',
         'weight' => array_search('email_address', self::WEIGHTS),
         'settings' => [
           'placeholder' => t('E-mail address'),
         ],
-      ));
+      ]);
     $fields['location'] = BaseFieldDefinition::create('location')
       ->setLabel(t('Location'))
       ->setDescription(t('The location of the group.'))
       ->setRevisionable(TRUE)
-      ->setSettings(array(
+      ->setSettings([
         'max_length' => 50,
         'text_processing' => 0,
-      ))
+      ])
       ->setDefaultValue('')
-      ->setDisplayOptions('view', array(
+      ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'location_default',
         'weight' => array_search('location', self::WEIGHTS),
-      ))
-      ->setDisplayOptions('form', array(
+      ])
+      ->setDisplayOptions('form', [
         'type' => 'location_default',
         'weight' => array_search('location', self::WEIGHTS),
-      ));
+      ]);
     $fields['timezone'] = BaseFieldDefinition::create('list_string')
       ->setLabel(t('Timezone'))
       ->setRevisionable(TRUE)
       ->setRequired(TRUE)
       ->setDefaultValue('inherit')
-      ->setSettings(array(
+      ->setSettings([
         'allowed_values' => array_merge(['inherit' => 'Inherit from organization'], system_time_zones()),
-      ))
-      ->setDisplayOptions('view', array(
+      ])
+      ->setDisplayOptions('view', [
         'label' => 'above',
         'type' => 'string',
         'weight' => array_search('timezone', self::WEIGHTS),
-      ))
-      ->setDisplayOptions('form', array(
+      ])
+      ->setDisplayOptions('form', [
         'type' => 'options_select',
         'weight' => array_search('timezone', self::WEIGHTS),
-      ));
+      ]);
     $fields['description'] = BaseFieldDefinition::create('string_long')
       ->setLabel(t('Description'))
       ->setDescription(t('The description of the group.'))
       ->setRevisionable(TRUE)
-      ->setDisplayOptions('form', array(
+      ->setDisplayOptions('form', [
         'type' => 'string_textarea',
         'weight' => array_search('description', self::WEIGHTS),
-        'settings' => array(
+        'settings' => [
           'rows' => 6,
-        ),
-      ))
-      ->setDisplayOptions('view', array(
+        ],
+      ])
+      ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'basic_string',
         'weight' => array_search('description', self::WEIGHTS),
         'settings' => [
           'placeholder' => t('Description'),
         ],
-      ));
+      ]);
     $fields['organizers'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Organizers'))
       ->setRevisionable(TRUE)
       ->setSetting('target_type', 'user')
       ->setSetting('handler', 'default')
       ->setCardinality(FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED)
-      ->setDisplayOptions('view', array(
+      ->setDisplayOptions('view', [
         'type' => 'string',
         'weight' => array_search('organizers', self::WEIGHTS),
-      ))
-      ->setDisplayOptions('form', array(
+      ])
+      ->setDisplayOptions('form', [
         'type' => 'inline_organizer_invitation',
-        'settings' => array(
+        'settings' => [
           'allow_new' => FALSE,
           'allow_existing' => TRUE,
-        ),
+        ],
         'weight' => array_search('organizers', self::WEIGHTS),
-      ));
+      ]);
     $fields['status'] = BaseFieldDefinition::create('boolean')
       ->setLabel(t('Publishing status'))
       ->setDescription(t('A boolean indicating whether the group is published.'))

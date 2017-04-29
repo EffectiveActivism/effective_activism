@@ -93,13 +93,6 @@ class GroupPublishForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state) {
-    return parent::buildForm($form, $form_state);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $entity = \Drupal::request()->get('group');
     if ($this->isPublished === TRUE) {

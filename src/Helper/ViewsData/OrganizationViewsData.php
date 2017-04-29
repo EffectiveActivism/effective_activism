@@ -15,11 +15,11 @@ class OrganizationViewsData extends EntityViewsData implements EntityViewsDataIn
    */
   public function getViewsData() {
     $data = parent::getViewsData();
-    $data['organization']['table']['base'] = array(
+    $data['organization']['table']['base'] = [
       'field' => 'id',
       'title' => $this->t('Organization'),
       'help' => $this->t('The Organization ID.'),
-    );
+    ];
     return $data;
   }
 

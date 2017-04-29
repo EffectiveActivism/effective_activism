@@ -92,10 +92,10 @@ class OrganizationHtmlRouteProvider extends DefaultHtmlRouteProvider {
   /**
    * Gets the publish-form route.
    *
-   * @param EntityTypeInterface $entity_type
+   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
    *   The entity type.
    *
-   * @return Route|null
+   * @return \Symfony\Component\Routing\Route|null
    *   The generated route, if available.
    */
   protected function getPublishFormRoute(EntityTypeInterface $entity_type) {
