@@ -3,10 +3,7 @@
 namespace Drupal\effective_activism\Controller\Misc;
 
 use Drupal;
-use Drupal\Core\Cache\Cache;
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\Core\Entity\EntityInterface;
-use Drupal\effective_activism\Constant;
 use Drupal\effective_activism\Helper\InvitationHelper;
 use Drupal\effective_activism\Form\Invitation\InvitationForm;
 
@@ -21,9 +18,6 @@ class InvitationController extends ControllerBase {
 
   /**
    * Returns an array of fields for contact information.
-   *
-   * @param EntityInterface $entity
-   *   The entity to provide contact information for.
    *
    * @return array
    *   A render array.
@@ -49,4 +43,5 @@ class InvitationController extends ControllerBase {
     }
     return $content;
   }
+
 }

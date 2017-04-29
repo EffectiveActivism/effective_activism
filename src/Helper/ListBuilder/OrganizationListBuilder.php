@@ -3,13 +3,9 @@
 namespace Drupal\effective_activism\Helper\ListBuilder;
 
 use Drupal\Core\Cache\Cache;
-use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
-use Drupal\Core\Routing\LinkGeneratorTrait;
-use Drupal\Core\Url;
 use Drupal\effective_activism\Constant;
 use Drupal\effective_activism\Helper\AccountHelper;
-use Drupal\effective_activism\Helper\OrganizationHelper;
 
 /**
  * Defines a class to build a listing of Organization entities.
@@ -58,4 +54,5 @@ class OrganizationListBuilder extends EntityListBuilder {
     ];
     return $build;
   }
+
 }

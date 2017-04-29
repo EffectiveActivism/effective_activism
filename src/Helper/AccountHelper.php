@@ -5,13 +5,12 @@ namespace Drupal\effective_activism\Helper;
 use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\effective_activism\Entity\Organization;
 use Drupal\effective_activism\Entity\Group;
-use Drupal\effective_activism\Helper\OrganizationHelper;
 
 /**
  * Helper functions for user accounts.
  */
 class AccountHelper {
- 
+
   /**
    * Checks if user account is manager of the organization.
    *
@@ -38,9 +37,9 @@ class AccountHelper {
   }
 
   /**
-   * Checks if user account is manager of the organization.
+   * Checks if user account is manager of the group.
    *
-   * @param Organization $organization
+   * @param Group $group
    *   The organization to check.
    * @param AccountProxyInterface $account
    *   The user account to check for.
@@ -53,7 +52,7 @@ class AccountHelper {
       $account = \Drupal::currentUser();
     }
     $is_manager = FALSE;
-    
+
     foreach ($group->organization->entity->get('managers')->getValue() as $entity_reference) {
       if ($entity_reference['target_id'] === $account->id()) {
         $is_manager = TRUE;
@@ -91,7 +90,7 @@ class AccountHelper {
   /**
    * Checks if user account is organizer of the group.
    *
-   * @param Group $group
+   * @param Organization $organization
    *   The group to check.
    * @param AccountProxyInterface $account
    *   The user account to check for.
@@ -201,4 +200,5 @@ class AccountHelper {
       ->execute();
     return $load_entities ? Group::loadMultiple($result) : array_values($result);
   }
+
 }

@@ -4,7 +4,6 @@ namespace Drupal\effective_activism\Form\Event;
 
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\effective_activism\Constant;
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\ResultType;
 
@@ -34,7 +33,8 @@ class EventForm extends ContentEntityForm {
     unset($form['results']['widget']['actions']['ief_add_existing']);
     // Retrieve group id.
     $gid = $form_state->getTemporaryValue('gid');
-    // If the form is fresh, it has no parent group id. Use default value instead.
+    // If the form is fresh, it has no parent group id.
+    // Use default value instead.
     if (empty($gid) && !empty($form['parent']['widget'][0]['target_id']['#default_value'])) {
       $gid = $form['parent']['widget'][0]['target_id']['#default_value'];
     }

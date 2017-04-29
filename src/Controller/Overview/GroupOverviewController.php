@@ -43,6 +43,7 @@ class GroupOverviewController extends ListBaseController {
    * A callback for routes.
    *
    * @param Organization $organization
+   *   The organization to render groups for.
    *
    * @return array
    *   A render array.
@@ -57,4 +58,5 @@ class GroupOverviewController extends ListBaseController {
     ];
     return $content;
   }
+
 }

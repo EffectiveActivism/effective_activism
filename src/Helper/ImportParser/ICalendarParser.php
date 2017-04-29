@@ -4,7 +4,6 @@ namespace Drupal\effective_activism\Helper\ImportParser;
 
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\Import;
-use Drupal\effective_activism\Helper\LocationHelper;
 
 /**
  * Parses ICalendar.
@@ -24,7 +23,7 @@ class ICalendarParser extends EntityParser implements ParserInterface {
   private $group;
 
   /**
-   * Import entity
+   * Import entity.
    *
    * @var Import
    */

@@ -9,9 +9,7 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\effective_activism\Hook\ElementInfoAlterHook;
 use Drupal\effective_activism\Hook\EntityInsertHook;
-use Drupal\effective_activism\Hook\FormAlterHook;
 use Drupal\effective_activism\Hook\InlineEntityFormEntityFormAlterHook;
-use Drupal\effective_activism\Hook\InlineEntityFormTableFieldsAlterHook;
 
 /**
  * Implements hook_inline_entity_form_entity_form_alter().

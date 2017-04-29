@@ -2,9 +2,6 @@
 
 namespace Drupal\effective_activism\Helper;
 
-use DateTime;
-use Drupal\effective_activism\Entity\Event;
-
 /**
  * Helper functions for events.
  */
@@ -28,4 +25,5 @@ class EventHelper {
     $element['time']['#attributes']['data-time-format'] = self::TIME_FORMAT;
     return $element;
   }
+
 }

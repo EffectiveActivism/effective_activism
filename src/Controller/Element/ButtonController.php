@@ -3,7 +3,6 @@
 namespace Drupal\effective_activism\Controller\Element;
 
 use Drupal;
-use Drupal\Core\Field\FieldItemList;
 use Drupal\Core\Url;
 
 /**
@@ -14,10 +13,10 @@ class ButtonController extends ElementBaseController {
   /**
    * Returns a render array for an element.
    *
-   * @param array $field
-   *   The field to process.
-   * @param string $field_name
-   *   The field name.
+   * @param string $text
+   *   The button text.
+   * @param string $element_name
+   *   The element name.
    * @param Url $url
    *   The url to link to.
    *
@@ -44,4 +43,5 @@ class ButtonController extends ElementBaseController {
     }
     return $content;
   }
+
 }

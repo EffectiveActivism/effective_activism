@@ -3,7 +3,6 @@
 namespace Drupal\effective_activism\Controller\Overview;
 
 use Drupal\Core\Cache\Cache;
-use Drupal\Core\Controller\ControllerBase;
 use Drupal\effective_activism\Constant;
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Helper\GroupHelper;
@@ -43,6 +42,7 @@ class EventOverviewController extends ListBaseController {
    * A callback for routes.
    *
    * @param Group $group
+   *   The group to render events for.
    *
    * @return array
    *   A render array.

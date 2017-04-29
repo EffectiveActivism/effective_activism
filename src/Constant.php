@@ -52,7 +52,7 @@ class Constant {
   const ROLE_ORGANIZER = 2;
 
   /**
-   * Cache tags
+   * Cache tags.
    */
   const CACHE_TAG_USER = 'user';
   const CACHE_TAG_ORGANIZATION = 'organization_list';

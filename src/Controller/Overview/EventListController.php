@@ -20,8 +20,7 @@ class EventListController extends ListBaseController {
   ];
 
   /**
-   * @var int
-   *   How many events to display.
+   * How many events to display.
    */
   const EVENT_DISPLAY_LIMIT = 10;
 
@@ -40,4 +39,5 @@ class EventListController extends ListBaseController {
     ];
     return $content;
   }
+
 }

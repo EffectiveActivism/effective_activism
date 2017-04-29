@@ -113,7 +113,11 @@ class InlineManagerInvitationWidget extends InlineEntityFormComplex {
     $entity_id = $form_state->getTemporaryValue('entity_id');
     if (!empty($entity_id)) {
       $entity = Organization::load($entity_id);
-      $email = $form_state->getValue(['managers', 'form', 'invite_email_address']);
+      $email = $form_state->getValue([
+        'managers',
+        'form',
+        'invite_email_address',
+      ]);
       $status = NULL;
       if (!empty($email)) {
         $status = InvitationHelper::isInvited($entity, $email);
@@ -143,4 +147,5 @@ class InlineManagerInvitationWidget extends InlineEntityFormComplex {
     }
     return $form['managers'];
   }
+
 }

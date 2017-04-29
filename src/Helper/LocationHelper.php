@@ -3,7 +3,6 @@
 namespace Drupal\effective_activism\Helper;
 
 use Drupal\effective_activism\Constant;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**

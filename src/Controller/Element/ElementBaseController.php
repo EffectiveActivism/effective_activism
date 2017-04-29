@@ -3,7 +3,6 @@
 namespace Drupal\effective_activism\Controller\Element;
 
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\Core\Field\FieldItemList;
 
 /**
  * Base controller class for render elements.
@@ -26,8 +25,9 @@ class ElementBaseController extends ControllerBase {
       '#type' => 'container',
       '#attributes' => [
         'class' => array_merge(['element'], $classes),
-      ]
+      ],
     ];
     return $container;
   }
+
 }

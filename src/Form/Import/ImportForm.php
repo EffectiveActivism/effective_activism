@@ -3,7 +3,6 @@
 namespace Drupal\effective_activism\Form\Import;
 
 use Drupal\Core\Entity\ContentEntityForm;
-use Drupal\Core\Entity\EntityStorageException;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\effective_activism\Helper\ImportParser\CSVParser;
 
