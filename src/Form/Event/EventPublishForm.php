@@ -5,7 +5,7 @@ namespace Drupal\effective_activism\Form\Event;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
-use Drupal\effective_activism\Helper\PublishHelper;
+use Drupal\effective_activism\Helper\Publish\Publisher;
 
 /**
  * Form controller for Event publish forms.
@@ -103,16 +103,28 @@ class EventPublishForm extends ConfirmFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $entity = \Drupal::request()->get('event');
     if ($this->isPublished === TRUE) {
-      PublishHelper::unpublish($entity);
-      empty($entity->get('title')->value) ? drupal_set_message(t('Event has been unpublished')) : drupal_set_message(t('<em>@title</em> has been unpublished', [
-        '@title' => $entity->get('title')->value,
-      ]));
+      $publisher = new Publisher($entity);
+      $batch = [
+        'title' => t('Unpublishing...'),
+        'operations' => [[
+          'Drupal\effective_activism\Helper\Publish\BatchProcess::unpublish',
+          [$publisher],
+        ]],
+        'finished' => 'Drupal\effective_activism\Helper\Publish\BatchProcess::unpublished',
+      ];
+      batch_set($batch);
     }
     else {
-      PublishHelper::publish($entity);
-      empty($entity->get('title')->value) ? drupal_set_message(t('Event has been published')) : drupal_set_message(t('<em>@title</em> has been published', [
-        '@title' => $entity->get('title')->value,
-      ]));
+      $publisher = new Publisher($entity);
+      $batch = [
+        'title' => t('Publishing...'),
+        'operations' => [[
+          'Drupal\effective_activism\Helper\Publish\BatchProcess::publish',
+          [$publisher],
+        ]],
+        'finished' => 'Drupal\effective_activism\Helper\Publish\BatchProcess::published',
+      ];
+      batch_set($batch);
     }
     // Redirect the user to the list controller when complete.
     $form_state->setRedirectUrl($this->getCancelUrl());
