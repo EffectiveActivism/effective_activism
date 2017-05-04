@@ -117,7 +117,7 @@ class LocationType extends FieldItemBase implements FieldItemInterface {
   /**
    * {@inheritdoc}
    *
-   * Rewritten from Drupal\Core\TypedData\Plugin\DataType\Map::getValue() 
+   * Rewritten from Drupal\Core\TypedData\Plugin\DataType\Map::getValue()
    * to return computed values too.
    */
   public function getValue() {
@@ -154,4 +154,5 @@ class LocationType extends FieldItemBase implements FieldItemInterface {
     }
     parent::setValue($values, $notify);
   }
+
 }

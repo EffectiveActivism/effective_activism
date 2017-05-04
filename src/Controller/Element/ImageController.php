@@ -91,4 +91,5 @@ class ImageController extends ElementBaseController {
     }
     return $content;
   }
+
 }
