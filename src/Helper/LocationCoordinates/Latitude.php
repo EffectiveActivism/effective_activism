@@ -19,7 +19,7 @@ class Latitude extends TypedData {
   /**
    * {@inheritdoc}
    */
-  public function getValue($langcode = NULL) {
+  public function getValue() {
     return $this->latitude;
   }
 

@@ -3,6 +3,7 @@
 namespace Drupal\effective_activism\Controller\Element;
 
 use Drupal;
+use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Url;
 
 /**
@@ -30,45 +31,64 @@ class ImageController extends ElementBaseController {
    *   A render array.
    */
   public function view($uri, $element_name, $image_style = NULL, Url $url = NULL) {
-    $image = \Drupal::service('image.factory')->get($uri);
-    if (!$image->isValid()) {
-      return [];
-    }
     $content = $this->getContainer([
       'image',
       'view',
       sprintf(self::ELEMENT_CLASS_FORMAT, $element_name),
     ]);
-    if (!empty($image_style)) {
-      $element = [
-        '#theme' => 'image_style',
-        '#width' => $image->getWidth(),
-        '#height' => $image->getHeight(),
-        '#uri' => $uri,
-        '#style_name' => $image_style,
-      ];
-    }
-    else {
+    if (UrlHelper::isExternal($uri)) {
       $element = [
         '#theme' => 'image',
-        '#width' => $image->getWidth(),
-        '#height' => $image->getHeight(),
         '#uri' => $uri,
       ];
-    }
-    if (!empty($url)) {
-      $content['element'] = [
-        '#type' => 'markup',
-        '#markup' => Drupal::l(
-          $element,
-          $url
-        ),
-      ];
+      if (!empty($url)) {
+        $content['element'] = [
+          '#type' => 'markup',
+          '#markup' => Drupal::l(
+            $element,
+            $url
+          ),
+        ];
+      }
+      else {
+        $content['element'] = $element;
+      }
     }
     else {
-      $content['element'] = $element;
+      $image = \Drupal::service('image.factory')->get($uri);
+      if (!$image->isValid()) {
+        return [];
+      }
+      if (!empty($image_style)) {
+        $element = [
+          '#theme' => 'image_style',
+          '#width' => $image->getWidth(),
+          '#height' => $image->getHeight(),
+          '#uri' => $uri,
+          '#style_name' => $image_style,
+        ];
+      }
+      else {
+        $element = [
+          '#theme' => 'image',
+          '#width' => $image->getWidth(),
+          '#height' => $image->getHeight(),
+          '#uri' => $uri,
+        ];
+      }
+      if (!empty($url)) {
+        $content['element'] = [
+          '#type' => 'markup',
+          '#markup' => Drupal::l(
+            $element,
+            $url
+          ),
+        ];
+      }
+      else {
+        $content['element'] = $element;
+      }
     }
     return $content;
   }
-
 }
