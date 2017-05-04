@@ -2,6 +2,7 @@
 
 namespace Drupal\effective_activism\Helper;
 
+use Drupal;
 use Drupal\effective_activism\Constant;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -30,7 +31,7 @@ class LocationHelper {
     }
     $match = FALSE;
     // First check cache.
-    $database = \Drupal::database();
+    $database = Drupal::database();
     $results = $database->select(Constant::LOCATION_CACHE_TABLE, 'location')
       ->fields('location', ['id'])
       ->condition('location.address', $address)
@@ -70,7 +71,7 @@ class LocationHelper {
     if (!empty($input)) {
       $query = [
         'input' => $input,
-        'language' => $language = \Drupal::languageManager()->getCurrentLanguage()->getName(),
+        'language' => $language = Drupal::languageManager()->getCurrentLanguage()->getName(),
       ];
       $json = self::request(self::AUTOCOMPLETE_URL, $query);
       if (isset($json->status) && $json->status === 'OK' && !empty($json->predictions)) {
@@ -102,7 +103,6 @@ class LocationHelper {
         'address' => $address,
       ];
       $json = self::request(self::GEOCODE_URL, $query);
-      echo print_r($json, TRUE);
       if (
         !empty($json->status) &&
         $json->status === 'OK' &&
@@ -129,7 +129,7 @@ class LocationHelper {
    */
   private static function request($url, array $query) {
     // Set Google API key.
-    $query['key'] = \Drupal::config('effective_activism.location')->get('key');
+    $query['key'] = Drupal::config('effective_activism.settings')->get('google_maps_api_key');
     if (!empty($query['key'])) {
       try {
         $request = \Drupal::httpClient()->get($url . '/json?' . http_build_query($query));

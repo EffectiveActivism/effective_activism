@@ -45,5 +45,4 @@ class ElementController extends ElementBaseController {
     }
     return $content;
   }
-
 }

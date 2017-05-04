@@ -63,5 +63,4 @@ class FieldController extends ElementBaseController {
     $content['element'][$field_name] = $field;
     return $content;
   }
-
 }
