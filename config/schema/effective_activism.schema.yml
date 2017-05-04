@@ -1,7 +1,10 @@
-effective_activism.location:
+effective_activism.settings:
   type: config_object
-  label: 'Location settings'
+  label: 'Effective Activism settings'
   mapping:
-    key:
+    google_maps_api_key:
       type: string
       label: 'The Google Maps API key'
+    google_static_maps_api_key:
+      type: string
+      label: 'The Google Static Maps API key'
