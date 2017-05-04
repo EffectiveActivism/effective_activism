@@ -19,7 +19,7 @@ class Longitude extends TypedData {
   /**
    * {@inheritdoc}
    */
-  public function getValue($langcode = NULL) {
+  public function getValue() {
     return $this->longitude;
   }
 

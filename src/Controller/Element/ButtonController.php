@@ -43,5 +43,4 @@ class ButtonController extends ElementBaseController {
     }
     return $content;
   }
-
 }

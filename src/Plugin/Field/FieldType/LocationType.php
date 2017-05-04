@@ -116,6 +116,24 @@ class LocationType extends FieldItemBase implements FieldItemInterface {
 
   /**
    * {@inheritdoc}
+   *
+   * Rewritten from Drupal\Core\TypedData\Plugin\DataType\Map::getValue() 
+   * to return computed values too.
+   */
+  public function getValue() {
+    // Update the values and return them.
+    foreach ($this->properties as $name => $property) {
+      $value = $property->getValue();
+      // Only write NULL values if the whole map is not NULL.
+      if (isset($this->values) || isset($value)) {
+        $this->values[$name] = $value;
+      }
+    }
+    return $this->values;
+  }
+
+  /**
+   * {@inheritdoc}
    */
   public function setValue($values, $notify = TRUE) {
     $values['latitude'] = NULL;
@@ -136,5 +154,4 @@ class LocationType extends FieldItemBase implements FieldItemInterface {
     }
     parent::setValue($values, $notify);
   }
-
 }
