@@ -4,8 +4,6 @@ dependencies:
   config:
     - effective_activism.data_type.leaflets
     - field.field.data.leaflets.field_leaflets
-  module:
-    - user
 id: data.leaflets.default
 targetEntityType: data
 bundle: leaflets

@@ -4,8 +4,6 @@ dependencies:
   config:
     - effective_activism.data_type.signatures
     - field.field.data.signatures.field_signatures
-  module:
-    - user
 id: data.signatures.default
 targetEntityType: data
 bundle: signatures
