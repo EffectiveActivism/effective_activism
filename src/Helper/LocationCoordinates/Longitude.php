@@ -14,7 +14,7 @@ class Longitude extends TypedData {
    *
    * @var float|null
    */
-  protected $latitude = NULL;
+  protected $longitude = NULL;
 
   /**
    * {@inheritdoc}
