@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.data_type.paid_views
+    - field.field.data.paid_views.field_paid_views
+id: data.paid_views.default
+targetEntityType: data
+bundle: paid_views
+mode: default
+content:
+  field_paid_views:
+    weight: 1
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
+hidden: {  }
