@@ -25,6 +25,13 @@ class Constant {
         'signatures' => 'signatures',
       ],
     ],
+    'pay_per_view_event' => [
+      'label' => '"pay-per-view" event',
+      'description' => 'Pay people a small amount of money for watching a movie.',
+      'datatypes' => [
+        'paid_views' => 'paid_views',
+      ],
+    ],
   ];
 
   const GROUP_DEFAULT_VALUES = [
