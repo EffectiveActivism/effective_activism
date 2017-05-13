@@ -95,7 +95,7 @@ abstract class EntityParser {
    *
    * @param array $values
    *   Data to validate as result entity.
-   * @param string $importName
+   * @param string $import_name
    *   The import name.
    * @param \Drupal\effective_activism\Entity\Group $group
    *   The group.
@@ -103,31 +103,35 @@ abstract class EntityParser {
    * @return bool
    *   TRUE if result is valid, FALSE otherwise.
    */
-  public function validateResult(array $values, $importName, Group $group) {
+  public function validateResult(array $values, $import_name, Group $group) {
     // Get organization from group.
-    $organizationId = empty($group->get('organization')->entity) ? $group->id() : $group->get('organization')->entity->id();
-    $resultType = ResultTypeHelper::getResultTypeByImportName($importName, $organizationId);
+    $organization_id = empty($group->get('organization')->entity) ? $group->id() : $group->get('organization')->entity->id();
+    $result_type = ResultTypeHelper::getResultTypeByImportName($import_name, $organization_id);
     // Make sure the result type is valid.
-    if (empty($resultType)) {
+    if (empty($result_type)) {
       return FALSE;
     }
-    $fields = $this->getFields('result', $resultType->id());
-    $fieldsToIgnore = [];
+    // Make sure the result type is allowed for the group.
+    if (!in_array($group->id(), $result_type->groups)) {
+      return FALSE;
+    }
+    $fields = $this->getFields('result', $result_type->id());
+    $fields_to_ignore = [];
     foreach ($fields as $key => $field) {
-      // Create any data entities identified by field name 'data_*'.
+      // Validate any data entities identified by field name 'data_*'.
       if (strpos($field, 'data_') === 0) {
-        $dataType = substr($field, strlen('data_'));
+        $data_type = substr($field, strlen('data_'));
         if (!$this->validateData([
-          $dataType,
+          $data_type,
           $values[$key],
-        ], $dataType)) {
+        ], $data_type)) {
           return FALSE;
         }
         // Do not validate this field for the result entity.
         $values[$key] = NULL;
-        $fieldsToIgnore[] = $field;
+        $fields_to_ignore[] = $field;
       }
-      // Create any tags.
+      // Validate any tags.
       elseif (strpos($field, 'tags_') === 0) {
         $vid = $field;
         if (isset($values[$key]) && !$this->validateTerm([
@@ -138,15 +142,15 @@ abstract class EntityParser {
         }
         // Do not validate this field for the result entity.
         $values[$key] = NULL;
-        $fieldsToIgnore[] = $field;
+        $fields_to_ignore[] = $field;
       }
       // Replace import name with result type id.
       elseif ($field === 'type') {
-        $values[$key] = $resultType->id();
+        $values[$key] = $result_type->id();
       }
     }
     $data = array_combine($fields, $values);
-    return $this->validateEntity(Result::create($data), $fieldsToIgnore);
+    return $this->validateEntity(Result::create($data), $fields_to_ignore);
   }
 
   /**
