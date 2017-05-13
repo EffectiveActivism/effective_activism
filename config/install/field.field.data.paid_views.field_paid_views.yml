@@ -4,7 +4,7 @@ dependencies:
   config:
     - effective_activism.data_type.paid_views
     - field.storage.data.field_paid_views
-id: data.views.field_paid_views
+id: data.paid_views.field_paid_views
 field_name: field_paid_views
 entity_type: data
 bundle: paid_views
@@ -18,7 +18,7 @@ default_value:
 default_value_callback: ''
 settings:
   min: 0
-  max: 99999999
+  max: 9999999
   prefix: ''
   suffix: ''
 field_type: integer
