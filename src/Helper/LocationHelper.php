@@ -99,18 +99,35 @@ class LocationHelper {
       'lon' => '',
     ];
     if (!empty($address)) {
-      $query = [
-        'address' => $address,
-      ];
-      $json = self::request(self::GEOCODE_URL, $query);
-      if (
-        !empty($json->status) &&
-        $json->status === 'OK' &&
-        !empty($json->results[0]->geometry->location->lat) &&
-        !empty($json->results[0]->geometry->location->lng)
-      ) {
-        $coordinates['lat'] = $json->results[0]->geometry->location->lat;
-        $coordinates['lon'] = $json->results[0]->geometry->location->lng;
+      // First check cache.
+      $database = Drupal::database();
+      $result = $database->select(Constant::LOCATION_CACHE_TABLE, 'location')
+        ->fields('location', [
+          'latitude',
+          'longitude',
+        ])
+        ->condition('location.address', $address)
+        ->execute();
+      $location = $result->fetch();
+      if ($location !== FALSE) {
+        $coordinates['lat'] = $location->latitude;
+        $coordinates['lon'] = $location->longitude;
+      }
+      else {
+        // If not stored locally, try to retrieve from geocoding service.
+        $query = [
+          'address' => $address,
+        ];
+        $json = self::request(self::GEOCODE_URL, $query);
+        if (
+          !empty($json->status) &&
+          $json->status === 'OK' &&
+          !empty($json->results[0]->geometry->location->lat) &&
+          !empty($json->results[0]->geometry->location->lng)
+        ) {
+          $coordinates['lat'] = $json->results[0]->geometry->location->lat;
+          $coordinates['lon'] = $json->results[0]->geometry->location->lng;
+        }
       }
     }
     return $coordinates;
