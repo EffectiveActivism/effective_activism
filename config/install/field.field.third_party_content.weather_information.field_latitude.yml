@@ -1,0 +1,24 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.third_party_content_type.weather_information
+    - field.storage.third_party_content.field_latitude
+id: third_party_content.weather_information.field_latitude
+field_name: field_latitude
+entity_type: third_party_content
+bundle: weather_information
+label: Latitude
+description: ''
+required: true
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: float

@@ -1,0 +1,6 @@
+langcode: en
+status: true
+dependencies: {  }
+id: weather_information
+label: Weather information
+description: 'Stores data about the weather within a specific location and time.'
