@@ -4,6 +4,7 @@ namespace Drupal\effective_activism\Helper;
 
 use Drupal;
 use Drupal\effective_activism\Constant;
+use Drupal\Component\Utility\UrlHelper;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -11,8 +12,8 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class LocationHelper {
 
-  const AUTOCOMPLETE_URL = 'https://maps.googleapis.com/maps/api/place/autocomplete';
-  const GEOCODE_URL = 'https://maps.googleapis.com/maps/api/geocode';
+  const AUTOCOMPLETE_URL = 'https://maps.googleapis.com/maps/api/place/autocomplete/json';
+  const GEOCODE_URL = 'https://maps.googleapis.com/maps/api/geocode/json';
 
   /**
    * Validates an address.
@@ -71,7 +72,7 @@ class LocationHelper {
     if (!empty($input)) {
       $query = [
         'input' => $input,
-        'language' => $language = Drupal::languageManager()->getCurrentLanguage()->getName(),
+        'language' => Drupal::languageManager()->getCurrentLanguage()->getName(),
       ];
       $json = self::request(self::AUTOCOMPLETE_URL, $query);
       if (isset($json->status) && $json->status === 'OK' && !empty($json->predictions)) {
@@ -99,18 +100,35 @@ class LocationHelper {
       'lon' => '',
     ];
     if (!empty($address)) {
-      $query = [
-        'address' => $address,
-      ];
-      $json = self::request(self::GEOCODE_URL, $query);
-      if (
-        !empty($json->status) &&
-        $json->status === 'OK' &&
-        !empty($json->results[0]->geometry->location->lat) &&
-        !empty($json->results[0]->geometry->location->lng)
-      ) {
-        $coordinates['lat'] = $json->results[0]->geometry->location->lat;
-        $coordinates['lon'] = $json->results[0]->geometry->location->lng;
+      // First check cache.
+      $database = Drupal::database();
+      $result = $database->select(Constant::LOCATION_CACHE_TABLE, 'location')
+        ->fields('location', [
+          'latitude',
+          'longitude',
+        ])
+        ->condition('location.address', $address)
+        ->execute();
+      $location = $result->fetch();
+      if ($location !== FALSE) {
+        $coordinates['lat'] = $location->latitude;
+        $coordinates['lon'] = $location->longitude;
+      }
+      else {
+        // If not stored locally, try to retrieve from geocoding service.
+        $query = [
+          'address' => $address,
+        ];
+        $json = self::request(self::GEOCODE_URL, $query);
+        if (
+          !empty($json->status) &&
+          $json->status === 'OK' &&
+          !empty($json->results[0]->geometry->location->lat) &&
+          !empty($json->results[0]->geometry->location->lng)
+        ) {
+          $coordinates['lat'] = $json->results[0]->geometry->location->lat;
+          $coordinates['lon'] = $json->results[0]->geometry->location->lng;
+        }
       }
     }
     return $coordinates;
@@ -129,10 +147,12 @@ class LocationHelper {
    */
   private static function request($url, array $query) {
     // Set Google API key.
-    $query['key'] = Drupal::config('effective_activism.settings')->get('google_maps_api_key');
-    if (!empty($query['key'])) {
+    $key = Drupal::config('effective_activism.settings')->get('google_maps_api_key');
+    if (!empty($key)) {
+      $query['key'] = $key;
+      $built_query = UrlHelper::buildQuery($query);
       try {
-        $request = \Drupal::httpClient()->get($url . '/json?' . http_build_query($query));
+        $request = Drupal::httpClient()->get(sprintf('%s?%s', $url, $built_query));
         $response = $request->getBody()->getContents();
         if (!empty($response)) {
           return json_decode($response);

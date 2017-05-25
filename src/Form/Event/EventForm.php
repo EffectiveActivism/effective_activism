@@ -6,6 +6,7 @@ use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\ResultType;
+use Drupal\effective_activism\Helper\LocationHelper;
 
 /**
  * Form controller for Event edit forms.
@@ -24,7 +25,7 @@ class EventForm extends ContentEntityForm {
     $form['#prefix'] = '<div id="ajax">';
     $form['#suffix'] = '</div>';
     $form['parent']['widget'][0]['target_id']['#ajax'] = [
-      'callback' => [$this, 'updateAvailableResultTypes'],
+      'callback' => [$this, 'ajaxCallback'],
       'wrapper' => 'ajax',
     ];
     // Never allow adding existing results. However, we have to enable the
@@ -127,7 +128,7 @@ class EventForm extends ContentEntityForm {
   }
 
   /**
-   * Populates the result types #options element.
+   * Returns the form array when using AJAX.
    *
    * @param array $form
    *   The form array.
@@ -137,7 +138,7 @@ class EventForm extends ContentEntityForm {
    * @return array
    *   The form array.
    */
-  public function updateAvailableResultTypes(array &$form, FormStateInterface $form_state) {
+  public function ajaxCallback(array &$form, FormStateInterface $form_state) {
     return $form;
   }
 

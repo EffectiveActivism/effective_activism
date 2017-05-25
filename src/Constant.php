@@ -59,6 +59,11 @@ class Constant {
   const ROLE_ORGANIZER = 2;
 
   /**
+   * Third-party content types.
+   */
+  const THIRD_PARTY_CONTENT_TYPE_WEATHER_INFORMATION = 'weather_information';
+
+  /**
    * Cache tags.
    */
   const CACHE_TAG_USER = 'user';

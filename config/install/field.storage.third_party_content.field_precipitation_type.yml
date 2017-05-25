@@ -1,0 +1,26 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - effective_activism
+    - options
+id: third_party_content_type.field_precipitation_type
+field_name: field_precipitation_type
+entity_type: third_party_content_type
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: rain
+      label: Rain
+    -
+      value: snow
+      label: Snow
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

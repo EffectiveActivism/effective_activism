@@ -1,0 +1,63 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.third_party_content_type.weather_information
+    - field.field.third_party_content.weather_information.field_latitude
+    - field.field.third_party_content.weather_information.field_longitude
+    - field.field.third_party_content.weather_information.field_timestamp
+    - field.field.third_party_content.weather_information.field_temperature
+    - field.field.third_party_content.weather_information.field_precipitation_type
+    - field.field.third_party_content.weather_information.field_precipitation_intensity
+    - field.field.third_party_content.weather_information.field_windspeed
+    - field.field.third_party_content.weather_information.field_visibility
+id: third_party_content.weather_information.default
+targetEntityType: third_party_content
+bundle: weather_information
+mode: default
+content:
+  field_latitude:
+    weight: 1
+    settings:
+      placeholder: 'Latitude'
+    third_party_settings: {  }
+    type: number
+  field_longitude:
+    weight: 2
+    settings:
+      placeholder: 'Longitude'
+    third_party_settings: {  }
+    type: number
+  field_timestamp:
+    weight: 3
+    settings:
+      placeholder: 'Timestamp'
+    third_party_settings: {  }
+    type: number
+  field_temperature:
+    weight: 4
+    settings:
+      placeholder: 'Temperature'
+    third_party_settings: {  }
+    type: number
+  field_precipitation_type:
+    weight: 5
+    settings: { }
+    third_party_settings: {  }
+    type: options_select
+  field_precipitation_intensity:
+    weight: 6
+    settings: { }
+    third_party_settings: {  }
+    type: number
+  field_windspeed:
+    weight: 7
+    settings: { }
+    third_party_settings: {  }
+    type: number
+  field_visibility:
+    weight: 8
+    settings: { }
+    third_party_settings: {  }
+    type: number
+hidden: {  }
