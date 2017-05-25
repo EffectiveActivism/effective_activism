@@ -8,3 +8,6 @@ effective_activism.settings:
     google_static_maps_api_key:
       type: string
       label: 'The Google Static Maps API key'
+    darksky_api_key:
+      type: string
+      label: 'The Darksky API key'

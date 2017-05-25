@@ -17,7 +17,7 @@ use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
  *     },
  *   },
  *   config_prefix = "third_party_content_type",
- *   bundle_of = "ThirdPartyContent",
+ *   bundle_of = "third_party_content",
  *   entity_keys = {
  *     "id" = "id",
  *     "label" = "label",
