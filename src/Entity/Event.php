@@ -67,6 +67,7 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
     'results',
     'external_uid',
     'import',
+    'third_party_content',
     'user_id',
   ];
 
@@ -76,7 +77,7 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
   public static function preCreate(EntityStorageInterface $storage_controller, array &$values) {
     parent::preCreate($storage_controller, $values);
     $values += [
-      'user_id' => \Drupal::currentUser()->id(),
+      'user_id' => Drupal::currentUser()->id(),
     ];
   }
 
@@ -335,11 +336,11 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
       ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'string',
-        'weight' => array_search('import', self::WEIGHTS),
+        'weight' => array_search('third_party_content', self::WEIGHTS),
       ])
       ->setDisplayOptions('form', [
         'type' => 'entity_reference_autocomplete',
-        'weight' => array_search('import', self::WEIGHTS),
+        'weight' => array_search('third_party_content', self::WEIGHTS),
         'settings' => [
           'match_operator' => 'CONTAINS',
           'size' => '60',
