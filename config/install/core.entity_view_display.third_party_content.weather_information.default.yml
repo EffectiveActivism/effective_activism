@@ -1,0 +1,83 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.third_party_content_type.weather_information
+    - field.field.third_party_content.weather_information.field_latitude
+    - field.field.third_party_content.weather_information.field_longitude
+    - field.field.third_party_content.weather_information.field_timestamp
+    - field.field.third_party_content.weather_information.field_temperature
+    - field.field.third_party_content.weather_information.field_precipitation_type
+    - field.field.third_party_content.weather_information.field_precipitation_intensity
+    - field.field.third_party_content.weather_information.field_windspeed
+    - field.field.third_party_content.weather_information.field_visibility
+id: third_party_content.weather_information.default
+targetEntityType: third_party_content
+bundle: weather_information
+mode: default
+content:
+  field_latitude:
+    weight: 1
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_decimal
+  field_longitude:
+    weight: 2
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_decimal
+  field_timestamp:
+    weight: 3
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
+  field_temperature:
+    weight: 4
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_decimal
+  field_precipitation_type:
+    weight: 5
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: list_default
+  field_precipitation_intensity:
+    weight: 6
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_decimal
+  field_windspeed:
+    weight: 7
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_decimal
+  field_visibility:
+    weight: 8
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_decimal
+hidden: {  }

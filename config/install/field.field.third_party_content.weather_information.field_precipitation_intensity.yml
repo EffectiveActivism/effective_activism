@@ -1,0 +1,24 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.third_party_content_type.weather_information
+    - field.storage.third_party_content.field_precipitation_intensity
+id: third_party_content.weather_information.field_precipitation_intensity
+field_name: field_precipitation_intensity
+entity_type: third_party_content
+bundle: weather_information
+label: Precipitation intensity
+description: 'The intensity of rain- or snowfall measured in mm/h'
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  min: 0
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: float

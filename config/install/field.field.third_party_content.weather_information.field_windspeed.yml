@@ -1,0 +1,24 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.third_party_content_type.weather_information
+    - field.storage.third_party_content.field_windspeed
+id: third_party_content.weather_information.field_windspeed
+field_name: field_windspeed
+entity_type: third_party_content
+bundle: weather_information
+label: Wind speed
+description: 'The wind speed, as measured in m/s.'
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  min: 0
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: float

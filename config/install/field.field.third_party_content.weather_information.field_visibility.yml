@@ -1,0 +1,24 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.third_party_content_type.weather_information
+    - field.storage.third_party_content.field_visibility
+id: third_party_content.weather_information.field_visibility
+field_name: field_visibility
+entity_type: third_party_content
+bundle: weather_information
+label: Visibility
+description: 'The visibility, as measured in km.'
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  min: 0
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: float

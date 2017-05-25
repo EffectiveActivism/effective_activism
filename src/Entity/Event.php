@@ -2,6 +2,7 @@
 
 namespace Drupal\effective_activism\Entity;
 
+use Drupal;
 use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
@@ -307,6 +308,29 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
       ->setSetting('target_type', 'import')
       ->setSetting('handler', 'default')
       ->setCardinality(1)
+      ->setRequired(FALSE)
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'string',
+        'weight' => array_search('import', self::WEIGHTS),
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'entity_reference_autocomplete',
+        'weight' => array_search('import', self::WEIGHTS),
+        'settings' => [
+          'match_operator' => 'CONTAINS',
+          'size' => '60',
+          'autocomplete_type' => 'tags',
+          'placeholder' => '',
+        ],
+      ]);
+    $fields['third_party_content'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(t('Third-party content'))
+      ->setRevisionable(TRUE)
+      ->setDescription(t('Third-party content entities.'))
+      ->setSetting('target_type', 'third_party_content')
+      ->setSetting('handler', 'default')
+      ->setCardinality(FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED)
       ->setRequired(FALSE)
       ->setDisplayOptions('view', [
         'label' => 'hidden',
