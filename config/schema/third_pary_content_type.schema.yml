@@ -1,0 +1,15 @@
+effective_activism.third_party_content_type.*:
+  type: config_entity
+  label: 'Third-party content type config'
+  mapping:
+    id:
+      type: string
+      label: 'ID'
+    label:
+      type: label
+      label: 'Label'
+    description:
+      type: string
+      label: 'Description'
+    uuid:
+      type: string
