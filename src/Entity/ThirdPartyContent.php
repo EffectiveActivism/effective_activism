@@ -110,6 +110,21 @@ class ThirdPartyContent extends RevisionableContentEntityBase implements ThirdPa
   /**
    * {@inheritdoc}
    */
+  public function isPublished() {
+    return (bool) $this->getEntityKey('status');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setPublished($published) {
+    $this->set('status', $published ? NODE_PUBLISHED : NODE_NOT_PUBLISHED);
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $fields = parent::baseFieldDefinitions($entity_type);
     $fields['user_id'] = BaseFieldDefinition::create('entity_reference')
@@ -134,6 +149,11 @@ class ThirdPartyContent extends RevisionableContentEntityBase implements ThirdPa
           'placeholder' => '',
         ],
       ]);
+    $fields['status'] = BaseFieldDefinition::create('boolean')
+      ->setLabel(t('Publishing status'))
+      ->setDescription(t('A boolean indicating whether the third-party content is published.'))
+      ->setRevisionable(TRUE)
+      ->setDefaultValue(TRUE);
     $fields['created'] = BaseFieldDefinition::create('created')
       ->setLabel(t('Created'))
       ->setDescription(t('The time that the entity was created.'));

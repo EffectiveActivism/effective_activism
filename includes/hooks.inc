@@ -10,6 +10,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\effective_activism\Hook\ElementInfoAlterHook;
 use Drupal\effective_activism\Hook\EntityInsertHook;
 use Drupal\effective_activism\Hook\InlineEntityFormEntityFormAlterHook;
+use Drupal\effective_activism\Hook\CronHook;
 
 /**
  * Implements hook_inline_entity_form_entity_form_alter().
@@ -40,4 +41,12 @@ function effective_activism_element_info_alter(array &$types) {
   $hook->invoke([
     'types' => &$types,
   ]);
+}
+
+/**
+ * Implements hook_element_info_alter().
+ */
+function effective_activism_cron() {
+  $hook = CronHook::getInstance();
+  $hook->invoke([]);
 }
