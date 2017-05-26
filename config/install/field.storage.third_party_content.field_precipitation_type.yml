@@ -4,9 +4,9 @@ dependencies:
   module:
     - effective_activism
     - options
-id: third_party_content_type.field_precipitation_type
+id: third_party_content.field_precipitation_type
 field_name: field_precipitation_type
-entity_type: third_party_content_type
+entity_type: third_party_content
 type: list_string
 settings:
   allowed_values:

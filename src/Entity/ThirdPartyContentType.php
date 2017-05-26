@@ -9,7 +9,7 @@ use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
  *
  * @ConfigEntityType(
  *   id = "third_party_content_type",
- *   label = @Translation("Third-party content"),
+ *   label = @Translation("Third-party content type"),
  *   handlers = {
  *     "list_builder" = "Drupal\effective_activism\Helper\ListBuilder\ThirdPartyContentTypeListBuilder",
  *     "route_provider" = {
