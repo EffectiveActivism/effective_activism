@@ -16,8 +16,8 @@ use Drupal\user\UserInterface;
  *
  * @ContentEntityType(
  *   id = "third_party_content",
- *   label = @Translation("ThirdPartyContent"),
- *   bundle_label = @Translation("ThirdPartyContent type"),
+ *   label = @Translation("Third-party content"),
+ *   bundle_label = @Translation("Third-party content type"),
  *   handlers = {
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
  *     "list_builder" = "Drupal\effective_activism\Helper\ListBuilder\ThirdPartyContentListBuilder",
