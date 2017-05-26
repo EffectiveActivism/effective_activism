@@ -51,9 +51,7 @@ content:
   field_precipitation_type:
     weight: 5
     label: above
-    settings:
-      thousand_separator: ''
-      prefix_suffix: true
+    settings: {  }
     third_party_settings: {  }
     type: list_default
   field_precipitation_intensity:
