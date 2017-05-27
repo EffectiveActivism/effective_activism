@@ -25,6 +25,7 @@ abstract class ThirdPartyApi {
    * Perform a request to the third-party api.
    */
   public function request() {
+    $this->thirdpartycontent->setPublished(TRUE);
     $this->thirdpartycontent->setNewRevision();
     $this->thirdpartycontent->save();
   }

@@ -31,14 +31,14 @@ class PopulateThirdPartyContent {
       foreach ($third_party_content_ids as $id) {
         $third_party_content = ThirdPartyContent::load($id);
         $api = NULL;
-        switch ($third_party_content->getType()) {
-          case Constant::THIRD_PARTY_CONTENT_TYPE_WEATHER_INFORMATION:
-            $api = new DarkSky($third_party_content);
-            break;
-
-        }
-        // Populate entity with API data.
         try {
+          switch ($third_party_content->getType()) {
+            case Constant::THIRD_PARTY_CONTENT_TYPE_WEATHER_INFORMATION:
+              $api = new DarkSky($third_party_content);
+              break;
+
+          }
+          // Populate entity with API data.
           $api->request();
         }
         catch (ThirdPartyApiException $exception) {
