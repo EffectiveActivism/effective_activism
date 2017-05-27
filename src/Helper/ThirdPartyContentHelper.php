@@ -16,7 +16,7 @@ class ThirdPartyContentHelper {
    * @param array $parameters
    *   An associative array of type and field values for the entity.
    *
-   * @return ThirdPartyContent
+   * @return \Drupal\effective_activism\Entity\ThirdPartyContent
    *   A new or existing ThirdPartyContent entity.
    */
   public static function getThirdPartyContent(array $parameters) {
