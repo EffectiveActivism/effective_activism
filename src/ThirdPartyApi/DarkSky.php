@@ -28,6 +28,7 @@ class DarkSky extends ThirdPartyApi {
    * {@inheritdoc}
    */
   public function __construct(ThirdPartyContent $third_party_content) {
+    parent::__construct();
     if ($this->thirdpartycontent->getType() !== Constant::THIRD_PARTY_CONTENT_TYPE_WEATHER_INFORMATION) {
       throw new DarkSkyException('Wrong third-party content type.');
     }
@@ -45,10 +46,10 @@ class DarkSky extends ThirdPartyApi {
   public function request() {
     // Proceed only if the required data is available.
     if (
-      empty($this->key) ||
-      empty($this->latitude) ||
-      empty($this->latitude) ||
-      empty($this->time)
+      !empty($this->key) &&
+      !empty($this->latitude) &&
+      !empty($this->latitude) &&
+      !empty($this->time)
     ) {
       try {
         $url = sprintf('%s/%s/%s,%s,%s?units=%s', self::API_URL, $this->key, $this->latitude, $this->longitude, $this->time, self::UNITS);
