@@ -25,7 +25,7 @@ class PopulateThirdPartyContent {
     $query = Drupal::entityQuery('third_party_content');
     $query
       ->condition('status', 0)
-      ->range(NULL, self::BATCH_SIZE);
+      ->range(0, self::BATCH_SIZE);
     $third_party_content_ids = $query->execute();
     if (!empty($third_party_content_ids)) {
       foreach ($third_party_content_ids as $id) {

@@ -28,7 +28,7 @@ class DarkSky extends ThirdPartyApi {
    * {@inheritdoc}
    */
   public function __construct(ThirdPartyContent $third_party_content) {
-    parent::__construct();
+    parent::__construct($third_party_content);
     if ($this->thirdpartycontent->getType() !== Constant::THIRD_PARTY_CONTENT_TYPE_WEATHER_INFORMATION) {
       throw new DarkSkyException('Wrong third-party content type.');
     }
