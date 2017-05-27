@@ -42,13 +42,13 @@ class ThirdPartyContentAddController extends ControllerBase {
   }
 
   /**
-   * Displays add links for available bundles/types for entity data .
+   * Displays add links for available bundles/types for entity data.
    *
    * @param \Symfony\Component\HttpFoundation\Request $request
    *   The current request object.
    *
    * @return array
-   *   A render array for a list of the third_party_content bundles/types that can be added or
+   *   A render array for a list of the bundles/types that can be added or
    *   if there is only one type/bunlde defined for the site, the function
    *   returns the add page for that bundle/type.
    */
@@ -70,7 +70,7 @@ class ThirdPartyContentAddController extends ControllerBase {
   }
 
   /**
-   * Presents the creation form for third_party_content entities of given bundle/type.
+   * Presents the creation form for entities of given bundle/type.
    *
    * @param \Drupal\Core\Entity\EntityInterface $third_party_content_type
    *   The custom bundle to add.

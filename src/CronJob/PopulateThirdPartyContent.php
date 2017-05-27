@@ -18,7 +18,7 @@ class PopulateThirdPartyContent {
   const BATCH_SIZE = 100;
 
   /**
-   * @{inheritdoc}
+   * {@inheritdoc}
    */
   public static function run() {
     // Find third-party content that hasn't been updated.
@@ -47,4 +47,5 @@ class PopulateThirdPartyContent {
       }
     }
   }
+
 }

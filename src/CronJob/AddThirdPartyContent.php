@@ -17,7 +17,7 @@ class AddThirdPartyContent {
   const BATCH_SIZE = 10;
 
   /**
-   * @{inheritdoc}
+   * {@inheritdoc}
    */
   public static function run() {
     // Look for events without weather information.
@@ -31,7 +31,7 @@ class AddThirdPartyContent {
       ->range(NULL, self::BATCH_SIZE);
     $event_ids = $query->execute();
     if (!empty($event_ids)) {
-      foreach($event_ids as $id) {
+      foreach ($event_ids as $id) {
         $event = Event::load($id);
         // Create or get matching third-party content.
         $weather_information = ThirdPartyContentHelper::getThirdPartyContent([
@@ -49,7 +49,5 @@ class AddThirdPartyContent {
       }
     }
   }
-
-  
 
 }

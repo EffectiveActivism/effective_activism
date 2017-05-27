@@ -7,6 +7,9 @@ use Drupal\effective_activism\Constant;
 use Drupal\effective_activism\Entity\ThirdPartyContent;
 use GuzzleHttp\Exception\ClientException;
 
+/**
+ * Implements a wrapper class for the DarkSky weather API.
+ */
 class DarkSky extends ThirdPartyApi {
 
   const API_URL = 'https://api.darksky.net/forecast';
@@ -24,11 +27,8 @@ class DarkSky extends ThirdPartyApi {
   /**
    * Constructor.
    *
-   * @param ThirdPartyContent $third_party_content
+   * @param \Drupal\effective_activism\Entity\ThirdPartyContent $third_party_content
    *   The entity to populate with API data.
-   * @param array $values
-   *   An array of values for the API.
-   *
    */
   public function __construct(ThirdPartyContent $third_party_content) {
     $this->key = Drupal::config('effective_activism.settings')->get('darksky_api_key');
@@ -46,7 +46,7 @@ class DarkSky extends ThirdPartyApi {
   }
 
   /**
-   * @{inheritdoc}
+   * {@inheritdoc}
    */
   public function request() {
     try {
@@ -96,4 +96,5 @@ class DarkSky extends ThirdPartyApi {
       throw new DarkSkyException($exception->getMessage());
     }
   }
+
 }
