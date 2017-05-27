@@ -28,7 +28,7 @@ class AddThirdPartyContent {
     $query
       ->condition('status', 1)
       ->condition($group)
-      ->range(NULL, self::BATCH_SIZE);
+      ->range(0, self::BATCH_SIZE);
     $event_ids = $query->execute();
     if (!empty($event_ids)) {
       foreach ($event_ids as $id) {
