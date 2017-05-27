@@ -293,6 +293,7 @@ class CSVParser extends EntityParser implements ParserInterface {
         $this->group->id(),
         NULL,
         NULL,
+        NULL,
       ];
       if (!$this->validateEvent($values)) {
         throw new ParserValidationException(self::INVALID_EVENT, $this->row, NULL);
