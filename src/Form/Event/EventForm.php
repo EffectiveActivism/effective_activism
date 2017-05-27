@@ -6,7 +6,6 @@ use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\ResultType;
-use Drupal\effective_activism\Helper\LocationHelper;
 
 /**
  * Form controller for Event edit forms.
