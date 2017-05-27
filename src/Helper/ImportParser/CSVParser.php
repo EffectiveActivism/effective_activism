@@ -369,6 +369,7 @@ class CSVParser extends EntityParser implements ParserInterface {
         $this->group->id(),
         NULL,
         $this->import->id(),
+        NULL,
       ]);
     }
     // Otherwise, create and add extra entities.
