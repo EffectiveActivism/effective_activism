@@ -104,15 +104,15 @@ class LocationHelper {
       $database = Drupal::database();
       $result = $database->select(Constant::LOCATION_CACHE_TABLE, 'location')
         ->fields('location', [
-          'latitude',
-          'longitude',
+          'lat',
+          'lon',
         ])
         ->condition('location.address', $address)
         ->execute();
       $location = $result->fetch();
       if ($location !== FALSE) {
-        $coordinates['lat'] = $location->latitude;
-        $coordinates['lon'] = $location->longitude;
+        $coordinates['lat'] = $location->lat;
+        $coordinates['lon'] = $location->lon;
       }
       else {
         // If not stored locally, try to retrieve from geocoding service.
