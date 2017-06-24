@@ -4,7 +4,6 @@ namespace Drupal\effective_activism\Form\Import;
 
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\effective_activism\Helper\ImportParser\CSVParser;
 
 /**
  * Form controller for Import edit forms.
