@@ -67,7 +67,7 @@ class GroupForm extends ContentEntityForm {
 
       default:
         // Check if there are changes to result types and update accordingly.
-        if ($form_state->getTemporaryValue('old_result_type_selection') != array_filter($form_state->getValue('result_types'), function($element) {
+        if ($form_state->getTemporaryValue('old_result_type_selection') != array_filter($form_state->getValue('result_types'), function ($element) {
           return ($element !== 0);
         })) {
           foreach ($form_state->getValue('result_types') as $result_type_id => $enabled) {
