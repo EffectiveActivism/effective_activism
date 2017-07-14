@@ -4,6 +4,7 @@ namespace Drupal\effective_activism\Form\Result;
 
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\effective_activism\Entity\DataType;
 use Drupal\effective_activism\Entity\Organization;
 use Drupal\effective_activism\Helper\AccountHelper;
 use Drupal\effective_activism\Helper\OrganizationHelper;
@@ -40,7 +41,8 @@ class ResultTypeForm extends EntityForm {
     $data_bundles = \Drupal::entityManager()->getBundleInfo('data');
     $available_datatypes = [];
     foreach ($data_bundles as $bundle_name => $bundle_info) {
-      $available_datatypes[$bundle_name] = $bundle_info['label'];
+      $data_type = DataType::load($bundle_name);
+      $available_datatypes[$bundle_name] = sprintf('%s<br><small><em>%s</em></small>', $bundle_info['label'], $data_type->description);
     }
     // Build form.
     $form['#prefix'] = '<div id="ajax">';
