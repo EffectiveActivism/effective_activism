@@ -4,6 +4,7 @@ namespace Drupal\effective_activism\Helper;
 
 use Drupal\effective_activism\Entity\Event;
 use Drupal\effective_activism\Entity\Group;
+use Drupal\effective_activism\Entity\ResultType;
 use Drupal\effective_activism\Entity\Organization;
 
 /**
@@ -106,6 +107,24 @@ class OrganizationHelper {
       $result = $query->execute();
     }
     return $load_entities ? Event::loadMultiple($result) : array_values($result);
+  }
+
+  /**
+   * Get all result types belonging to an organizations.
+   *
+   * @param \Drupal\effective_activism\Entity\Organization $organization
+   *   The organization to get result types for.
+   * @param bool $load_entities
+   *   Wether to return full entity objects or entity ids.
+   *
+   * @return array
+   *   An array of result types.
+   */
+  public static function getResultTypes(Organization $organization, $load_entities = TRUE) {
+    $query = \Drupal::entityQuery('result_type')
+      ->condition('organization', $organization->id());
+    $result = $query->execute();
+    return $load_entities ? ResultType::loadMultiple($result) : array_values($result);
   }
 
 }
