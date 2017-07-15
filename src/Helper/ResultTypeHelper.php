@@ -94,6 +94,8 @@ class ResultTypeHelper {
     $result = \Drupal::entityQuery('result_type')
       ->condition('importname', $import_name)
       ->condition('organization', $organization_id)
+      ->sort('organization')
+      ->sort('label')
       ->execute();
     return !empty($result) ? ResultType::load(array_pop($result)) : NULL;
   }

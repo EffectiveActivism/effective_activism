@@ -129,6 +129,7 @@ class AccountHelper {
     }
     $result = \Drupal::entityQuery('organization')
       ->condition('managers', $account->id())
+      ->sort('title')
       ->execute();
     return $load_entities ? Organization::loadMultiple($result) : array_values($result);
   }
@@ -197,6 +198,7 @@ class AccountHelper {
     }
     $result = \Drupal::entityQuery('group')
       ->condition('organizers', $account->id())
+      ->sort('title')
       ->execute();
     return $load_entities ? Group::loadMultiple($result) : array_values($result);
   }
