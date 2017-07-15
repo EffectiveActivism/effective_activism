@@ -2,6 +2,7 @@
 
 namespace Drupal\effective_activism\Helper\ListBuilder;
 
+use Drupal;
 use Drupal\effective_activism\Helper\AccountHelper;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
@@ -49,8 +50,8 @@ class ImportListBuilder extends EntityListBuilder {
     $query = $this->getStorage()->getQuery()
       ->sort($this->entityType->getKey('id'));
     // Filter entities for non-admin users.
-    if (\Drupal::currentUser()->id() !== '1') {
-      $group_ids = AccountHelper::getGroups(\Drupal::currentUser(), FALSE);
+    if (Drupal::currentUser()->id() !== '1') {
+      $group_ids = AccountHelper::getGroups(Drupal::currentUser(), FALSE);
       $query->condition('parent', $group_ids, 'IN');
     }
     // Only add the pager if a limit is specified.

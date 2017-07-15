@@ -31,7 +31,7 @@ class OrganizationListBuilder extends EntityListBuilder {
     $organizations = AccountHelper::getOrganizations(NULL, FALSE);
     if (!empty($organizations)) {
       $query = $this->getStorage()->getQuery()
-        ->sort($this->entityType->getKey('id'))
+        ->sort('title')
         ->condition('id', $organizations, 'IN');
       // Only add the pager if a limit is specified.
       if ($this->limit) {
