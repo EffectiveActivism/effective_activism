@@ -2,6 +2,7 @@
 
 namespace Drupal\effective_activism\Helper;
 
+use Drupal;
 use Drupal\effective_activism\Entity\Event;
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\ResultType;
@@ -28,8 +29,9 @@ class OrganizationHelper {
    *   An array of groups related to the organization.
    */
   public static function getGroups(Organization $organization, $position = 0, $limit = 0, $load_entities = TRUE) {
-    $query = \Drupal::entityQuery('group')
-      ->condition('organization', $organization->id());
+    $query = Drupal::entityQuery('group')
+      ->condition('organization', $organization->id())
+      ->sort('title');
     if ($limit > 0) {
       $query->range($position, $limit + $position);
     }
@@ -51,9 +53,10 @@ class OrganizationHelper {
    *   An array of groups related to the organization.
    */
   public static function getGroupsPaged(Organization $organization, $page_count = 20, $load_entities = TRUE) {
-    $query = \Drupal::entityQuery('group')
+    $query = Drupal::entityQuery('group')
       ->condition('organization', $organization->id())
-      ->pager($page_count);
+      ->pager($page_count)
+      ->sort('title');
     $result = $query->execute();
     return $load_entities ? Group::loadMultiple($result) : array_values($result);
   }
@@ -72,11 +75,13 @@ class OrganizationHelper {
    *   An array of organizations.
    */
   public static function getOrganizations($position = 0, $limit = 0, $load_entities = TRUE) {
-    $query = \Drupal::entityQuery('organization');
+    $query = Drupal::entityQuery('organization')
+      ->sort('title');
     if ($limit > 0) {
       $query->range($position, $limit + $position);
     }
     $result = $query->execute();
+    dpm($result);
     return $load_entities ? Organization::loadMultiple($result) : array_values($result);
   }
 
@@ -99,8 +104,9 @@ class OrganizationHelper {
     $result = [];
     $groups = self::getGroups($organization, 0, 0, FALSE);
     if (!empty($groups)) {
-      $query = \Drupal::entityQuery('event')
-        ->condition('parent', $groups, 'IN');
+      $query = Drupal::entityQuery('event')
+        ->condition('parent', $groups, 'IN')
+        ->sort('start_date');
       if ($limit > 0) {
         $query->range($position, $limit + $position);
       }
@@ -121,8 +127,9 @@ class OrganizationHelper {
    *   An array of result types.
    */
   public static function getResultTypes(Organization $organization, $load_entities = TRUE) {
-    $query = \Drupal::entityQuery('result_type')
-      ->condition('organization', $organization->id());
+    $query = Drupal::entityQuery('result_type')
+      ->condition('organization', $organization->id())
+      ->sort('organization');
     $result = $query->execute();
     return $load_entities ? ResultType::loadMultiple($result) : array_values($result);
   }

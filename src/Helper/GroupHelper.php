@@ -28,7 +28,8 @@ class GroupHelper {
    */
   public static function getEvents(Group $group, $position = 0, $limit = 0, $load_entities = TRUE) {
     $query = \Drupal::entityQuery('event')
-      ->condition('parent', $group->id());
+      ->condition('parent', $group->id())
+      ->sort('start_date');
     if ($limit > 0) {
       $query->range($position, $limit + $position);
     }
@@ -52,7 +53,8 @@ class GroupHelper {
   public static function getEventsPaged(Group $group, $page_count = 20, $load_entities = TRUE) {
     $query = \Drupal::entityQuery('event')
       ->condition('parent', $group->id())
-      ->pager($page_count);
+      ->pager($page_count)
+      ->sort('start_date');
     $result = $query->execute();
     return $load_entities ? Event::loadMultiple($result) : array_values($result);
   }
@@ -74,7 +76,8 @@ class GroupHelper {
    */
   public static function getImports(Group $group, $position = 0, $limit = 0, $load_entities = TRUE) {
     $query = \Drupal::entityQuery('import')
-      ->condition('parent', $group->id());
+      ->condition('parent', $group->id())
+      ->sort('created');
     if ($limit > 0) {
       $query->range($position, $limit + $position);
     }
@@ -98,7 +101,8 @@ class GroupHelper {
   public static function getImportsPaged(Group $group, $page_count = 20, $load_entities = TRUE) {
     $query = \Drupal::entityQuery('import')
       ->condition('parent', $group->id())
-      ->pager($page_count);
+      ->pager($page_count)
+      ->sort('created');
     $result = $query->execute();
     return $load_entities ? Import::loadMultiple($result) : array_values($result);
   }

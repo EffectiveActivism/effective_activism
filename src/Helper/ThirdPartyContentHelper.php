@@ -25,7 +25,8 @@ class ThirdPartyContentHelper {
     $query = Drupal::entityQuery('third_party_content');
     $query
       ->condition('type', $parameters['type'])
-      ->condition('status', 1);
+      ->condition('status', 1)
+      ->sort('created');
     foreach ($parameters as $field => $value) {
       if ($field !== 'type') {
         $query->condition($field, $value);
