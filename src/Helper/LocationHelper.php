@@ -165,6 +165,25 @@ class LocationHelper {
         return FALSE;
       }
     }
+    else {
+      global $test_use_mock;
+      if ($test_use_mock === TRUE) {
+        // Use mock response.
+        return (object) [
+          'status' => 'OK',
+          'result' => [
+            (object) [
+              'geometry' => (object) [
+                'location' => (object) [
+                  'lat' => '55.676097',
+                  'lng' => '12.568337',
+                ],
+              ],
+            ],
+          ],
+        ];
+      }
+    }
     return FALSE;
   }
 
