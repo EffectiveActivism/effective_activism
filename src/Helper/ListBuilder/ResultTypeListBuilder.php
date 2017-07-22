@@ -26,7 +26,6 @@ class ResultTypeListBuilder extends ConfigEntityListBuilder {
    */
   protected function getEntityIds() {
     $query = $this->getStorage()->getQuery()
-      //->sort('label')
       ->sort('organization');
     $organization_ids = AccountHelper::getManagedOrganizations(NULL, FALSE);
     $query->condition('organization', $organization_ids, 'IN');
