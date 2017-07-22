@@ -81,7 +81,6 @@ class OrganizationHelper {
       $query->range($position, $limit + $position);
     }
     $result = $query->execute();
-    dpm($result);
     return $load_entities ? Organization::loadMultiple($result) : array_values($result);
   }
 
