@@ -17,7 +17,7 @@ class InvitationController extends ControllerBase {
   /**
    * Removes an invitation.
    *
-   * @param stdClass $invitation
+   * @param object $invitation
    *   An invitation object.
    *
    * @return \Symfony\Component\HttpFoundation\RedirectResponse

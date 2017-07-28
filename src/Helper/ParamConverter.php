@@ -3,9 +3,11 @@
 namespace Drupal\effective_activism\Helper;
 
 use Drupal\Core\ParamConverter\ParamConverterInterface;
-use Drupal\effective_activism\Helper\InvitationHelper;
 use Symfony\Component\Routing\Route;
 
+/**
+ * Parameter conversion class for the effective_activism module.
+ */
 class ParamConverter implements ParamConverterInterface {
 
   /**

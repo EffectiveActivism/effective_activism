@@ -121,8 +121,8 @@ class InvitationHelper {
   /**
    * Retrieve an invitation.
    *
-   * @param string $email
-   *   The email to check invitations for.
+   * @param int $id
+   *   The id of the invitation.
    *
    * @return bool|array
    *   A list of invitations or FALSE if the operation failed.
