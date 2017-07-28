@@ -2,6 +2,7 @@
 
 namespace Drupal\effective_activism\Helper;
 
+use Drupal;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\effective_activism\Constant;
 use Exception;
@@ -91,7 +92,7 @@ class InvitationHelper {
         ->execute();
     }
     catch (Exception $e) {
-      \Drupal::logger('effective_activism')->error('Failed to add invitation.');
+      Drupal::logger('effective_activism')->error('Failed to add invitation.');
       return FALSE;
     }
   }
@@ -112,7 +113,30 @@ class InvitationHelper {
         ->execute();
     }
     catch (Exception $e) {
-      \Drupal::logger('effective_activism')->error('Failed to delete invitation.');
+      Drupal::logger('effective_activism')->error('Failed to delete invitation.');
+      return FALSE;
+    }
+  }
+
+  /**
+   * Retrieve an invitation.
+   *
+   * @param string $email
+   *   The email to check invitations for.
+   *
+   * @return bool|array
+   *   A list of invitations or FALSE if the operation failed.
+   */
+  public static function getInvitation($id) {
+    try {
+      return db_select(Constant::INVITATION_TABLE, 'invitation')
+        ->fields('invitation')
+        ->condition('id', $id)
+        ->execute()
+        ->fetchAll();
+    }
+    catch (Exception $e) {
+      Drupal::logger('effective_activism')->error('Failed to retrieve invitation.');
       return FALSE;
     }
   }
@@ -135,7 +159,31 @@ class InvitationHelper {
         ->fetchAll();
     }
     catch (Exception $e) {
-      \Drupal::logger('effective_activism')->error('Failed to retrieve invitations.');
+      Drupal::logger('effective_activism')->error('Failed to retrieve invitations.');
+      return FALSE;
+    }
+  }
+
+  /**
+   * Retrieves a list of invitations identified by entity relationship.
+   *
+   * @param \Drupal\Core\Entity\EntityInterface $entity
+   *   The entity relationship.
+   *
+   * @return bool|array
+   *   A list of invitations or FALSE if the operation failed.
+   */
+  public static function getInvitationsByEntity(EntityInterface $entity) {
+    try {
+      return db_select(Constant::INVITATION_TABLE, 'invitation')
+        ->fields('invitation')
+        ->condition('entity_type', $entity->getEntityTypeId())
+        ->condition('entity_id', $entity->id())
+        ->execute()
+        ->fetchAll();
+    }
+    catch (Exception $e) {
+      Drupal::logger('effective_activism')->error('Failed to retrieve invitations.');
       return FALSE;
     }
   }

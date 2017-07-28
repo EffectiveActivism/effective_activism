@@ -5,6 +5,7 @@ namespace Drupal\effective_activism\Form\Group;
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\effective_activism\Entity\ResultType;
+use Drupal\effective_activism\Helper\InvitationHelper;
 use Drupal\effective_activism\Helper\OrganizationHelper;
 
 /**
@@ -47,6 +48,10 @@ class GroupForm extends ContentEntityForm {
       }
       $form_state->setTemporaryValue('old_result_type_selection', $selected_result_types);
       $form['result_types']['#default_value'] = $selected_result_types;
+    }
+    // If the group is saved, populate active invitations.
+    if ($entity->id() !== NULL) {
+      $form['#invitation_list'] = InvitationHelper::getInvitationsByEntity($entity);
     }
     return $form;
   }
