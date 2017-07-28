@@ -6,3 +6,15 @@ effective_activism.location.autocomplete:
     _controller: '\Drupal\effective_activism\Controller\LocationController::autocomplete'
   requirements:
     _user_is_logged_in: 'TRUE'
+
+# Add result type.
+effective_activism.invitation.remove:
+  path: 'invitation/remove/{invitation}'
+  defaults:
+    _controller: '\Drupal\effective_activism\Controller\InvitationController::remove'
+  requirements:
+    _custom_access: '\Drupal\effective_activism\Permission\Permission::isAnyStaff'
+  options:
+    parameters:
+      invitation:
+        type: 'invitation'

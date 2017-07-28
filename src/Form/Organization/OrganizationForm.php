@@ -8,6 +8,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\effective_activism\Constant;
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\ResultType;
+use Drupal\effective_activism\Helper\InvitationHelper;
 use Drupal\effective_activism\Helper\ResultTypeHelper;
 use Drupal\taxonomy\Entity\Vocabulary;
 
@@ -30,6 +31,10 @@ class OrganizationForm extends ContentEntityForm {
     $form['revision_log_message']['#attributes']['class'][] = 'hidden';
     // Set organization entity id.
     $form_state->setTemporaryValue('entity_id', $entity->id());
+    // If the organization is saved, populate active invitations.
+    if ($entity->id() !== NULL) {
+      $form['#invitation_list'] = InvitationHelper::getInvitationsByEntity($entity);
+    }
     return $form;
   }
 

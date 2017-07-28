@@ -88,7 +88,7 @@ class AccountHelper {
   }
 
   /**
-   * Checks if user account is organizer of the group.
+   * Checks if user account is organizer of the organization.
    *
    * @param \Drupal\effective_activism\Entity\Organization $organization
    *   The group to check.
