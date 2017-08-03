@@ -7,3 +7,17 @@ autocomplete:
     - core/drupalSettings
     - core/drupal.ajax
     - core/jquery.ui.autocomplete
+highcharts:
+  remote: https://code.highcharts.com/
+  version: 5.0.12
+  license:
+    name: Highsoft License
+    url: https://shop.highsoft.com/faq#Non-Commercial-0
+    gpl-compatible: false
+  css: {}
+  js:
+    https://code.highcharts.com/5.0.12/highcharts.src.js: { type: external }
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/drupalSettings
