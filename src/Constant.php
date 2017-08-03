@@ -8,6 +8,11 @@ namespace Drupal\effective_activism;
 class Constant {
 
   /**
+   * General constants.
+   */
+  const MODULE_NAME = 'effective_activism';
+
+  /**
    * The default result types.
    */
   const DEFAULT_RESULT_TYPES = [
@@ -72,5 +77,11 @@ class Constant {
   const CACHE_TAG_IMPORT = 'import_list';
   const CACHE_TAG_EVENT = 'event_list';
   const CACHE_TAG_RESULT_TYPE = 'config:result_type_list';
+
+  /**
+   * Mail keys.
+   */
+  const MAIL_KEY_INVITATION_MANAGER = self::MODULE_NAME . '_invitation_manager';
+  const MAIL_KEY_INVITATION_ORGANIZER = self::MODULE_NAME . '_invitation_organizer';
 
 }

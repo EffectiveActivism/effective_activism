@@ -7,10 +7,11 @@
 
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\effective_activism\Hook\CronHook;
 use Drupal\effective_activism\Hook\ElementInfoAlterHook;
 use Drupal\effective_activism\Hook\EntityInsertHook;
 use Drupal\effective_activism\Hook\InlineEntityFormEntityFormAlterHook;
-use Drupal\effective_activism\Hook\CronHook;
+use Drupal\effective_activism\Hook\MailHook;
 
 /**
  * Implements hook_inline_entity_form_entity_form_alter().
@@ -44,9 +45,21 @@ function effective_activism_element_info_alter(array &$types) {
 }
 
 /**
- * Implements hook_element_info_alter().
+ * Implements hook_cron().
  */
 function effective_activism_cron() {
   $hook = CronHook::getInstance();
   $hook->invoke([]);
+}
+
+/**
+ * Implements hook_mail().
+ */
+function effective_activism_mail($key, &$message, $params) {
+  $hook = MailHook::getInstance();
+  $hook->invoke([
+    'key' => $key,
+    'message' => &$message,
+    'params' => $params,
+  ]);
 }

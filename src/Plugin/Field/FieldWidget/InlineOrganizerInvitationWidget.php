@@ -2,10 +2,13 @@
 
 namespace Drupal\effective_activism\Plugin\Field\FieldWidget;
 
+use Drupal;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\effective_activism\Constant;
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Helper\InvitationHelper;
+use Drupal\effective_activism\Helper\MailHelper;
 use Drupal\inline_entity_form\Plugin\Field\FieldWidget\InlineEntityFormComplex;
 
 /**
@@ -136,11 +139,22 @@ class InlineOrganizerInvitationWidget extends InlineEntityFormComplex {
             break;
 
           case InvitationHelper::STATUS_NEW_USER:
-            drupal_set_message(t('An invitation to join your group as organizer will be shown for the user with the e-mail address <em>@email_address</em> once the person registers with the site.', ['@email_address' => $email]));
-            break;
-
           case InvitationHelper::STATUS_EXISTING_USER:
-            drupal_set_message(t('An invitation to join your group as organizer will be shown for the user with the e-mail address <em>@email_address</em> next time the user logs in.', ['@email_address' => $email]));
+            $result = MailHelper::send(
+              Constant::MAIL_KEY_INVITATION_ORGANIZER,
+              [
+                'group_label' => $entity->label(),
+                'organization_label' => $entity->organization->entity->label(),
+              ],
+              $email,
+              Drupal::currentUser()->getEmail()
+            );
+            if ($result) {
+              drupal_set_message(t('An invitation to join your group as organizer will be sent to the user with the e-mail address <em>@email_address</em>.', ['@email_address' => $email]));
+            }
+            else {
+              drupal_set_message(t('Failed to send to the e-mail address <em>@email_address</em>.', ['@email_address' => $email]), 'error');
+            }
             break;
         }
       }
