@@ -37,14 +37,15 @@ class InvitationHelper {
       switch ($entity->getEntityTypeId()) {
         case 'organization':
           if (in_array(['target_id' => $account->id()], $entity->get('managers')->getValue())) {
-            $status = self::STATUS_ALREADY_MANAGER;
+            return self::STATUS_ALREADY_MANAGER;
           }
           break;
 
         case 'group':
           if (in_array(['target_id' => $account->id()], $entity->get('organizers')->getValue())) {
-            $status = self::STATUS_ALREADY_ORGANIZER;
+            return self::STATUS_ALREADY_ORGANIZER;
           }
+          break;
       }
     }
     // Check that user isn't already invited.
@@ -57,16 +58,10 @@ class InvitationHelper {
       ->execute()
       ->fetchField();
     if ($result > 0) {
-      $status = self::STATUS_ALREADY_INVITED;
+      return self::STATUS_ALREADY_INVITED;
     }
     // Check if user exists.
-    if ($account === FALSE) {
-      $status = self::STATUS_NEW_USER;
-    }
-    else {
-      $status = self::STATUS_EXISTING_USER;
-    }
-    return $status;
+    return ($account === FALSE) ? self::STATUS_NEW_USER : self::STATUS_EXISTING_USER;
   }
 
   /**
