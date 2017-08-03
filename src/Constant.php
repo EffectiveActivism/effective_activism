@@ -8,6 +8,19 @@ namespace Drupal\effective_activism;
 class Constant {
 
   /**
+   * Entities
+   */
+  const ENTITY_ORGANIZATION = 'organization';
+  const ENTITY_GROUP = 'group';
+  const ENTITY_EVENT = 'event';
+  const ENTITY_RESULT = 'result';
+  const ENTITY_RESULT_TYPE = 'result_type';
+  const ENTITY_DATA = 'data';
+  const ENTITY_DATA_TYPE = 'data_type';
+  const ENTITY_IMPORT = 'import';
+  const ENTITY_IMPORT_TYPE = 'import_type';
+
+  /**
    * The default result types.
    */
   const DEFAULT_RESULT_TYPES = [

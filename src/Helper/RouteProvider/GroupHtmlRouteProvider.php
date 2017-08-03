@@ -26,11 +26,14 @@ class GroupHtmlRouteProvider extends DefaultHtmlRouteProvider {
     if ($publish_form_route = $this->getPublishFormRoute($entity_type)) {
       $collection->add("entity.{$entity_type_id}.publish_form", $publish_form_route);
     }
-    if ($publish_form_route = $this->getImportsRoute($entity_type)) {
-      $collection->add("entity.{$entity_type_id}.imports", $publish_form_route);
+    if ($import_overview_route = $this->getImportsRoute($entity_type)) {
+      $collection->add("entity.{$entity_type_id}.imports", $import_overview_route);
     }
-    if ($publish_form_route = $this->getEventsRoute($entity_type)) {
-      $collection->add("entity.{$entity_type_id}.events", $publish_form_route);
+    if ($event_overview_route = $this->getEventsRoute($entity_type)) {
+      $collection->add("entity.{$entity_type_id}.events", $event_overview_route);
+    }
+    if ($result_overview_route = $this->getResultsRoute($entity_type)) {
+      $collection->add("entity.{$entity_type_id}.results", $result_overview_route);
     }
     return $collection;
   }
@@ -169,6 +172,37 @@ class GroupHtmlRouteProvider extends DefaultHtmlRouteProvider {
         ->setDefaults([
           '_controller' => '\Drupal\effective_activism\Controller\Overview\EventOverviewController::routeCallback',
           '_title' => "Events",
+        ])
+        ->setRequirement('_entity_access', "{$entity_type_id}.view")
+        ->setOption('parameters', [
+          $entity_type_id => ['type' => 'entity:' . $entity_type_id],
+        ]);
+      // Entity types with serial IDs can specify this in their route
+      // requirements, improving the matching process.
+      if ($this->getEntityTypeIdKeyType($entity_type) === 'integer') {
+        $route->setRequirement($entity_type_id, '\d+');
+      }
+      return $route;
+    }
+  }
+
+  /**
+   * Gets the results route.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
+   *   The entity type.
+   *
+   * @return \Symfony\Component\Routing\Route|null
+   *   The generated route, if available.
+   */
+  protected function getResultsRoute(EntityTypeInterface $entity_type) {
+    if ($entity_type->hasLinkTemplate('results')) {
+      $entity_type_id = $entity_type->id();
+      $route = new Route($entity_type->getLinkTemplate('results'));
+      $route
+        ->setDefaults([
+          '_controller' => '\Drupal\effective_activism\Controller\Overview\ResultOverviewController::routeCallback',
+          '_title' => "Results",
         ])
         ->setRequirement('_entity_access', "{$entity_type_id}.view")
         ->setOption('parameters', [
