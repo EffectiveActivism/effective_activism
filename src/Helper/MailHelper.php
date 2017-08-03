@@ -11,17 +11,21 @@ use Drupal\effective_activism\Constant;
 class MailHelper {
 
   /**
-   * Validates an address.
+   * Sends an e-mail.
    *
-   * @param string $address
-   *   An address string that needs to be validated against Google Maps API
-   *   format.
+   * @param string $key
+   *   The mail key to use.
+   * @param array $params
+   *   An array of variables to use in composing the e-mail.
+   * @param string $recipient
+   *   The recipient of the e-mail.
+   * @param string $sender
+   *   The sender of the e-mail.
    *
    * @return bool
-   *   Returns TRUE if string is a valid Google Maps address, FALSE if not.
-   *   If any connection errors occur, validation returns TRUE.
+   *   Returns TRUE if Drupal reports a successful send, FALSE otherwise.
    */
-  public static function send($key, $params, $recipient, $sender) {
+  public static function send($key, array $params, $recipient, $sender) {
     $status = Drupal::service('plugin.manager.mail')->mail(
       Constant::MODULE_NAME,
       $key,
