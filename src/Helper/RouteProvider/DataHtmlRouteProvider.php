@@ -25,8 +25,9 @@ class DataHtmlRouteProvider extends DefaultHtmlRouteProvider {
     if ($add_form_route = $this->getAddFormRoute($entity_type)) {
       $collection->add("entity.{$entity_type_id}.add_form", $add_form_route);
     }
-    $add_page_route = $this->getAddPageRoute($entity_type);
-    $collection->add("$entity_type_id.add_page", $add_page_route);
+    if ($add_page_route = $this->getAddPageRoute($entity_type)) {
+      $collection->add("$entity_type_id.add_page", $add_page_route);
+    }
     return $collection;
   }
 
