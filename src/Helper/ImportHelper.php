@@ -31,7 +31,8 @@ class ImportHelper {
    */
   public static function getEvents(Import $import, $position = 0, $limit = 0, $load_entities = TRUE) {
     $query = \Drupal::entityQuery('event')
-      ->condition('import', $import->id());
+      ->condition('import', $import->id())
+      ->sort('start_date');
     if ($limit > 0) {
       $query->range($position, $limit + $position);
     }

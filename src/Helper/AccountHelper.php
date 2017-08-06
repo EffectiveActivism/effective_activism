@@ -88,7 +88,7 @@ class AccountHelper {
   }
 
   /**
-   * Checks if user account is organizer of the group.
+   * Checks if user account is organizer of the organization.
    *
    * @param \Drupal\effective_activism\Entity\Organization $organization
    *   The group to check.
@@ -129,6 +129,7 @@ class AccountHelper {
     }
     $result = \Drupal::entityQuery('organization')
       ->condition('managers', $account->id())
+      ->sort('title')
       ->execute();
     return $load_entities ? Organization::loadMultiple($result) : array_values($result);
   }
@@ -197,6 +198,7 @@ class AccountHelper {
     }
     $result = \Drupal::entityQuery('group')
       ->condition('organizers', $account->id())
+      ->sort('title')
       ->execute();
     return $load_entities ? Group::loadMultiple($result) : array_values($result);
   }

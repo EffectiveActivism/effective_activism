@@ -2,6 +2,7 @@
 
 namespace Drupal\effective_activism\Helper\ListBuilder;
 
+use Drupal;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
 use Drupal\Core\Routing\LinkGeneratorTrait;
@@ -29,7 +30,7 @@ class DataListBuilder extends EntityListBuilder {
    * {@inheritdoc}
    */
   public function buildRow(EntityInterface $entity) {
-    if ($entity->access('view', \Drupal::currentUser())) {
+    if ($entity->access('view', Drupal::currentUser())) {
       $entity_bundles = entity_get_bundles($entity->getEntityTypeId());
       $row['id'] = $entity->id();
       $row['type'] = $this->l(
