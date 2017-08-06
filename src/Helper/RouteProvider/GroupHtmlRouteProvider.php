@@ -201,10 +201,10 @@ class GroupHtmlRouteProvider extends DefaultHtmlRouteProvider {
       $route = new Route($entity_type->getLinkTemplate('results'));
       $route
         ->setDefaults([
-          '_controller' => '\Drupal\effective_activism\Controller\Overview\ResultOverviewController::routeCallback',
+          '_controller' => '\Drupal\effective_activism\Controller\Overview\ResultOverviewController::content',
           '_title' => "Results",
         ])
-        ->setRequirement('_entity_access', "{$entity_type_id}.view")
+        ->setRequirement('_entity_access', "{$entity_type_id}.update")
         ->setOption('parameters', [
           $entity_type_id => ['type' => 'entity:' . $entity_type_id],
         ]);

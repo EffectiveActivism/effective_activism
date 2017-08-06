@@ -12,6 +12,8 @@ use Drupal\effective_activism\Chart\Providers\HighCharts\HighChartsChart;
 use Drupal\effective_activism\Chart\Providers\HighCharts\HighChartsAxis;
 use Drupal\effective_activism\Entity\Event;
 use Drupal\effective_activism\Entity\Group;
+use Drupal\Core\Entity\Query\QueryFactory;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class ResultOverviewController extends ControllerBase {
 
@@ -21,13 +23,42 @@ class ResultOverviewController extends ControllerBase {
 
   const DRUPAL_DATE_FORMAT = 'Y-m-d\TH:i:s';
 
+  const SORT_CRITERIA = 'start_date';
+
   const THEME_ID = 'result_overview';
 
   const CACHE_MAX_AGE = Cache::PERMANENT;
 
   const CACHE_TAGS = [
     'result',
+    'data',
   ];
+
+  /**
+   * Query factory definition.
+   *
+   * @var \Drupal\Core\Entity\Query\QueryFactory
+   */
+  protected $entityQuery;
+
+  /**
+   * Constructor.
+   *
+   * @param \Drupal\Core\Entity\Query\QueryFactory $entityQuery
+   *   The EntityQuery factory.
+   */
+  public function __construct(QueryFactory $entityQuery) {
+    $this->entityQuery = $entityQuery;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('entity.query')
+    );
+  }
 
   /**
    * Renders a chart.
@@ -35,8 +66,8 @@ class ResultOverviewController extends ControllerBase {
    * @param \Drupal\effective_activism\Entity\Group $group
    *   The group to render a chart for.
    *
-   * @return object
-   *   A chart object.
+   * @return object|bool
+   *   A chart object or FALSE if there are less than two events.
    */
   public function renderChart(Group $group) {
     $options = [
@@ -52,26 +83,30 @@ class ResultOverviewController extends ControllerBase {
       ],
     ];
     // Get oldest event.
-    $query = Drupal::entityQuery('event');
+    $query = $this->entityQuery->get('event');
     $result = $query
-      ->sort('start_date', 'ASC')
-      ->range(1, 1)
+      ->sort(self::SORT_CRITERIA, 'ASC')
+      ->range(0, 1)
       ->condition('parent', $group->id())
       ->execute();
     $oldest_event = Event::load(array_pop($result));
     // Get newest event.
     $query = Drupal::entityQuery('event');
     $result = $query
-      ->sort('start_date', 'DESC')
-      ->range(1, 1)
+      ->sort(self::SORT_CRITERIA, 'DESC')
+      ->range(0, 1)
       ->condition('parent', $group->id())
       ->execute();
     $newest_event = Event::load(array_pop($result));
-    // Create timesliced array.
+    // If there a too few events, skip the chart.
+    if ($oldest_event === $newest_event) {
+      return FALSE;
+    }
+    // Create timesliced array. Add one month to end date to ensure it is added.
     $period = new DatePeriod(
-      DateTime::createFromFormat(self::DRUPAL_DATE_FORMAT, $oldest_event->get('start_date')->value),
+      DateTime::createFromFormat(self::DRUPAL_DATE_FORMAT, $oldest_event->get(self::SORT_CRITERIA)->value),
       new DateInterval(self::TIME_INTERVAL),
-      DateTime::createFromFormat(self::DRUPAL_DATE_FORMAT, $newest_event->get('start_date')->value)
+      DateTime::createFromFormat(self::DRUPAL_DATE_FORMAT, $newest_event->get(self::SORT_CRITERIA)->value)->modify('+1 month')
     );
     $categories = [];
     foreach ($period as $date) {
@@ -80,7 +115,7 @@ class ResultOverviewController extends ControllerBase {
     // Get events.
     $query = Drupal::entityQuery('event');
     $result = $query
-      ->sort('start_date', 'ASC')
+      ->sort(self::SORT_CRITERIA, 'ASC')
       ->condition('parent', $group->id())
       ->execute();
     $events = Event::loadMultiple($result);
@@ -89,7 +124,7 @@ class ResultOverviewController extends ControllerBase {
     foreach ($events as $event) {
       foreach ($event->get('results') as $result_entity) {
         if (isset($result_entity->entity->data_leaflets)) {
-          $time_slice = DateTime::createFromFormat(self::DRUPAL_DATE_FORMAT, $event->get('start_date')->value)->format(self::TIME_SLICE);
+          $time_slice = DateTime::createFromFormat(self::DRUPAL_DATE_FORMAT, $event->get(self::SORT_CRITERIA)->value)->format(self::TIME_SLICE);
           $leaflets[$time_slice] += $result_entity->entity->data_leaflets->entity->field_leaflets->value;
           $participants[$time_slice] += $result_entity->entity->participant_count->value;
         }
@@ -189,28 +224,8 @@ class ResultOverviewController extends ControllerBase {
    * @return array
    *   A render array.
    */
-  public function content() {
-    $group = empty($this->entities['group']) ? NULL : $this->entities['group'];
-    $content['#attached']['library'][] = 'effective_activism/highcharts';
-    $content['#attached']['drupalSettings']['highcharts'] = $this->renderChart($group);
-    $content['#theme'] = self::THEME_ID;
-    $content['#cache'] = [
-      'max-age' => self::CACHE_MAX_AGE,
-      'tags' => self::CACHE_TAGS,
-    ];
-    return $content;
-  }
-
-  /**
-   * A callback for routes.
-   *
-   * @param \Drupal\effective_activism\Entity\Group $group
-   *   The group to render results for.
-   *
-   * @return array
-   *   A render array.
-   */
-  public function routeCallback(Group $group) {
+  public function content(Group $group = NULL) {
+    $group = isset($group) ? $group : (empty($this->entities['group']) ? NULL : $this->entities['group']);
     $content['#attached']['library'][] = 'effective_activism/highcharts';
     $content['#attached']['drupalSettings']['highcharts'] = $this->renderChart($group);
     $content['#theme'] = self::THEME_ID;

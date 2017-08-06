@@ -17,6 +17,7 @@ highcharts:
   css: {}
   js:
     https://code.highcharts.com/5.0.12/highcharts.src.js: { type: external }
+    js/charting.js: {}
   dependencies:
     - core/jquery
     - core/drupal
