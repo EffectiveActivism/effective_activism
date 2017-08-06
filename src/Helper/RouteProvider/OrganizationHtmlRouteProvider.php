@@ -28,8 +28,8 @@ class OrganizationHtmlRouteProvider extends DefaultHtmlRouteProvider {
     if ($publish_form_route = $this->getPublishFormRoute($entity_type)) {
       $collection->add("entity.{$entity_type_id}.publish_form", $publish_form_route);
     }
-    if ($publish_form_route = $this->getGroupsRoute($entity_type)) {
-      $collection->add("entity.{$entity_type_id}.groups", $publish_form_route);
+    if ($group_overview_route = $this->getGroupsRoute($entity_type)) {
+      $collection->add("entity.{$entity_type_id}.groups", $group_overview_route);
     }
     return $collection;
   }
