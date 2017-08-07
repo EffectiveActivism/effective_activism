@@ -13,7 +13,7 @@ class Constant {
   const MODULE_NAME = 'effective_activism';
 
   /**
-   * Entities
+   * Entities.
    */
   const ENTITY_ORGANIZATION = 'organization';
   const ENTITY_GROUP = 'group';
