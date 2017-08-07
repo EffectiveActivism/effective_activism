@@ -4,6 +4,9 @@ namespace Drupal\effective_activism\Chart;
 
 use Drupal\effective_activism\Chart\Axis\AxisInterface;
 
+/**
+ * An interface for Charts.
+ */
 interface ChartInterface {
 
   /**

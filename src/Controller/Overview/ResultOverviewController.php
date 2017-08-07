@@ -15,6 +15,9 @@ use Drupal\effective_activism\Entity\Group;
 use Drupal\Core\Entity\Query\QueryFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ * ResultOverView Controller class.
+ */
 class ResultOverviewController extends ControllerBase {
 
   const TIME_SLICE = 'Y - M';
@@ -207,7 +210,7 @@ class ResultOverviewController extends ControllerBase {
       ],
     ], array_values($running_total));
     $category_axis = new HighChartsAxis(HighChartsAxis::TYPE_CATEGORIES, [
-      'crosshair' => true,
+      'crosshair' => TRUE,
     ], $categories);
     $chart->attach($axis_1);
     $chart->attach($axis_2);
