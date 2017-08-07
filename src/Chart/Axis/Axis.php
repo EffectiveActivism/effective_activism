@@ -16,26 +16,30 @@ abstract class Axis implements AxisInterface {
   const TYPE_COLUMN = 2;
 
   /**
+   * The charts that this axis is attached to.
+   *
    * @var array
-   *   The charts that this axis is attached to.
    */
   private $charts;
 
   /**
+   * The type of axis.
+   *
    * @var strnig
-   *  The type of axis.
    */
   private $type;
 
   /**
+   * The settings for the axis.
+   *
    * @var \Drupal\effective_acitism\Chart\Axis\AxisSettingsInterface
-   *   The settings for the axis.
    */
   private $settings;
 
   /**
+   * The data for the axis.
+   *
    * @var array
-   *   The data for the axis.
    */
   private $data;
 
@@ -80,7 +84,7 @@ abstract class Axis implements AxisInterface {
    */
   public function detachFrom(ChartInterface $chart) {
     $key = array_search($chart, $this->charts);
-    if($key !== FALSE) {
+    if ($key !== FALSE) {
       unset($this->charts[$key]);
       $chart->detach($this);
     }
@@ -90,7 +94,7 @@ abstract class Axis implements AxisInterface {
    * {@inheritdoc}
    */
   public function alterSettings(array $settings) {
-    $this->settings =  array_merge($this->settings, $settings);
+    $this->settings = array_merge($this->settings, $settings);
   }
 
   /**
@@ -132,4 +136,5 @@ abstract class Axis implements AxisInterface {
   public function getSettings() {
     return $this->settings;
   }
+
 }

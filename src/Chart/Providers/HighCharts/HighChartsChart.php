@@ -5,6 +5,9 @@ namespace Drupal\effective_activism\Chart\Providers\HighCharts;
 use Drupal\effective_activism\Chart\Chart;
 use Drupal\effective_activism\Chart\ChartInterface;
 
+/**
+ * HighCharts chart class.
+ */
 class HighChartsChart extends Chart implements ChartInterface {
 
   /**
@@ -27,4 +30,5 @@ class HighChartsChart extends Chart implements ChartInterface {
       'series' => $series,
     ]);
   }
+
 }

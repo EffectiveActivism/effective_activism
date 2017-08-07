@@ -5,24 +5,29 @@ namespace Drupal\effective_activism\Chart;
 use Drupal\effective_activism\Chart\Axis\AxisInterface;
 use Drupal\effective_activism\Chart\Axis\Axis;
 
+/**
+ * Abstract class Chart.
+ */
 abstract class Chart implements ChartInterface {
 
   /**
+   * The settings for the chart.
+   *
    * @var array
-   *   The settings for the chart.
    */
   private $settings;
 
   /**
+   * The axes attached to this chart.
+   *
    * @var array
-   *   The axes attached to this chart.
    */
   private $axes;
 
   /**
    * {@inheritdoc}
    */
-  function __construct(array $settings) {
+  public function __construct(array $settings) {
     $this->settings = $settings;
     $this->axes = [];
   }
@@ -42,7 +47,7 @@ abstract class Chart implements ChartInterface {
    */
   public function detach(AxisInterface $axis) {
     $key = array_search($axis, $this->axes);
-    if($key !== FALSE) {
+    if ($key !== FALSE) {
       unset($this->axes[$key]);
       $axis->detachFrom($this);
     }
@@ -52,7 +57,7 @@ abstract class Chart implements ChartInterface {
    * {@inheritdoc}
    */
   public function update() {
-    
+
   }
 
   /**
@@ -86,6 +91,9 @@ abstract class Chart implements ChartInterface {
     return $data_axis;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function getSettings() {
     return $this->settings;
   }

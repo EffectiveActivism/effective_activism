@@ -50,7 +50,6 @@ interface AxisInterface {
    *
    * @param array $data
    *   New data for this axis.
-   *
    * @param bool $reset
    *   If TRUE, resets existing values before merging new data.
    */
