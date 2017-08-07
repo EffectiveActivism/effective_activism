@@ -8,7 +8,7 @@ namespace Drupal\effective_activism;
 class Constant {
 
   /**
-   * Entities
+   * Entities.
    */
   const ENTITY_ORGANIZATION = 'organization';
   const ENTITY_GROUP = 'group';
