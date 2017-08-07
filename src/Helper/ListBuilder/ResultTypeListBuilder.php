@@ -26,7 +26,7 @@ class ResultTypeListBuilder extends ConfigEntityListBuilder {
    */
   protected function getEntityIds() {
     $query = $this->getStorage()->getQuery()
-      ->sort($this->entityType->getKey('id'));
+      ->sort('organization');
     $organization_ids = AccountHelper::getManagedOrganizations(NULL, FALSE);
     $query->condition('organization', $organization_ids, 'IN');
     // Only add the pager if a limit is specified.

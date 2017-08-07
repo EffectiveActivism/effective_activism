@@ -3,6 +3,7 @@
 namespace Drupal\effective_activism\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
+use Drupal\Core\Config\Entity\ConfigEntityInterface;
 
 /**
  * Defines the Result type entity.
@@ -87,5 +88,17 @@ class ResultType extends ConfigEntityBundleBase implements ResultTypeInterface {
    * @var array
    */
   public $groups;
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function sort(ConfigEntityInterface $a, ConfigEntityInterface $b) {
+    $first_sort = strnatcmp($b->organization, $a->organization);
+    // If comparison matches organization, sort on labels.
+    if ($first_sort === 0) {
+      return strnatcasecmp($a->label, $b->label);
+    }
+    return $first_sort;
+  }
 
 }

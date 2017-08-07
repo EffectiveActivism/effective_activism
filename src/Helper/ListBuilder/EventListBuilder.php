@@ -2,6 +2,7 @@
 
 namespace Drupal\effective_activism\Helper\ListBuilder;
 
+use Drupal;
 use Drupal\effective_activism\Helper\AccountHelper;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
@@ -51,10 +52,10 @@ class EventListBuilder extends EntityListBuilder {
    */
   protected function getEntityIds() {
     $query = $this->getStorage()->getQuery()
-      ->sort($this->entityType->getKey('id'));
+      ->sort('start_date');
     // Filter entities for non-admin users.
-    if (\Drupal::currentUser()->id() !== '1') {
-      $group_ids = AccountHelper::getGroups(\Drupal::currentUser(), FALSE);
+    if (Drupal::currentUser()->id() !== '1') {
+      $group_ids = AccountHelper::getGroups(Drupal::currentUser(), FALSE);
       $query->condition('parent', $group_ids, 'IN');
     }
     // Only add the pager if a limit is specified.
