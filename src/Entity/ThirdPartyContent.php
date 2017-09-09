@@ -33,6 +33,7 @@ use Drupal\user\UserInterface;
  *     "id" = "id",
  *     "bundle" = "type",
  *     "revision" = "revision_id",
+ *     "label" = "id",
  *     "uuid" = "uuid",
  *     "uid" = "user_id",
  *     "langcode" = "langcode",
