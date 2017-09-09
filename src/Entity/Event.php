@@ -178,7 +178,6 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
         0 => [
           'default_date_type' => 'now',
           'default_date' => 'tomorrow noon',
-          'date_time_format' => 'H:i',
         ],
       ])
       ->setDisplayOptions('view', [
