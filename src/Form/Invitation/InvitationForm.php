@@ -96,6 +96,7 @@ class InvitationForm extends FormBase {
       if (in_array($status, [
         InvitationHelper::STATUS_NEW_USER,
         InvitationHelper::STATUS_EXISTING_USER,
+        InvitationHelper::STATUS_ALREADY_INVITED,
       ])) {
         switch ($entity->getEntityTypeId()) {
           case 'organization':
