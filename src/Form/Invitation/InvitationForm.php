@@ -8,7 +8,6 @@ use Drupal\Core\Link;
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\Organization;
 use Drupal\effective_activism\Helper\InvitationHelper;
-use Drupal\user\Entity\User;
 
 /**
  * Provides an invitation response form.
