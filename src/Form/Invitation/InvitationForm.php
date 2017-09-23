@@ -43,6 +43,7 @@ class InvitationForm extends FormBase {
       }
       $form_state->setTemporaryValue('invitation_id', $invitation->id);
       $form_state->setTemporaryValue('entity', $entity);
+      $form_state->setTemporaryValue('email', $invitation->email);
       $form['form'] = [
         '#type' => 'fieldset',
         '#title' => $this->t('You have been invited to an @entity_type', [
@@ -83,7 +84,7 @@ class InvitationForm extends FormBase {
     $submit_element = $form_state->getTriggeringElement();
     if ($submit_element['#name'] === 'accept-invitation') {
       $entity = $form_state->getTemporaryValue('entity');
-      $user = User::load(\Drupal::currentUser()->id());
+      $user = user_load_by_mail($form_state->getTemporaryValue('email'));
       // Get link to entity default page.
       $url = $entity->urlInfo()->setOptions([
         'attributes' => [
@@ -92,26 +93,19 @@ class InvitationForm extends FormBase {
       ]);
       $link = Link::fromTextAndUrl($entity->label(), $url)->toString();
       // Add current user to entity with specified role.
-      $status = InvitationHelper::isInvited($entity, $user->getEmail());
-      if (in_array($status, [
-        InvitationHelper::STATUS_NEW_USER,
-        InvitationHelper::STATUS_EXISTING_USER,
-        InvitationHelper::STATUS_ALREADY_INVITED,
-      ])) {
-        switch ($entity->getEntityTypeId()) {
-          case 'organization':
-            $entity->managers[] = $user->id();
-            break;
+      switch ($entity->getEntityTypeId()) {
+        case 'organization':
+          $entity->managers[] = $user->id();
+          break;
 
-          case 'group':
-            $entity->organizers[] = $user->id();
-        }
-        $entity->save();
-        drupal_set_message(t('You are now @role for <em>@link</em>.', [
-          '@role' => $form_state->getTemporaryValue('role'),
-          '@link' => $link,
-        ]));
+        case 'group':
+          $entity->organizers[] = $user->id();
       }
+      $entity->save();
+      drupal_set_message(t('You are now @role for <em>@link</em>.', [
+        '@role' => $form_state->getTemporaryValue('role'),
+        '@link' => $link,
+      ]));
       // Remove current users invitation.
       InvitationHelper::removeInvition($invitation_id);
     }
