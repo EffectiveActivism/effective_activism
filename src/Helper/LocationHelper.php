@@ -80,6 +80,12 @@ class LocationHelper {
           $suggestions[] = $prediction->description;
         }
       }
+      elseif (isset($json->error_message)) {
+        Drupal::logger(Constant::MODULE_NAME)->warning(sprintf('Unable to suggest address: %s', $json->error_message));
+      }
+      else {
+        Drupal::logger(Constant::MODULE_NAME)->warning('Unable to suggest address, unspecified error.');
+      }
     }
     return $suggestions;
   }
