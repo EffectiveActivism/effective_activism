@@ -106,6 +106,12 @@ class EventForm extends ContentEntityForm {
         }
       }
     }
+    // Event start date must be older or equal to end date.
+    $start_date = $form_state->getValue('start_date')[0]['value'];
+    $end_date = $form_state->getValue('end_date')[0]['value'];
+    if ($start_date->format('U') > $end_date->format('U')) {
+      $form_state->setErrorByName('end_date', $this->t('End date must be later than start date.'));
+    }
   }
 
   /**
