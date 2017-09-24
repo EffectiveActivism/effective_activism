@@ -1,0 +1,19 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - effective_activism
+id: data.field_attendees
+field_name: field_attendees
+entity_type: data
+type: integer
+settings:
+  unsigned: false
+  size: normal
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false
