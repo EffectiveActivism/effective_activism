@@ -1,0 +1,6 @@
+langcode: en
+status: true
+dependencies: {  }
+id: attendees
+label: Attendees
+description: 'Type in the number of attendees at the event. Attendees do not typically include organizers, but can track the number of people at any gathering such as presentations, talks, lectures and concerts.'
