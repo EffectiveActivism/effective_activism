@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.data_type.attendees
+    - field.field.data.attendees.field_attendees
+id: data.attendees.default
+targetEntityType: data
+bundle: attendees
+mode: default
+content:
+  field_attendees:
+    weight: 1
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
+hidden: {  }
