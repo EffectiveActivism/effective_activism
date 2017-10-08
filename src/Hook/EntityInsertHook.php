@@ -2,7 +2,8 @@
 
 namespace Drupal\effective_activism\Hook;
 
-use Drupal\effective_activism\Helper\ImportParser\CSVParser;
+use Drupal\effective_activism\ContentMigration\Export\CSVParser as ExportCSVParser;
+use Drupal\effective_activism\ContentMigration\Import\CSVParser as ImportCSVParser;
 
 /**
  * Implements hook_entity_insert().
@@ -38,18 +39,41 @@ class EntityInsertHook implements HookInterface {
           $field_file_csv = $entity->get('field_file_csv')->getValue();
           $group = $entity->get('parent')->entity;
           // Get CSV file.
-          $csvParser = new CSVParser($field_file_csv[0]['target_id'], $group, $entity);
+          $csvParser = new ImportCSVParser($field_file_csv[0]['target_id'], $group, $entity);
           $batch = [
             'title' => t('Importing...'),
             'operations' => [
               [
-                'Drupal\effective_activism\Helper\ImportParser\BatchProcess::import',
+                'Drupal\effective_activism\ContentMigration\Import\BatchProcess::process',
                 [
                   $csvParser,
                 ],
               ],
             ],
-            'finished' => 'Drupal\effective_activism\Helper\ImportParser\BatchProcess::finished',
+            'finished' => 'Drupal\effective_activism\ContentMigration\Import\BatchProcess::finished',
+          ];
+          batch_set($batch);
+        }
+        break;
+
+      case 'export':
+        // If the export is a CSV file, export it to a file and add to export.
+        if ($entity->bundle() === 'csv') {
+          $field_file_csv = $entity->get('field_file_csv')->getValue();
+          $group = $entity->get('parent')->entity;
+          // Get CSV file.
+          $csvParser = new ExportCSVParser($group);
+          $batch = [
+            'title' => t('Exporting...'),
+            'operations' => [
+              [
+                'Drupal\effective_activism\ContentMigration\Export\BatchProcess::process',
+                [
+                  $csvParser,
+                ],
+              ],
+            ],
+            'finished' => 'Drupal\effective_activism\ContentMigration\Export\BatchProcess::finished',
           ];
           batch_set($batch);
         }

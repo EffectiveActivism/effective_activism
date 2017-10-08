@@ -1,16 +1,18 @@
 <?php
 
-namespace Drupal\effective_activism\Helper\ImportParser;
+namespace Drupal\effective_activism\Migration\Import;
 
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\Import;
+use Drupal\effective_activism\Migration\ParserInterface;
+use Drupal\effective_activism\Migration\ParserValidationException;
 
 /**
  * Parses ICalendar.
  *
  * Rewritten from https://github.com/MartinThoma/ics-parser/.
  */
-class ICalendarParser extends EntityParser implements ParserInterface {
+class ICalendarParser extends EntityImportParser implements ParserInterface {
 
   const BATCHSIZE = 50;
   const ICALENDAR_DATETIME_FORMAT = 'Ymd\THis';

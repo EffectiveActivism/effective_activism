@@ -1,16 +1,18 @@
 <?php
 
-namespace Drupal\effective_activism\Helper\ImportParser;
+namespace Drupal\effective_activism\ContentMigration\Import;
 
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\Import;
 use Drupal\effective_activism\Helper\LocationHelper;
+use Drupal\effective_activism\ContentMigration\ParserInterface;
+use Drupal\effective_activism\ContentMigration\ParserValidationException;
 use Drupal\file\Entity\File;
 
 /**
- * Parses ICalendar.
+ * Parses CSV file.
  */
-class CSVParser extends EntityParser implements ParserInterface {
+class CSVParser extends EntityImportParser implements ParserInterface {
 
   const BATCHSIZE = 50;
 
@@ -331,7 +333,7 @@ class CSVParser extends EntityParser implements ParserInterface {
     $items = [];
     while (($row = fgetcsv($this->fileHandle)) !== FALSE) {
       // Skip to current row.
-      if ($this->row === 0 || $this->row < $position) {
+      if ($this->row === 0 || $this->row < $position + 1) {
         $this->row++;
         continue;
       }
@@ -349,23 +351,23 @@ class CSVParser extends EntityParser implements ParserInterface {
   /**
    * {@inheritdoc}
    */
-  public function importItem(array $values) {
+  public function processItem($item) {
     // Create event, if any.
-    if ($this->isEvent($values)) {
+    if ($this->isEvent($item)) {
       // Create result, if any.
-      $resultValues = $this->getValue($values, 'results');
-      $result = !empty($values[array_search('results', self::CSVHEADERFORMAT)]) ? $this->importResult($resultValues, reset($resultValues), $this->group) : NULL;
+      $resultValues = $this->getValue($item, 'results');
+      $result = !empty($item[array_search('results', self::CSVHEADERFORMAT)]) ? $this->importResult($resultValues, reset($resultValues), $this->group) : NULL;
       $resultId = !empty($result) ? $result->id() : NULL;
       // Create event.
       $this->latestEvent = $this->importEvent([
-        $values[array_search('title', self::CSVHEADERFORMAT)],
-        \DateTime::createFromFormat('Y-m-d H:i', $values[array_search('start_date', self::CSVHEADERFORMAT)])->format(DATETIME_DATETIME_STORAGE_FORMAT),
-        \DateTime::createFromFormat('Y-m-d H:i', $values[array_search('end_date', self::CSVHEADERFORMAT)])->format(DATETIME_DATETIME_STORAGE_FORMAT),
+        $item[array_search('title', self::CSVHEADERFORMAT)],
+        \DateTime::createFromFormat('Y-m-d H:i', $item[array_search('start_date', self::CSVHEADERFORMAT)])->format(DATETIME_DATETIME_STORAGE_FORMAT),
+        \DateTime::createFromFormat('Y-m-d H:i', $item[array_search('end_date', self::CSVHEADERFORMAT)])->format(DATETIME_DATETIME_STORAGE_FORMAT),
         [
-          'address' => $values[array_search('address', self::CSVHEADERFORMAT)],
-          'extra_information' => $values[array_search('address_extra_information', self::CSVHEADERFORMAT)],
+          'address' => $item[array_search('address', self::CSVHEADERFORMAT)],
+          'extra_information' => $item[array_search('address_extra_information', self::CSVHEADERFORMAT)],
         ],
-        $values[array_search('description', self::CSVHEADERFORMAT)],
+        $item[array_search('description', self::CSVHEADERFORMAT)],
         $resultId,
         $this->group->id(),
         NULL,
@@ -376,8 +378,8 @@ class CSVParser extends EntityParser implements ParserInterface {
     // Otherwise, create and add extra entities.
     elseif (!empty($this->latestEvent)) {
       // Create result, if any.
-      if (!empty($values[array_search('results', self::CSVHEADERFORMAT)]) && !empty($this->latestEvent)) {
-        $resultValues = $this->getValue($values, 'results');
+      if (!empty($item[array_search('results', self::CSVHEADERFORMAT)]) && !empty($this->latestEvent)) {
+        $resultValues = $this->getValue($item, 'results');
         $entity = $this->importResult($resultValues, reset($resultValues), $this->group);
         if ($entity) {
           // Attach to latest event.
