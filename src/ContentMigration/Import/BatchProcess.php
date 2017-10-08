@@ -3,6 +3,7 @@
 namespace Drupal\effective_activism\ContentMigration\Import;
 
 use Drupal;
+use Drupal\effective_activism\ContentMigration\ParserInterface;
 
 /**
  * Processes batches of entity imports.

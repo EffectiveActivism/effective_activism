@@ -3,6 +3,8 @@
 namespace Drupal\effective_activism\ContentMigration\Export;
 
 use Drupal;
+use Drupal\effective_activism\ContentMigration\ParserInterface;
+use Drupal\file\Entity\File;
 
 /**
  * Processes batches of entity exports.
@@ -44,8 +46,18 @@ class BatchProcess {
    */
   public static function finished($success, array $results, array $operations) {
     if ($success) {
-      // Create CSV file from results.
-      
+      // Convert result to CSV and save as file to export entity.
+      foreach ($results as $result) {
+        // Escape comma and quotes.
+        foreach ($result as $key => &$value) {
+          $value = strpos($value, ',') !== FALSE ? sprintf('"%s"', str_replace('"', '""', $value)) : str_replace('"', '""', $value);
+        }
+        $row = implode(',', $result);
+        $row = trim(preg_replace('/\s+/', ' ', $row));
+        $csv .= sprintf('%s%s', $row, PHP_EOL);
+      }
+      //$file = file_save_data($csv, 'public://druplicon.png', FILE_EXISTS_REPLACE);
+      dpm($csv);
       drupal_set_message(Drupal::translation()->formatPlural(
         count($results),
         'One item exported.',

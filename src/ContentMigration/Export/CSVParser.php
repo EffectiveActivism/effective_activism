@@ -37,6 +37,7 @@ class CSVParser implements ParserInterface {
     'created',
     'default_langcode',
     'external_uid',
+    'field_timestamp',
     'import',
     'langcode',
     'location',
