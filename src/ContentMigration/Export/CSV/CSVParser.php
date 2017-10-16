@@ -1,12 +1,13 @@
 <?php
 
-namespace Drupal\effective_activism\ContentMigration\Export;
+namespace Drupal\effective_activism\ContentMigration\Export\CSV;
 
 use Drupal;
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\effective_activism\Entity\EventInterface;
-use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\Event;
+use Drupal\effective_activism\Entity\EventInterface;
+use Drupal\effective_activism\Entity\Export;
+use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Helper\GroupHelper;
 use Drupal\effective_activism\ContentMigration\ParserInterface;
 use Drupal\effective_activism\ContentMigration\ParserValidationException;
@@ -17,19 +18,6 @@ use Drupal\effective_activism\ContentMigration\ParserValidationException;
 class CSVParser implements ParserInterface {
 
   const BATCHSIZE = 10;
-
-  const CSVHEADERFORMAT = [
-    'start_date',
-    'end_date',
-    'address',
-    'address_extra_information',
-    'latitude',
-    'longitude',
-    'title',
-    'description',
-    'results',
-    'third_party_content',
-  ];
 
   const FIELDS_BLACKLIST = [
     'id',
@@ -58,20 +46,6 @@ class CSVParser implements ParserInterface {
   ];
 
   /**
-   * CSV filepath.
-   *
-   * @var string
-   */
-  private $filePath;
-
-  /**
-   * CSV file.
-   *
-   * @var resource
-   */
-  private $fileHandle;
-
-  /**
    * Item count.
    *
    * @var int
@@ -86,48 +60,23 @@ class CSVParser implements ParserInterface {
   private $group;
 
   /**
-   * The current row number.
+   * Export.
    *
-   * @var int
+   * @var \Drupal\effective_activism\Entity\Export
    */
-  private $row = 0;
-
-  /**
-   * The current column number.
-   *
-   * @var int
-   */
-  private $column = 0;
-
-  /**
-   * Tracks the latest read result.
-   *
-   * @var Result
-   */
-  private $latestResult;
-
-  /**
-   * Tracks the latest read third-party content.
-   *
-   * @var Result
-   */
-  private $latestThirdPartyContent;
-
-  /**
-   * Any validation error message.
-   *
-   * @var array
-   */
-  private $errorMessage;
+  private $export;
 
   /**
    * Creates the CSVParser Object.
    *
    * @param \Drupal\effective_activism\Entity\Group $group
    *   The group to export events from.
+   * @param \Drupal\effective_activism\Entity\Export $export
+   *   The export to save the file to.
    */
-  public function __construct(Group $group) {
+  public function __construct(Group $group, Export $export) {
     $this->group = $group;
+    $this->export = $export;
     $this->setItemCount();
     return $this;
   }
@@ -143,7 +92,16 @@ class CSVParser implements ParserInterface {
    * {@inheritdoc}
    */
   public function getErrorMessage() {
-    return $this->errorMessage;
+    return NULL;
+  }
+
+  /**
+   * Return the export entity.
+   *
+   * @return \Drupal\effective_activism\Entity\Export
+   */
+  public function getExportEntity() {
+    return $this->export;
   }
 
   /**
@@ -176,7 +134,6 @@ class CSVParser implements ParserInterface {
     $row = [];
     foreach ($event->toArray() as $field_name => $data) {
       if (!in_array($field_name, self::FIELDS_BLACKLIST)) {
-        $row[$field_name] = NULL;
         if (isset($data[0])) {
           foreach ($data as $delta => $properties) {
             foreach ($properties as $key => $value) {
@@ -186,7 +143,8 @@ class CSVParser implements ParserInterface {
                   break;
 
                 case 'target_id':
-                  $row[$field_name][] = $this->unpackEntityReference($event, $field_name);
+                  $referenced_entity = $this->unpackEntityReference($event, $field_name);
+                  $row[key($referenced_entity)][] = current($referenced_entity);
                   break;
               }
             }
@@ -201,13 +159,6 @@ class CSVParser implements ParserInterface {
         $row['longitude'] = $data[0]['longitude'];
       }
     }
-    // Sort array by CSV header format.
-    $row = array_merge(array_flip(self::CSVHEADERFORMAT), $row);
-    foreach ($row as &$cell) {
-      if (is_array($cell)) {
-        $cell = json_encode($cell);
-      }
-    }
     return $row;
   }
 
@@ -220,7 +171,7 @@ class CSVParser implements ParserInterface {
    *   The field name of the parent entity reference field.
    *
    * @return string
-   *   A CSV cell-friendly representation of the entity.
+   *   An array of the entity fields, with the entity bundle id as key.
    */
   private function unpackEntityReference(EntityInterface $parent_entity, $parent_field_name) {
     // Set entity type/import name.
@@ -228,9 +179,9 @@ class CSVParser implements ParserInterface {
     $bundle_id = $parent_entity->get($parent_field_name)->entity->bundle();
     $bundle = Drupal::entityTypeManager()->getStorage($bundle_entity_type)->load($bundle_id);
     if ($bundle && $bundle->get('importname') !== NULL) {
-      $pieces['type'] = $bundle->get('importname');
+      $entity_identifier = $bundle->get('importname');
     } else {
-      $pieces['type'] = $parent_entity->get($parent_field_name)->entity->bundle();
+      $entity_identifier = $parent_entity->get($parent_field_name)->entity->bundle();
     }
     // Iterate entity fields.
     foreach ($parent_entity->get($parent_field_name)->entity->toArray() as $field_name => $data) {
@@ -250,7 +201,9 @@ class CSVParser implements ParserInterface {
         }
       }
     }
-    return $pieces;
+    return [
+      $entity_identifier => $pieces,
+    ];
   }
 
 }
