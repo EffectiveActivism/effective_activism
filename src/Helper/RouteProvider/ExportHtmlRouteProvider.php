@@ -67,7 +67,7 @@ class ExportHtmlRouteProvider extends DefaultHtmlRouteProvider {
       $operation = 'publish';
       $route
         ->setDefaults([
-          '_form' => '\Drupal\effective_activism\Form\ExportPublishForm',
+          '_form' => '\Drupal\effective_activism\Form\Export\ExportPublishForm',
           '_title' => "Publish {$entity_type->getLabel()}",
         ])
         ->setRequirement('_entity_access', "{$entity_type_id}.update")
