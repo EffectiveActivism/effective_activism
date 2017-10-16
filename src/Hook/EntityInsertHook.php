@@ -2,7 +2,7 @@
 
 namespace Drupal\effective_activism\Hook;
 
-use Drupal\effective_activism\ContentMigration\Export\CSVParser as ExportCSVParser;
+use Drupal\effective_activism\ContentMigration\Export\CSV\CSVParser as ExportCSVParser;
 use Drupal\effective_activism\ContentMigration\Import\CSVParser as ImportCSVParser;
 
 /**
@@ -62,18 +62,18 @@ class EntityInsertHook implements HookInterface {
           $field_file_csv = $entity->get('field_file_csv')->getValue();
           $group = $entity->get('parent')->entity;
           // Get CSV file.
-          $csvParser = new ExportCSVParser($group);
+          $csvParser = new ExportCSVParser($group, $entity);
           $batch = [
             'title' => t('Exporting...'),
             'operations' => [
               [
-                'Drupal\effective_activism\ContentMigration\Export\BatchProcess::process',
+                'Drupal\effective_activism\ContentMigration\Export\CSV\BatchProcess::process',
                 [
                   $csvParser,
                 ],
               ],
             ],
-            'finished' => 'Drupal\effective_activism\ContentMigration\Export\BatchProcess::finished',
+            'finished' => 'Drupal\effective_activism\ContentMigration\Export\CSV\BatchProcess::finished',
           ];
           batch_set($batch);
         }
