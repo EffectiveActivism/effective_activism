@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\effective_activism\Helper\ImportParser;
+namespace Drupal\effective_activism\ContentMigration;
 
 use Exception;
 

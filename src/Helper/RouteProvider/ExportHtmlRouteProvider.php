@@ -7,11 +7,11 @@ use Drupal\Core\Entity\Routing\DefaultHtmlRouteProvider;
 use Symfony\Component\Routing\Route;
 
 /**
- * Provides routes for Import entities.
+ * Provides routes for Export entities.
  *
  * @see Drupal\Core\Entity\Routing\DefaultHtmlRouteProvider
  */
-class ImportHtmlRouteProvider extends DefaultHtmlRouteProvider {
+class ExportHtmlRouteProvider extends DefaultHtmlRouteProvider {
 
   /**
    * {@inheritdoc}
@@ -67,7 +67,7 @@ class ImportHtmlRouteProvider extends DefaultHtmlRouteProvider {
       $operation = 'publish';
       $route
         ->setDefaults([
-          '_form' => '\Drupal\effective_activism\Form\Import\ImportPublishForm',
+          '_form' => '\Drupal\effective_activism\Form\Export\ExportPublishForm',
           '_title' => "Publish {$entity_type->getLabel()}",
         ])
         ->setRequirement('_entity_access', "{$entity_type_id}.update")

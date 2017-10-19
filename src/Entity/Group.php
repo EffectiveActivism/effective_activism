@@ -52,6 +52,7 @@ use Drupal\user\UserInterface;
  *     "collection" = "/manage/groups",
  *     "events" = "/manage/groups/{group}/events",
  *     "imports" = "/manage/groups/{group}/imports",
+ *     "exports" = "/manage/groups/{group}/exports",
  *     "results" = "/manage/groups/{group}/results",
  *   },
  * )
