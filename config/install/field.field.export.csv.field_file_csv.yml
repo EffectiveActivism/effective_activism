@@ -1,0 +1,26 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.export_type.csv
+    - field.storage.export.field_file_csv
+  module:
+    - file
+id: export.csv.field_file_csv
+field_name: field_file_csv
+entity_type: export
+bundle: csv
+label: 'CSV file'
+description: 'Generate a CSV formatted file.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  file_directory: 'export/csv/[date:custom:Y]-[date:custom:m]'
+  file_extensions: csv
+  max_filesize: ''
+  description_field: false
+  handler: 'default:file'
+  handler_settings: {  }
+field_type: file

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\effective_activism\Helper\ImportParser;
+namespace Drupal\effective_activism\ContentMigration\Import;
 
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\effective_activism\Entity\Data;
@@ -13,7 +13,7 @@ use Drupal\taxonomy\Entity\Term;
 /**
  * Entity parsing functions.
  */
-abstract class EntityParser {
+abstract class EntityImportParser {
 
   const INVALID_HEADERS = -1;
 

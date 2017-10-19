@@ -39,8 +39,9 @@ class ManagementToolboxController extends ControllerBase {
         $access = AccountHelper::isManager($this->entity->get('organization')->entity);
         break;
 
-      case 'import':
       case 'event':
+      case 'export':
+      case 'import':
         $access = AccountHelper::isManager($this->entity->get('parent')->entity->get('organization')->entity);
         break;
     }

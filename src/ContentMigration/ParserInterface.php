@@ -1,16 +1,16 @@
 <?php
 
-namespace Drupal\effective_activism\Helper\ImportParser;
+namespace Drupal\effective_activism\ContentMigration;
 
 /**
- * Provides an interface for defining Parser objects.
+ * Provides an interface for defining import/export parsers.
  *
  * @ingroup effective_activism
  */
 interface ParserInterface {
 
   /**
-   * Get the number of items to be imported.
+   * Get the number of items to be processed.
    *
    * @return int
    *   The number of items to import.
@@ -18,26 +18,26 @@ interface ParserInterface {
   public function getItemCount();
 
   /**
-   * Get the items to be imported.
+   * Get the items to be processed.
    *
    * @param int $position
    *   The position to start from.
    *
    * @return array
-   *   The items to import.
+   *   The items to process.
    */
   public function getNextBatch($position);
 
   /**
-   * Imports parsed items.
+   * Process parsed items.
    *
-   * @param array $values
-   *   The values to map to an entity.
+   * @param mixed $item
+   *   The values to parse.
    *
    * @return int|bool
    *   Returns item entity id or FALSE if import failed.
    */
-  public function importItem(array $values);
+  public function processItem($item);
 
   /**
    * Validates items.
