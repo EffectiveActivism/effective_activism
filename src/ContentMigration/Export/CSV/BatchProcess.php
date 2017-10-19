@@ -47,49 +47,11 @@ class BatchProcess {
    */
   public static function finished($success, array $results, array $operations) {
     if ($success) {
-      // Convert result to CSV and save as file to export entity.
-      $rows = [];
-      foreach ($results['items'] as $result) {
-        $row = [];
-        // Escape comma and quotes.
-        foreach ($result as $key => $value) {
-          if (is_array($value)) {
-            foreach ($value as $entityArray) {
-              $row = array_merge($row, self::collapseEntityArray($key, $entityArray));
-            }
-          }
-          else {
-            $row[$key] = self::formatValue($value);
-          }
-        }
-        $rows[] = $row;
-      }
-      // Calculate headers and force some column names to be first.
-      $headers = [
-        'title',
-        'description',
-      ];
-      foreach ($rows as $row) {
-        $keys = array_keys($row);
-        $headers = array_unique(array_merge($headers, $keys));
-      }
-      $csv = sprintf('%s%s', implode(',', $headers), PHP_EOL);
-      // Build row order from headers.
-      foreach ($rows as $row) {
-        // Sort row by headers.
-        $csv_row = [];
-        foreach ($headers as $header) {
-          if (isset($row[$header])) {
-            $csv_row[] = self::formatValue($row[$header]);
-          }
-          else {
-            $csv_row[] = NULL;
-          }
-        }
-        $csv .= sprintf('%s%s', trim(preg_replace('/\s+/', ' ', implode(',', $csv_row))), PHP_EOL);
-      }
+      $rows = $results['items'];
+      $headers = CSVParser::buildHeaders($rows);
+      $csv = CSVParser::convertToCSV($rows, $headers);
       // Save CSV string to file and attach it to export entity.
-      $random_string = strtolower(preg_replace("/[^A-Za-z0-9 ]/", '', (new Random)->string(5)));
+      $random_string = strtolower(preg_replace('/[^A-Za-z0-9 ]/', '', (new Random)->string(5)));
       $destination_uri = sprintf('%s://export/csv/%s/export-%d-%s.csv', file_default_scheme(), date('Y-m'), $results['export_entity']->id(), $random_string);
       $file = file_save_data($csv, $destination_uri);
       if ($file) {
@@ -110,29 +72,6 @@ class BatchProcess {
     else {
       drupal_set_message(t('An error occured during export.'), 'error');
     }
-  }
-
-  /**
-   * 
-   */
-  private static function collapseEntityArray($entity_bundle_id, $array) {
-    $row = [];
-    foreach ($array as $field_name => $value) {
-      if (is_array($value)) {
-        $row = array_merge($row, self::collapseEntityArray(sprintf('%s_%s', $entity_bundle_id, $field_name), $value));
-      }
-      else {
-        $row[sprintf('%s_%s', $entity_bundle_id, $field_name)] = self::formatValue($value);
-      }
-    }
-    return $row;
-  }
-
-  /**
-   * 
-   */
-  private static function formatValue($value) {
-    return strpos($value, ',') !== FALSE ? sprintf('"%s"', str_replace('"', '""', $value)) : str_replace('"', '""', $value);
   }
 
 }

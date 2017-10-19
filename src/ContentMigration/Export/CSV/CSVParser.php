@@ -159,6 +159,19 @@ class CSVParser implements ParserInterface {
         $row['longitude'] = $data[0]['longitude'];
       }
     }
+    // Convert values to CSV-formatted strings.
+    foreach ($row as $key => $value) {
+      if (is_array($value)) {
+        foreach ($value as $entityArray) {
+          unset($row[$key]);
+          // This will overwrite preceding entity references of the same type.
+          $row = array_merge($row, $this->collapseEntityArray($key, $entityArray));
+        }
+      }
+      else {
+        $row[$key] = $this->formatValue($value);
+      }
+    }
     return $row;
   }
 
@@ -204,6 +217,94 @@ class CSVParser implements ParserInterface {
     return [
       $entity_identifier => $pieces,
     ];
+  }
+
+  /**
+   * Recusively collapses an entity array to a CSV-formatted string.
+   *
+   * @param string $entity_bundle_id
+   *   The entity array bundle.
+   * @param array $array
+   *   The entity array to collapse.
+   *
+   * @return array
+   *   Array with entity bundle id as key and CSV-formatted string as value.
+   */
+  private function collapseEntityArray($entity_bundle_id, $array) {
+    $row = [];
+    foreach ($array as $field_name => $value) {
+      if (is_array($value)) {
+        $row = array_merge($row, $this->collapseEntityArray(sprintf('%s_%s', $entity_bundle_id, $field_name), $value));
+      }
+      else {
+        $row[sprintf('%s_%s', $entity_bundle_id, $field_name)] = self::formatValue($value);
+      }
+    }
+    return $row;
+  }
+
+  /**
+   * Format a string to CSV.
+   *
+   * @param string $value
+   *   A string to format.
+   *
+   * @return string
+   *   A CSV-formatted string.
+   */
+  private function formatValue($value) {
+    return strpos($value, ',') !== FALSE ? sprintf('"%s"', str_replace('"', '""', $value)) : str_replace('"', '""', $value);
+  }
+
+  /**
+   * Calculate headers.
+   *
+   * @param array $rows
+   *   A row of CSV formatted strings with header keys.
+   *
+   * @return array
+   *   A header row containing all header keys.
+   */
+  public static function buildHeaders($rows) {
+    // Force some column names to be first.
+    $headers = [
+      'title',
+    ];
+    foreach ($rows as $row) {
+      $keys = array_keys($row);
+      $headers = array_unique(array_merge($headers, $keys));
+    }
+    return $headers;
+  }
+
+  /**
+   * Convert array to a CSV-formatted string.
+   *
+   * @param array $rows
+   *   A row of CSV-formatted strings.
+   * @param array $headers
+   *   An array of header values to include and sort by.
+   *
+   * @return string
+   *   A CSV-formatted string.
+   */
+  public static function convertToCSV($rows, $headers) {
+    $csv = sprintf('%s%s', implode(',', $headers), PHP_EOL);
+    // Build row order from headers.
+    foreach ($rows as $row) {
+      // Sort row by headers.
+      $csv_row = [];
+      foreach ($headers as $header) {
+        if (isset($row[$header])) {
+          $csv_row[] = $row[$header];
+        }
+        else {
+          $csv_row[] = NULL;
+        }
+      }
+      $csv .= sprintf('%s%s', trim(preg_replace('/\s+/', ' ', implode(',', $csv_row))), PHP_EOL);
+    }
+    return $csv;
   }
 
 }
