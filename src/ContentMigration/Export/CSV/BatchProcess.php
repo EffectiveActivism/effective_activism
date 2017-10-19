@@ -16,7 +16,7 @@ class BatchProcess {
    * Parse content.
    *
    * @param Drupal\effective_activism\ContentMigration\ParserInterface $parser
-   *   The parser object to import items with.
+   *   The parser object to export items with.
    * @param array $context
    *   The context.
    */
@@ -41,7 +41,7 @@ class BatchProcess {
    * @param bool $success
    *   Wether or not any fatal PHP errors were encountered.
    * @param array $results
-   *   The result of the import.
+   *   The result of the export.
    * @param array $operations
    *   The operations performed.
    */

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\effective_activism\ContentMigration\Import;
+namespace Drupal\effective_activism\ContentMigration\Import\CSV;
 
 use Drupal;
 use Drupal\effective_activism\ContentMigration\ParserInterface;
@@ -21,7 +21,7 @@ class BatchProcess {
   public static function process(ParserInterface $parser, array &$context) {
     // Set inital batch values.
     if (empty($context['sandbox'])) {
-      $context['sandbox']['progress'] = 0;
+      $context['sandbox']['progress'] = 1;
     }
     $context['message'] = t('Importing items...');
     foreach ($parser->getNextBatch($context['sandbox']['progress']) as $item) {
