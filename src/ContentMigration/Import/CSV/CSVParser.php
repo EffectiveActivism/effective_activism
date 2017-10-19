@@ -1,10 +1,12 @@
 <?php
 
-namespace Drupal\effective_activism\ContentMigration\Import;
+namespace Drupal\effective_activism\ContentMigration\Import\CSV;
 
+use DateTime;
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\Import;
 use Drupal\effective_activism\Helper\LocationHelper;
+use Drupal\effective_activism\ContentMigration\Import\EntityImportParser;
 use Drupal\effective_activism\ContentMigration\ParserInterface;
 use Drupal\effective_activism\ContentMigration\ParserValidationException;
 use Drupal\file\Entity\File;
@@ -333,7 +335,7 @@ class CSVParser extends EntityImportParser implements ParserInterface {
     $items = [];
     while (($row = fgetcsv($this->fileHandle)) !== FALSE) {
       // Skip to current row.
-      if ($this->row === 0 || $this->row < $position + 1) {
+      if ($this->row === 0 || $this->row < $position) {
         $this->row++;
         continue;
       }
@@ -361,8 +363,8 @@ class CSVParser extends EntityImportParser implements ParserInterface {
       // Create event.
       $this->latestEvent = $this->importEvent([
         $item[array_search('title', self::CSVHEADERFORMAT)],
-        \DateTime::createFromFormat('Y-m-d H:i', $item[array_search('start_date', self::CSVHEADERFORMAT)])->format(DATETIME_DATETIME_STORAGE_FORMAT),
-        \DateTime::createFromFormat('Y-m-d H:i', $item[array_search('end_date', self::CSVHEADERFORMAT)])->format(DATETIME_DATETIME_STORAGE_FORMAT),
+        DateTime::createFromFormat('Y-m-d H:i', $item[array_search('start_date', self::CSVHEADERFORMAT)])->format(DATETIME_DATETIME_STORAGE_FORMAT),
+        DateTime::createFromFormat('Y-m-d H:i', $item[array_search('end_date', self::CSVHEADERFORMAT)])->format(DATETIME_DATETIME_STORAGE_FORMAT),
         [
           'address' => $item[array_search('address', self::CSVHEADERFORMAT)],
           'extra_information' => $item[array_search('address_extra_information', self::CSVHEADERFORMAT)],

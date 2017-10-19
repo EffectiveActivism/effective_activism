@@ -6,8 +6,8 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\effective_activism\Entity\Event;
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\Import;
-use Drupal\effective_activism\ContentMigration\Import\CSVParser;
-use Drupal\effective_activism\ContentMigration\Import\ICalendarParser;
+use Drupal\effective_activism\ContentMigration\Import\CSV\CSVParser;
+use Drupal\effective_activism\ContentMigration\Import\CSV\ICalendarParser;
 
 /**
  * Helper functions for querying groups.

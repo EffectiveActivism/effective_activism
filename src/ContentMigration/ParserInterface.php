@@ -13,7 +13,7 @@ interface ParserInterface {
    * Get the number of items to be processed.
    *
    * @return int
-   *   The number of items to import.
+   *   The number of items to process.
    */
   public function getItemCount();
 

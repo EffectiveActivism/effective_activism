@@ -3,7 +3,7 @@
 namespace Drupal\effective_activism\Hook;
 
 use Drupal\effective_activism\ContentMigration\Export\CSV\CSVParser as ExportCSVParser;
-use Drupal\effective_activism\ContentMigration\Import\CSVParser as ImportCSVParser;
+use Drupal\effective_activism\ContentMigration\Import\CSV\CSVParser as ImportCSVParser;
 
 /**
  * Implements hook_entity_insert().
@@ -44,13 +44,13 @@ class EntityInsertHook implements HookInterface {
             'title' => t('Importing...'),
             'operations' => [
               [
-                'Drupal\effective_activism\ContentMigration\Import\BatchProcess::process',
+                'Drupal\effective_activism\ContentMigration\Import\CSV\BatchProcess::process',
                 [
                   $csvParser,
                 ],
               ],
             ],
-            'finished' => 'Drupal\effective_activism\ContentMigration\Import\BatchProcess::finished',
+            'finished' => 'Drupal\effective_activism\ContentMigration\Import\CSV\BatchProcess::finished',
           ];
           batch_set($batch);
         }
