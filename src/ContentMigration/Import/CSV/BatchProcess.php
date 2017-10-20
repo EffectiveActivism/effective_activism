@@ -46,7 +46,7 @@ class BatchProcess {
   public static function finished($success, array $results, array $operations) {
     if ($success) {
       drupal_set_message(Drupal::translation()->formatPlural(
-        count($results),
+        count(array_unique($results, SORT_NUMERIC)),
         'One item imported.',
         '@count items imported.'
       ));
