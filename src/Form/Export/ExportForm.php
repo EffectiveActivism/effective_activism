@@ -28,6 +28,8 @@ class ExportForm extends ContentEntityForm {
         // Restrict access to new export entities.
         $form['field_file_csv']['#disabled'] = TRUE;
         $form['field_file_csv']['#attributes']['class'][] = 'hidden';
+        // Add validation.
+        $form['#validate'][] = 'Drupal\effective_activism\Helper\ExportHelper::validateCsv';
         break;
 
       case 'export_csv_edit_form':
