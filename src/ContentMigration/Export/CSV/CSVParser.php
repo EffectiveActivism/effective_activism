@@ -230,7 +230,7 @@ class CSVParser implements ParserInterface {
    * @return array
    *   Array with entity bundle id as key and CSV-formatted string as value.
    */
-  private function collapseEntityArray($entity_bundle_id, $array) {
+  private function collapseEntityArray($entity_bundle_id, array $array) {
     $row = [];
     foreach ($array as $field_name => $value) {
       if (is_array($value)) {
@@ -265,7 +265,7 @@ class CSVParser implements ParserInterface {
    * @return array
    *   A header row containing all header keys.
    */
-  public static function buildHeaders($rows) {
+  public static function buildHeaders(array $rows) {
     // Force some column names to be first.
     $headers = [
       'title',
@@ -288,7 +288,7 @@ class CSVParser implements ParserInterface {
    * @return string
    *   A CSV-formatted string.
    */
-  public static function convert($rows, $headers) {
+  public static function convert(array $rows, array $headers) {
     $csv = sprintf('%s%s', implode(',', $headers), PHP_EOL);
     // Build row order from headers.
     foreach ($rows as $row) {

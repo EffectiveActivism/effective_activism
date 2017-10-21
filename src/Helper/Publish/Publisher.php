@@ -49,7 +49,7 @@ class Publisher {
     switch (get_class($entity)) {
       case 'Drupal\effective_activism\Entity\Organization':
         $entities[] = [$entity->getEntityTypeId(), $entity->id()];
-        $groups = \Drupal::entityQuery('group')
+        $groups = Drupal::entityQuery('group')
           ->condition('organization', $entity->id())
           ->execute();
         if (!empty($groups)) {
@@ -61,7 +61,7 @@ class Publisher {
 
       case 'Drupal\effective_activism\Entity\Group':
         $entities[] = [$entity->getEntityTypeId(), $entity->id()];
-        $events = \Drupal::entityQuery('event')
+        $events = Drupal::entityQuery('event')
           ->condition('parent', $entity->id())
           ->execute();
         if (!empty($events)) {
@@ -69,7 +69,7 @@ class Publisher {
             $entities = array_merge($entities, self::calculateEntities($event));
           }
         }
-        $imports = \Drupal::entityQuery('import')
+        $imports = Drupal::entityQuery('import')
           ->condition('parent', $entity->id())
           ->execute();
         if (!empty($imports)) {
@@ -77,11 +77,19 @@ class Publisher {
             $entities[] = [$import->getEntityTypeId(), $import->id()];
           }
         }
+        $exports = Drupal::entityQuery('export')
+          ->condition('parent', $entity->id())
+          ->execute();
+        if (!empty($exports)) {
+          foreach (Import::loadMultiple($exports) as $export) {
+            $entities[] = [$export->getEntityTypeId(), $export->id()];
+          }
+        }
         break;
 
       case 'Drupal\effective_activism\Entity\Import':
         $entities[] = [$entity->getEntityTypeId(), $entity->id()];
-        $events = \Drupal::entityQuery('event')
+        $events = Drupal::entityQuery('event')
           ->condition('import', $entity->id())
           ->execute();
         if (!empty($events)) {
