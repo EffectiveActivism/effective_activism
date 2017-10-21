@@ -13,7 +13,7 @@ class BatchProcess {
   /**
    * Parse content.
    *
-   * @param Drupal\effective_activism\ContentMigration\ParserInterface $parser
+   * @param \Drupal\effective_activism\ContentMigration\ParserInterface $parser
    *   The parser object to import items with.
    * @param array $context
    *   The context.

@@ -5,7 +5,6 @@ namespace Drupal\effective_activism\ContentMigration\Export\CSV;
 use Drupal;
 use Drupal\Component\Utility\Random;
 use Drupal\effective_activism\ContentMigration\ParserInterface;
-use Drupal\file\Entity\File;
 
 /**
  * Processes batches of entity exports.
@@ -15,7 +14,7 @@ class BatchProcess {
   /**
    * Parse content.
    *
-   * @param Drupal\effective_activism\ContentMigration\ParserInterface $parser
+   * @param \Drupal\effective_activism\ContentMigration\ParserInterface $parser
    *   The parser object to export items with.
    * @param array $context
    *   The context.
@@ -49,7 +48,7 @@ class BatchProcess {
     if ($success) {
       $rows = $results['items'];
       $headers = CSVParser::buildHeaders($rows);
-      $csv = CSVParser::convertToCSV($rows, $headers);
+      $csv = CSVParser::convert($rows, $headers);
       // Save CSV string to file and attach it to export entity.
       $random_string = strtolower(preg_replace('/[^A-Za-z0-9 ]/', '', (new Random)->string(5)));
       $destination_uri = sprintf('%s://export/csv/%s/export-%d-%s.csv', file_default_scheme(), date('Y-m'), $results['export_entity']->id(), $random_string);

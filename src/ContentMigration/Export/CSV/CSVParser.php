@@ -5,12 +5,10 @@ namespace Drupal\effective_activism\ContentMigration\Export\CSV;
 use Drupal;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\effective_activism\Entity\Event;
-use Drupal\effective_activism\Entity\EventInterface;
 use Drupal\effective_activism\Entity\Export;
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Helper\GroupHelper;
 use Drupal\effective_activism\ContentMigration\ParserInterface;
-use Drupal\effective_activism\ContentMigration\ParserValidationException;
 
 /**
  * Parses entities to CSV.
@@ -99,6 +97,7 @@ class CSVParser implements ParserInterface {
    * Return the export entity.
    *
    * @return \Drupal\effective_activism\Entity\Export
+   *   The export entity.
    */
   public function getExportEntity() {
     return $this->export;
@@ -193,7 +192,8 @@ class CSVParser implements ParserInterface {
     $bundle = Drupal::entityTypeManager()->getStorage($bundle_entity_type)->load($bundle_id);
     if ($bundle && $bundle->get('importname') !== NULL) {
       $entity_identifier = $bundle->get('importname');
-    } else {
+    }
+    else {
       $entity_identifier = $parent_entity->get($parent_field_name)->entity->bundle();
     }
     // Iterate entity fields.
@@ -288,7 +288,7 @@ class CSVParser implements ParserInterface {
    * @return string
    *   A CSV-formatted string.
    */
-  public static function convertToCSV($rows, $headers) {
+  public static function convert($rows, $headers) {
     $csv = sprintf('%s%s', implode(',', $headers), PHP_EOL);
     // Build row order from headers.
     foreach ($rows as $row) {
