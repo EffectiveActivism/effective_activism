@@ -7,6 +7,7 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\Event;
 use Drupal\effective_activism\Entity\Import;
+use Drupal\effective_activism\Entity\Export;
 
 /**
  * Helper functions for publishing/unpublishing entities.
@@ -81,7 +82,7 @@ class Publisher {
           ->condition('parent', $entity->id())
           ->execute();
         if (!empty($exports)) {
-          foreach (Import::loadMultiple($exports) as $export) {
+          foreach (Export::loadMultiple($exports) as $export) {
             $entities[] = [$export->getEntityTypeId(), $export->id()];
           }
         }
