@@ -49,6 +49,14 @@ class BatchProcess {
       $rows = $results['items'];
       $headers = CSVParser::buildHeaders($rows);
       $csv = CSVParser::convert($rows, $headers);
+      // Create directory structure beforehand, otherwise saving will fail.
+      $path = drupal_realpath(file_default_scheme() . '://') . sprintf('/export/csv/%s', date('Y-m'));
+      if (!file_exists($path)) {
+        if (!mkdir($path, 0775, TRUE)) {
+          drupal_set_message(t('An error occured during export.'), 'error');
+          return;
+        }
+      }
       // Save CSV string to file and attach it to export entity.
       $random_string = strtolower(preg_replace('/[^A-Za-z0-9 ]/', '', (new Random)->string(5)));
       $destination_uri = sprintf('%s://export/csv/%s/export-%d-%s.csv', file_default_scheme(), date('Y-m'), $results['export_entity']->id(), $random_string);
