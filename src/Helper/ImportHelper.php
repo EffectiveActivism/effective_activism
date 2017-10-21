@@ -10,7 +10,7 @@ use Drupal\effective_activism\ContentMigration\Import\CSV\CSVParser;
 use Drupal\effective_activism\ContentMigration\Import\CSV\ICalendarParser;
 
 /**
- * Helper functions for querying groups.
+ * Helper functions for querying imports.
  */
 class ImportHelper {
 
