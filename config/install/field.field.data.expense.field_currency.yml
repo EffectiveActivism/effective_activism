@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.data_type.expense
+    - field.storage.data.field_currency
+  module:
+    - options
+id: data.expense.field_currency
+field_name: field_currency
+entity_type: data
+bundle: expense
+label: Currency
+description: ''
+required: true
+translatable: false
+default_value:
+  -
+    value: eur
+default_value_callback: ''
+settings: {  }
+field_type: list_string
