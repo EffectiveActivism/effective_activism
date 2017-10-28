@@ -1,0 +1,6 @@
+langcode: en
+status: true
+dependencies: {  }
+id: expense
+label: Expense
+description: 'Type in the amount of expenses and select your currency. This value should reflect the amount of money that the particular outreach event spent, not your total campaign expenses.'

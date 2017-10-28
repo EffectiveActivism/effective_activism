@@ -1,0 +1,24 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.data_type.income
+    - field.storage.data.field_transaction
+id: data.income.field_transaction
+field_name: field_transaction
+entity_type: data
+bundle: income
+label: Income
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: !!float 0
+default_value_callback: ''
+settings:
+  min: !!float 0
+  max: !!float 999999
+  prefix: ''
+  suffix: ''
+field_type: decimal

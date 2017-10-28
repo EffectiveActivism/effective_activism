@@ -1,0 +1,50 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - effective_activism
+    - options
+id: data.field_currency
+field_name: field_currency
+entity_type: data
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: aud
+      label: 'AUD - Australian dollar'
+    -
+      value: brl
+      label: 'BRL - Brazilian real'
+    -
+      value: can
+      label: 'CAN - Canadian dollar'
+    -
+      value: dkk
+      label: 'DKK - Danish krone'
+    -
+      value: eur
+      label: 'EUR - Euro'
+    -
+      value: gbp
+      label: 'GBP - British pound'
+    -
+      value: nok
+      label: 'NOK - Norwegian krone'
+    -
+      value: nzd
+      label: 'NZD - New Zealand dollar'
+    -
+      value: sek
+      label: 'SEK - Swedish krone'
+    -
+      value: usd
+      label: 'USD - US dollar'
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

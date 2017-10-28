@@ -1,0 +1,27 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.data_type.income
+    - field.field.data.income.field_transaction
+    - field.field.data.income.field_currency
+id: data.income.default
+targetEntityType: data
+bundle: income
+mode: default
+content:
+  field_transaction:
+    weight: 1
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
+  field_currency:
+    weight: 2
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: list_default
+hidden: {  }

@@ -1,0 +1,19 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - effective_activism
+id: data.field_transaction
+field_name: field_transaction
+entity_type: data
+type: decimal
+settings:
+  precision: 10
+  scale: 2
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

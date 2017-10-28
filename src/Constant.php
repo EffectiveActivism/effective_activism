@@ -52,6 +52,13 @@ class Constant {
         'paid_views' => 'paid_views',
       ],
     ],
+    'fundraising' => [
+      'label' => 'Fundraising',
+      'description' => 'Gather monetary contributions by donations such as door to door collections or on the street.',
+      'datatypes' => [
+        'income' => 'income',
+      ],
+    ],
   ];
 
   const GROUP_DEFAULT_VALUES = [
