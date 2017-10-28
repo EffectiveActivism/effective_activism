@@ -1,0 +1,6 @@
+langcode: en
+status: true
+dependencies: {  }
+id: income
+label: Income
+description: 'Type in the amount of income and select your currency. This value should reflect the amount of money that your outreach event has generated without substracting expenses and any taxes.'
