@@ -286,8 +286,8 @@ class CSVParser extends EntityImportParser implements ParserInterface {
     if ($this->isEvent($row)) {
       $values = [
         $row[array_search('title', self::CSVHEADERFORMAT)],
-        $row[array_search('start_date', self::CSVHEADERFORMAT)],
-        $row[array_search('end_date', self::CSVHEADERFORMAT)],
+        DateTime::createFromFormat('Y-m-d H:i', $row[array_search('start_date', self::CSVHEADERFORMAT)])->format(DATETIME_DATETIME_STORAGE_FORMAT),
+        DateTime::createFromFormat('Y-m-d H:i', $row[array_search('end_date', self::CSVHEADERFORMAT)])->format(DATETIME_DATETIME_STORAGE_FORMAT),
         [
           'address' => $row[array_search('address', self::CSVHEADERFORMAT)],
           'extra_information' => $row[array_search('address_extra_information', self::CSVHEADERFORMAT)],
