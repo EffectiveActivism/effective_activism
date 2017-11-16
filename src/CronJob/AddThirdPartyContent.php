@@ -44,7 +44,6 @@ class AddThirdPartyContent {
     // Add demographics.
     $event_ids_without_demographics = ThirdPartyContentHelper::getEventsWithoutThirdPartyContentType(Constant::THIRD_PARTY_CONTENT_TYPE_DEMOGRAPHICS, self::BATCH_SIZE);
     if (!empty($event_ids_without_demographics)) {
-      $event_count = 0;
       foreach ($event_ids_without_demographics as $id) {
         $event = Event::load($id);
         // Create or get matching third-party content.
