@@ -1,3 +1,4 @@
+uuid: 4e145bf2-0191-4f15-a59c-8ab62936268f
 langcode: en
 status: true
 dependencies:
@@ -8,7 +9,7 @@ id: third_party_content.demographics.field_male_population
 field_name: field_male_population
 entity_type: third_party_content
 bundle: demographics
-label: Total male population
+label: 'Total male population'
 description: 'The total male population within a set distance of the specified location.'
 required: true
 translatable: false

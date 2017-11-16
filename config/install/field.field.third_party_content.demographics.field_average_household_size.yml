@@ -1,3 +1,4 @@
+uuid: bbb5d8b4-75f6-4f03-98d5-ada9920b0333
 langcode: en
 status: true
 dependencies:
@@ -8,16 +9,16 @@ id: third_party_content.demographics.field_average_household_size
 field_name: field_average_household_size
 entity_type: third_party_content
 bundle: demographics
-label: Average household size
+label: 'Average household size'
 description: 'The average household size within a set distance of the specified location.'
 required: false
 translatable: false
 default_value:
   -
-    value: 0
+    value: !!float 0
 default_value_callback: ''
 settings:
-  min: 0
+  min: !!float 0
   max: null
   prefix: ''
   suffix: ''

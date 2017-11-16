@@ -1,3 +1,4 @@
+uuid: 73b6b6e7-5dd9-48f0-ae15-fb87e23f1823
 langcode: en
 status: true
 dependencies:
@@ -8,7 +9,7 @@ id: third_party_content.demographics.field_total_population
 field_name: field_total_population
 entity_type: third_party_content
 bundle: demographics
-label: Total population
+label: 'Total population'
 description: 'The total population within a set distance of the specified location.'
 required: true
 translatable: false

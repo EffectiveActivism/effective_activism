@@ -1,3 +1,4 @@
+uuid: 95d83b27-6e00-43cb-9207-cf84ddbcf19a
 langcode: en
 status: true
 dependencies:
@@ -15,46 +16,53 @@ targetEntityType: third_party_content
 bundle: demographics
 mode: default
 content:
-  field_latitude:
-    weight: 1
-    settings:
-      placeholder: 'Latitude'
-    third_party_settings: {  }
-    type: number
-  field_longitude:
-    weight: 2
-    settings:
-      placeholder: 'Longitude'
-    third_party_settings: {  }
-    type: number
-  field_total_population:
-    weight: 3
-    settings:
-      placeholder: 'Total population'
-    third_party_settings: {  }
-    type: number
-  field_total_households:
-    weight: 4
-    settings:
-      placeholder: 'Total households'
-    third_party_settings: {  }
-    type: number
   field_average_household_size:
     weight: 5
     settings:
       placeholder: 'Average household size'
     third_party_settings: {  }
     type: number
-  field_male_population:
-    weight: 6
-    settings:
-      placeholder: 'Total male population'
-    third_party_settings: {  }
-    type: number
+    region: content
   field_female_population:
     weight: 7
     settings:
       placeholder: 'Total female population'
     third_party_settings: {  }
     type: number
+    region: content
+  field_latitude:
+    weight: 1
+    settings:
+      placeholder: Latitude
+    third_party_settings: {  }
+    type: number
+    region: content
+  field_longitude:
+    weight: 2
+    settings:
+      placeholder: Longitude
+    third_party_settings: {  }
+    type: number
+    region: content
+  field_male_population:
+    weight: 6
+    settings:
+      placeholder: 'Total male population'
+    third_party_settings: {  }
+    type: number
+    region: content
+  field_total_households:
+    weight: 4
+    settings:
+      placeholder: 'Total households'
+    third_party_settings: {  }
+    type: number
+    region: content
+  field_total_population:
+    weight: 3
+    settings:
+      placeholder: 'Total population'
+    third_party_settings: {  }
+    type: number
+    region: content
 hidden: {  }

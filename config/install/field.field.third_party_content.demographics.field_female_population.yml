@@ -1,3 +1,4 @@
+uuid: 410a8aae-b7b0-4732-8cdd-6a0929e60f14
 langcode: en
 status: true
 dependencies:
@@ -8,7 +9,7 @@ id: third_party_content.demographics.field_female_population
 field_name: field_female_population
 entity_type: third_party_content
 bundle: demographics
-label: Total female population
+label: 'Total female population'
 description: 'The total female population within a set distance of the specified location.'
 required: true
 translatable: false

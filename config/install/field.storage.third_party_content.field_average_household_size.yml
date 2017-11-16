@@ -1,3 +1,4 @@
+uuid: b997d252-3320-4bbd-8269-459b6fa71d3c
 langcode: en
 status: true
 dependencies:
@@ -7,9 +8,7 @@ id: third_party_content.field_average_household_size
 field_name: field_average_household_size
 entity_type: third_party_content
 type: float
-settings:
-  unsigned: false
-  size: normal
+settings: {  }
 module: core
 locked: false
 cardinality: 1
