@@ -1,0 +1,60 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.third_party_content_type.demographics
+    - field.field.third_party_content.demographics.field_latitude
+    - field.field.third_party_content.demographics.field_longitude
+    - field.field.third_party_content.demographics.field_total_population
+    - field.field.third_party_content.demographics.field_total_households
+    - field.field.third_party_content.demographics.field_average_household_size
+    - field.field.third_party_content.demographics.field_male_population
+    - field.field.third_party_content.demographics.field_female_population
+id: third_party_content.demographics.default
+targetEntityType: third_party_content
+bundle: demographics
+mode: default
+content:
+  field_latitude:
+    weight: 1
+    settings:
+      placeholder: 'Latitude'
+    third_party_settings: {  }
+    type: number
+  field_longitude:
+    weight: 2
+    settings:
+      placeholder: 'Longitude'
+    third_party_settings: {  }
+    type: number
+  field_total_population:
+    weight: 3
+    settings:
+      placeholder: 'Total population'
+    third_party_settings: {  }
+    type: number
+  field_total_households:
+    weight: 4
+    settings:
+      placeholder: 'Total households'
+    third_party_settings: {  }
+    type: number
+  field_average_household_size:
+    weight: 5
+    settings:
+      placeholder: 'Average household size'
+    third_party_settings: {  }
+    type: number
+  field_male_population:
+    weight: 6
+    settings:
+      placeholder: 'Total male population'
+    third_party_settings: {  }
+    type: number
+  field_female_population:
+    weight: 7
+    settings:
+      placeholder: 'Total female population'
+    third_party_settings: {  }
+    type: number
+hidden: {  }

@@ -44,4 +44,32 @@ class ThirdPartyContentHelper {
     return $third_party_content;
   }
 
+  /**
+   * 
+   * Return events without a reference to a third-party content entity of type.
+   *
+   * @param string $type
+   *   A third-party entity type.
+   * @param int $batch_size
+   *   Number of events to return.
+   *
+   * @return array
+   *   A list of event ids of events that do not reference a third-party content
+   *   entity of the specified type.
+   */
+  public static function getEventsWithoutThirdPartyContentType($type, $batch_size) {
+    $event_ids = [];
+    // Look for events without weather information.
+    $query = Drupal::entityQuery('event');
+    $group = $query->orConditionGroup()
+      ->condition('third_party_content.entity.type', $type, '!=')
+      ->notExists('third_party_content');
+    $query
+      ->condition('status', 1)
+      ->condition($group)
+      ->range(0, $batch_size);
+    $event_ids = $query->execute();
+    return $event_ids;
+  }
+
 }

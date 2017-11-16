@@ -1,0 +1,6 @@
+langcode: en
+status: true
+dependencies: {  }
+id: demographics
+label: Demographics
+description: 'Stores demographical data within a specific location.'

@@ -1,0 +1,24 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.third_party_content_type.demographics
+    - field.storage.third_party_content.field_total_households
+id: third_party_content.demographics.field_total_households
+field_name: field_total_households
+entity_type: third_party_content
+bundle: demographics
+label: Total households
+description: 'The total number of households within a set distance of the specified location.'
+required: true
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  min: 0
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

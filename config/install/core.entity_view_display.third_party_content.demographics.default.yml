@@ -1,0 +1,74 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.third_party_content_type.demographics
+    - field.field.third_party_content.demographics.field_latitude
+    - field.field.third_party_content.demographics.field_longitude
+    - field.field.third_party_content.demographics.field_total_population
+    - field.field.third_party_content.demographics.field_total_households
+    - field.field.third_party_content.demographics.field_average_household_size
+    - field.field.third_party_content.demographics.field_male_population
+    - field.field.third_party_content.demographics.field_female_population
+id: third_party_content.demographics.default
+targetEntityType: third_party_content
+bundle: demographics
+mode: default
+content:
+  field_latitude:
+    weight: 1
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_decimal
+  field_longitude:
+    weight: 2
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_decimal
+  field_total_population:
+    weight: 3
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
+  field_total_households:
+    weight: 4
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
+  field_average_household_size:
+    weight: 5
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_decimal
+  field_male_population:
+    weight: 6
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
+  field_female_population:
+    weight: 7
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
+hidden: {  }
