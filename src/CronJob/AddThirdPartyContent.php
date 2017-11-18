@@ -32,6 +32,10 @@ class AddThirdPartyContent {
           'field_longitude' => $event->get('location')->longitude,
           'field_timestamp' => $event->get('start_date')->date->format('U'),
         ]);
+        if ($weather_information === FALSE) {
+          Drupal::logger('effective_activism')->warning(sprintf('Failed to create weather information for event with id %s', $id));
+          return;
+        }
         // Add entity to event.
         $event->third_party_content[] = [
           'target_id' => $weather_information->id(),
@@ -52,6 +56,10 @@ class AddThirdPartyContent {
           'field_latitude' => $event->get('location')->latitude,
           'field_longitude' => $event->get('location')->longitude,
         ]);
+        if ($demographics === FALSE) {
+          Drupal::logger('effective_activism')->warning(sprintf('Failed to create demographics for event with id %s', $id));
+          return;
+        }
         // Add entity to event.
         $event->third_party_content[] = [
           'target_id' => $demographics->id(),

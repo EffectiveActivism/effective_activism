@@ -3,6 +3,7 @@
 namespace Drupal\effective_activism\Helper;
 
 use Drupal;
+use Drupal\Core\Entity\EntityStorageException;
 use Drupal\effective_activism\Entity\ThirdPartyContent;
 
 /**
@@ -38,7 +39,12 @@ class ThirdPartyContentHelper {
     else {
       $parameters['status'] = 0;
       $third_party_content = ThirdPartyContent::create($parameters);
-      $third_party_content->save();
+      try {
+        $third_party_content->save();
+      }
+      catch (EntityStorageException $exception) {
+        return FALSE;
+      }
     }
     return $third_party_content;
   }
@@ -58,17 +64,21 @@ class ThirdPartyContentHelper {
    */
   public static function getEventsWithoutThirdPartyContentType($type, $batch_size) {
     $event_ids = [];
-    // Look for events without weather information.
+    // Look for events with third-party content.
     $query = Drupal::entityQuery('event');
-    $group = $query->orConditionGroup()
-      ->condition('third_party_content.entity.type', $type, '!=')
-      ->notExists('third_party_content');
     $query
-      ->condition('status', 1)
-      ->condition($group)
-      ->range(0, $batch_size);
-    $event_ids = $query->execute();
-    return $event_ids;
+      ->exists('location.latitude')
+      ->exists('location.longitude');
+    $all_events_ids = $query->execute();
+    // Look for events with third-party content.
+    $query = Drupal::entityQuery('event');
+    $query
+      ->exists('location.latitude')
+      ->exists('location.longitude')
+      ->condition('third_party_content.entity.type', $type)
+      ->condition('status', 1);
+    $positive_events_ids = $query->execute();
+    return array_slice(array_diff(array_values($all_events_ids), array_values($positive_events_ids)), 0, $batch_size);
   }
 
 }

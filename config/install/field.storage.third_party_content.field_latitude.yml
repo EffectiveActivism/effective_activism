@@ -1,3 +1,4 @@
+uuid: 13db3b8b-fc1b-436f-9774-519d839c42b1
 langcode: en
 status: true
 dependencies:
@@ -6,10 +7,10 @@ dependencies:
 id: third_party_content.field_latitude
 field_name: field_latitude
 entity_type: third_party_content
-type: float
+type: decimal
 settings:
-  unsigned: false
-  size: normal
+  precision: 18
+  scale: 14
 module: core
 locked: false
 cardinality: 1
