@@ -22,16 +22,46 @@ class ArcGis extends ThirdPartyApi {
   // The diameter to get demographics from.
   const AREA_DIAMETER = 1;
 
-  private $client_id;
+  /**
+   * ArcGIS client id.
+   *
+   * @var string
+   */
+  private $clientid;
 
-  private $client_secret;
+  /**
+   * ArcGIS client secret.
+   *
+   * @var string
+   */
+  private $secret;
 
-  private $access_token;
+  /**
+   * ArcGIS token.
+   *
+   * @var string
+   */
+  private $token;
 
-  private $access_token_timestamp;
+  /**
+   * Token timestamp.
+   *
+   * @var int
+   */
+  private $timestamp;
 
+  /**
+   * Latitude.
+   *
+   * @var float
+   */
   private $latitude;
 
+  /**
+   * Longitude.
+   *
+   * @var float
+   */
   private $longitude;
 
   /**
@@ -42,11 +72,10 @@ class ArcGis extends ThirdPartyApi {
     if ($this->thirdpartycontent->getType() !== Constant::THIRD_PARTY_CONTENT_TYPE_DEMOGRAPHICS) {
       throw new ArcGisException('Wrong third-party content type.');
     }
-    $this->client_id = Drupal::config('effective_activism.settings')->get('arcgis_client_id');
-    $this->client_secret = Drupal::config('effective_activism.settings')->get('arcgis_client_secret');
-    $this->access_token = Drupal::config('effective_activism.settings')->get('arcgis_access_token');
-    $this->access_token_timestamp = Drupal::config('effective_activism.settings')->get('arcgis_access_token_timestamp');
-    
+    $this->clientid = Drupal::config('effective_activism.settings')->get('arcgis_client_id');
+    $this->secret = Drupal::config('effective_activism.settings')->get('arcgis_client_secret');
+    $this->token = Drupal::config('effective_activism.settings')->get('arcgis_access_token');
+    $this->timestamp = Drupal::config('effective_activism.settings')->get('arcgis_access_token_timestamp');
     $this->thirdpartycontent = $third_party_content;
     $this->latitude = $third_party_content->get('field_latitude')->value;
     $this->longitude = $third_party_content->get('field_longitude')->value;
@@ -59,22 +88,22 @@ class ArcGis extends ThirdPartyApi {
   public function request() {
     // Proceed only if the required data is available.
     if (
-      !empty($this->client_id) &&
-      !empty($this->client_secret) &&
+      !empty($this->clientid) &&
+      !empty($this->secret) &&
       !empty($this->latitude) &&
       !empty($this->latitude)
     ) {
       try {
         // If access token is empty or expired, request a new.
-        if (empty($this->access_token) || $this->access_token_timestamp + self::API_TOKEN_LIFETIME < time()) {
+        if (empty($this->token) || $this->timestamp + self::API_TOKEN_LIFETIME < time()) {
           $request = Drupal::httpClient()->request(
             'POST',
             self::AUTH_URL,
             [
               'form_params' => [
                 'f' => 'json',
-                'client_id' => $this->client_id,
-                'client_secret' => $this->client_secret,
+                'client_id' => $this->clientid,
+                'client_secret' => $this->secret,
                 'grant_type' => 'client_credentials',
                 'expiration' => (int) floor(self::API_TOKEN_LIFETIME / 60),
               ],
@@ -87,11 +116,11 @@ class ArcGis extends ThirdPartyApi {
               json_last_error() === JSON_ERROR_NONE &&
               !empty($data->access_token)
             ) {
-              $this->access_token = $data->access_token;
+              $this->token = $data->access_token;
               // Update access token and timestamp setting.
               $effective_activism_settings = Drupal::configFactory()->getEditable('effective_activism.settings');
               $effective_activism_settings
-                ->set('arcgis_access_token', $this->access_token)
+                ->set('arcgis_access_token', $this->token)
                 ->set('arcgis_access_token_timestamp', time())
                 ->save(TRUE);
             }
@@ -109,7 +138,7 @@ class ArcGis extends ThirdPartyApi {
           [
             'form_params' => [
               'f' => 'json',
-              'token' => $this->access_token,
+              'token' => $this->token,
               'inSR' => 4326,
               'outSR' => 4326,
               'returnGeometry' => 'true',
