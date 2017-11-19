@@ -1,0 +1,25 @@
+uuid: bbb5d8b4-75f6-4f03-98d5-ada9920b0333
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.third_party_content_type.demographics
+    - field.storage.third_party_content.field_average_household_size
+id: third_party_content.demographics.field_average_household_size
+field_name: field_average_household_size
+entity_type: third_party_content
+bundle: demographics
+label: 'Average household size'
+description: 'The average household size within a set distance of the specified location.'
+required: false
+translatable: false
+default_value:
+  -
+    value: !!float 0
+default_value_callback: ''
+settings:
+  min: !!float 0
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: float

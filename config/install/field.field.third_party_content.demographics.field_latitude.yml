@@ -1,14 +1,14 @@
-uuid: cc7a5dcc-2b99-4c7f-969b-e7f72fab9016
+uuid: ba406a0b-5b6f-4937-b41a-0bace1621b4f
 langcode: en
 status: true
 dependencies:
   config:
-    - effective_activism.third_party_content_type.weather_information
+    - effective_activism.third_party_content_type.demographics
     - field.storage.third_party_content.field_latitude
-id: third_party_content.weather_information.field_latitude
+id: third_party_content.demographics.field_latitude
 field_name: field_latitude
 entity_type: third_party_content
-bundle: weather_information
+bundle: demographics
 label: Latitude
 description: ''
 required: true

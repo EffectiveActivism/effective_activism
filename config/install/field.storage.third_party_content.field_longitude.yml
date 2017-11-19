@@ -1,3 +1,4 @@
+uuid: b25daf08-92e4-47f0-a642-f5afda84c1c8
 langcode: en
 status: true
 dependencies:
@@ -6,10 +7,10 @@ dependencies:
 id: third_party_content.field_longitude
 field_name: field_longitude
 entity_type: third_party_content
-type: float
+type: decimal
 settings:
-  unsigned: false
-  size: normal
+  precision: 18
+  scale: 14
 module: core
 locked: false
 cardinality: 1

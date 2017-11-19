@@ -5,6 +5,7 @@ namespace Drupal\effective_activism\CronJob;
 use Drupal;
 use Drupal\effective_activism\Constant;
 use Drupal\effective_activism\Entity\ThirdPartyContent;
+use Drupal\effective_activism\ThirdPartyApi\ArcGis;
 use Drupal\effective_activism\ThirdPartyApi\DarkSky;
 use Drupal\effective_activism\ThirdPartyApi\ThirdPartyApiException;
 
@@ -35,6 +36,10 @@ class PopulateThirdPartyContent {
           switch ($third_party_content->getType()) {
             case Constant::THIRD_PARTY_CONTENT_TYPE_WEATHER_INFORMATION:
               $api = new DarkSky($third_party_content);
+              break;
+
+            case Constant::THIRD_PARTY_CONTENT_TYPE_DEMOGRAPHICS:
+              $api = new ArcGis($third_party_content);
               break;
 
           }

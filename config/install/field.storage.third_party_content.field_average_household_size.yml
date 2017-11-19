@@ -1,16 +1,14 @@
-uuid: 13db3b8b-fc1b-436f-9774-519d839c42b1
+uuid: b997d252-3320-4bbd-8269-459b6fa71d3c
 langcode: en
 status: true
 dependencies:
   module:
     - effective_activism
-id: third_party_content.field_latitude
-field_name: field_latitude
+id: third_party_content.field_average_household_size
+field_name: field_average_household_size
 entity_type: third_party_content
-type: decimal
-settings:
-  precision: 18
-  scale: 14
+type: float
+settings: {  }
 module: core
 locked: false
 cardinality: 1

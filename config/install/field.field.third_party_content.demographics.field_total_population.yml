@@ -1,0 +1,25 @@
+uuid: 73b6b6e7-5dd9-48f0-ae15-fb87e23f1823
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.third_party_content_type.demographics
+    - field.storage.third_party_content.field_total_population
+id: third_party_content.demographics.field_total_population
+field_name: field_total_population
+entity_type: third_party_content
+bundle: demographics
+label: 'Total population'
+description: 'The total population within a set distance of the specified location.'
+required: true
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  min: 0
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

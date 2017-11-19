@@ -1,0 +1,7 @@
+uuid: abe967eb-541b-4e04-a902-246b40aea687
+langcode: en
+status: true
+dependencies: {  }
+id: demographics
+label: Demographics
+description: 'Stores demographical data within a specific location.'

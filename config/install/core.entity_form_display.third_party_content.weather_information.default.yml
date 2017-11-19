@@ -1,3 +1,4 @@
+uuid: 65e65cc2-2d22-41c5-a41c-fa6a278a1884
 langcode: en
 status: true
 dependencies:
@@ -19,45 +20,53 @@ content:
   field_latitude:
     weight: 1
     settings:
-      placeholder: 'Latitude'
+      placeholder: Latitude
     third_party_settings: {  }
     type: number
+    region: content
   field_longitude:
     weight: 2
     settings:
-      placeholder: 'Longitude'
+      placeholder: Longitude
     third_party_settings: {  }
     type: number
-  field_timestamp:
-    weight: 3
-    settings:
-      placeholder: 'Timestamp'
+    region: content
+  field_precipitation_intensity:
+    weight: 6
+    settings: {  }
     third_party_settings: {  }
     type: number
+    region: content
+  field_precipitation_type:
+    weight: 5
+    settings: {  }
+    third_party_settings: {  }
+    type: options_select
+    region: content
   field_temperature:
     weight: 4
     settings:
-      placeholder: 'Temperature'
+      placeholder: Temperature
     third_party_settings: {  }
     type: number
-  field_precipitation_type:
-    weight: 5
-    settings: { }
-    third_party_settings: {  }
-    type: options_select
-  field_precipitation_intensity:
-    weight: 6
-    settings: { }
+    region: content
+  field_timestamp:
+    weight: 3
+    settings:
+      placeholder: Timestamp
     third_party_settings: {  }
     type: number
-  field_windspeed:
-    weight: 7
-    settings: { }
-    third_party_settings: {  }
-    type: number
+    region: content
   field_visibility:
     weight: 8
-    settings: { }
+    settings: {  }
     third_party_settings: {  }
     type: number
+    region: content
+  field_windspeed:
+    weight: 7
+    settings: {  }
+    third_party_settings: {  }
+    type: number
+    region: content
 hidden: {  }
