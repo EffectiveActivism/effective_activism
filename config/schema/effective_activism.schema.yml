@@ -11,3 +11,15 @@ effective_activism.settings:
     darksky_api_key:
       type: string
       label: 'The Darksky API key'
+    arcgis_client_id:
+      type: string
+      label: 'The ArcGis client id'
+    arcgis_client_secret:
+      type: string
+      label: 'The ArcGis secret'
+    arcgis_access_token:
+      type: string
+      label: 'The ArcGis Access token'
+    arcgis_access_token_timestamp:
+      type: integer
+      label: 'The ArcGis token generation timestamp'

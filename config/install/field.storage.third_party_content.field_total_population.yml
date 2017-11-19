@@ -1,16 +1,16 @@
-uuid: 13db3b8b-fc1b-436f-9774-519d839c42b1
+uuid: 567d639b-3729-4ba5-9f1c-3c3860d0d172
 langcode: en
 status: true
 dependencies:
   module:
     - effective_activism
-id: third_party_content.field_latitude
-field_name: field_latitude
+id: third_party_content.field_total_population
+field_name: field_total_population
 entity_type: third_party_content
-type: decimal
+type: integer
 settings:
-  precision: 18
-  scale: 14
+  unsigned: false
+  size: normal
 module: core
 locked: false
 cardinality: 1

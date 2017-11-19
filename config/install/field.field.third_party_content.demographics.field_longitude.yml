@@ -1,14 +1,14 @@
-uuid: 9fdf180d-3f8f-4d61-abc6-2595a99573e6
+uuid: a4063f3f-58c4-4b84-9a44-56e27ea9a05c
 langcode: en
 status: true
 dependencies:
   config:
-    - effective_activism.third_party_content_type.weather_information
+    - effective_activism.third_party_content_type.demographics
     - field.storage.third_party_content.field_longitude
-id: third_party_content.weather_information.field_longitude
+id: third_party_content.demographics.field_longitude
 field_name: field_longitude
 entity_type: third_party_content
-bundle: weather_information
+bundle: demographics
 label: Longitude
 description: ''
 required: true

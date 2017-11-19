@@ -77,7 +77,7 @@ class DarkSky extends ThirdPartyApi {
             }
           }
           else {
-            throw new DarkSkyException('Malformed JSON string.');
+            throw new DarkSkyException(sprintf('Unexpected format on JSON string: %s', substr($response, 0, 1000)));
           }
         }
         else {

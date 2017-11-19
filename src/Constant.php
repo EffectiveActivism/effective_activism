@@ -89,6 +89,7 @@ class Constant {
    * Third-party content types.
    */
   const THIRD_PARTY_CONTENT_TYPE_WEATHER_INFORMATION = 'weather_information';
+  const THIRD_PARTY_CONTENT_TYPE_DEMOGRAPHICS = 'demographics';
 
   /**
    * Cache tags.
