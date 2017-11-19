@@ -50,7 +50,6 @@ class ThirdPartyContentHelper {
   }
 
   /**
-   * 
    * Return events without a reference to a third-party content entity of type.
    *
    * @param string $type
