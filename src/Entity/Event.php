@@ -170,6 +170,7 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
       ->setLabel(t('Start date'))
       ->setDescription(t('The beginning of the event.'))
       ->setRevisionable(TRUE)
+      ->setRequired(TRUE)
       ->setSettings([
         'default_value' => '',
         'text_processing' => 0,
@@ -193,6 +194,7 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
       ->setLabel(t('End date'))
       ->setDescription(t('The end of the event.'))
       ->setRevisionable(TRUE)
+      ->setRequired(TRUE)
       ->setSettings([
         'default_value' => '',
         'text_processing' => 0,
