@@ -16,6 +16,14 @@ class ArcGis extends ThirdPartyApi {
 
   const API_URL = 'https://geoenrich.arcgis.com/arcgis/rest/services/World/geoenrichmentserver/Geoenrichment/Enrich';
 
+  const API_INFO = 'https://arcgis.com/sharing/rest/portals/self';
+
+  // The maximum credit usage per month.
+  const API_MAX = 50.0;
+
+  // A warning threshold for credit usage.
+  const API_THRESHOLD = 10.0;
+
   // Access tokens are valid for two weeks.
   const API_TOKEN_LIFETIME = 1209600;
 
@@ -185,6 +193,77 @@ class ArcGis extends ThirdPartyApi {
     }
     // Save third-party content entity.
     parent::request();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function status() {
+    $credits = NULL;
+    try {
+      $request = Drupal::httpClient()->request(
+        'POST',
+        self::API_INFO,
+        [
+          'form_params' => [
+            'f' => 'json',
+            'token' => Drupal::config('effective_activism.settings')->get('arcgis_access_token'),
+          ],
+        ]
+      );
+      $response = $request->getBody()->getContents();
+      if (!empty($response)) {
+        $data = json_decode($response);
+        if (
+          json_last_error() === JSON_ERROR_NONE &&
+          !empty($data->subscriptionInfo->availableCredits)
+        ) {
+          $credits = $data->subscriptionInfo->availableCredits;
+          switch ($credits) {
+            case $credits >= self::API_THRESHOLD:
+              $status = REQUIREMENT_OK;
+              $description = sprintf('You have %d credits out of %d left for this month.', $credits, self::API_MAX);
+              break;
+
+            case $credits < self::API_THRESHOLD:
+              $status = REQUIREMENT_WARNING;
+              $description = sprintf('You have less than %d credits left for this month. %d out of %d remain.', self::API_THRESHOLD, $credits, self::API_MAX);
+              break;
+
+            case $credits = 0:
+              $status = REQUIREMENT_ERROR;
+              $description = sprintf('You have no credits left for this month. No more API calls can be made.');
+              break;
+          }
+        }
+        else {
+          $status = REQUIREMENT_ERROR;
+          $description = 'Failed to parse JSON response from ArcGIS API';
+        }
+      }
+      else {
+        $status = REQUIREMENT_ERROR;
+        $description = 'Empty JSON response from ArcGIS API';
+      }
+    }
+    catch (BadResponseException $exception) {
+      $status = REQUIREMENT_ERROR;
+      $description = 'Bad response exception: ' . $exception->getMessage();
+    }
+    catch (RequestException $exception) {
+      $status = REQUIREMENT_ERROR;
+      $description = 'Request exception: ' . $exception->getMessage();
+    }
+    catch (ClientException $exception) {
+      $status = REQUIREMENT_ERROR;
+      $description = 'Client exception: ' . $exception->getMessage();
+    }
+    return [
+      'title' => 'Third-party content API ArcGIS',
+      'value' => $credits,
+      'description' => $description,
+      'severity' => $status,
+    ];
   }
 
 }

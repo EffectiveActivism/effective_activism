@@ -12,6 +12,7 @@ use Drupal\effective_activism\Hook\ElementInfoAlterHook;
 use Drupal\effective_activism\Hook\EntityInsertHook;
 use Drupal\effective_activism\Hook\InlineEntityFormEntityFormAlterHook;
 use Drupal\effective_activism\Hook\MailHook;
+use Drupal\effective_activism\Hook\RequirementsHook;
 
 /**
  * Implements hook_inline_entity_form_entity_form_alter().
@@ -61,5 +62,15 @@ function effective_activism_mail($key, &$message, $params) {
     'key' => $key,
     'message' => &$message,
     'params' => $params,
+  ]);
+}
+
+/**
+ * Implements hook_requirements().
+ */
+function effective_activism_requirements($phase) {
+  $hook = RequirementsHook::getInstance();
+  return $hook->invoke([
+    'phase' => $phase,
   ]);
 }

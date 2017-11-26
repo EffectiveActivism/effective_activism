@@ -16,6 +16,12 @@ class DarkSky extends ThirdPartyApi {
 
   const UNITS = 'si';
 
+  // The maximum number of API calls per day.
+  const API_MAX = 1000;
+
+  // A warning threshold for API calls.
+  const API_THRESHOLD = 800;
+
   private $key;
 
   private $latitude;
@@ -96,6 +102,59 @@ class DarkSky extends ThirdPartyApi {
     }
     // Save third-party content entity.
     parent::request();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function status() {
+    $calls = NULL;
+    try {
+      $url = sprintf('%s/%s/%s,%s', self::API_URL, Drupal::config('effective_activism.settings')->get('darksky_api_key'), '42.3601', '-71.0589');
+      $request = Drupal::httpClient()->get($url);
+      $header = $request->getHeader('X-Forecast-API-Calls');
+      if (!empty($header) && is_array($header) && is_numeric($header[0])) {
+        $calls = $header[0];
+        switch ($calls) {
+          case $calls < self::API_THRESHOLD:
+            $status = REQUIREMENT_OK;
+            $description = sprintf('You have made %d calls out of %d for today.', $calls, self::API_MAX);
+            break;
+
+          case $calls < self::API_THRESHOLD:
+            $status = REQUIREMENT_WARNING;
+            $description = sprintf('You have less than %d calls left for today. %d out of %d remain.', self::API_THRESHOLD, $calls, self::API_MAX);
+            break;
+
+          case $calls >= self::API_MAX:
+            $status = REQUIREMENT_ERROR;
+            $description = sprintf('You have no API calls left for today.');
+            break;
+        }
+      }
+      else {
+        $status = REQUIREMENT_ERROR;
+        $description = 'Failed to read response header from Dark Sky API';
+      }
+    }
+    catch (BadResponseException $exception) {
+      $status = REQUIREMENT_ERROR;
+      $description = 'Bad response exception: ' . $exception->getMessage();
+    }
+    catch (RequestException $exception) {
+      $status = REQUIREMENT_ERROR;
+      $description = 'Request exception: ' . $exception->getMessage();
+    }
+    catch (ClientException $exception) {
+      $status = REQUIREMENT_ERROR;
+      $description = 'Client exception: ' . $exception->getMessage();
+    }
+    return [
+      'title' => 'Third-party content API Dark Sky',
+      'value' => $calls,
+      'description' => $description,
+      'severity' => $status,
+    ];
   }
 
 }
