@@ -33,7 +33,7 @@ abstract class ThirdPartyApi {
   /**
    * Get API status.
    *
-   * @return $array
+   * @return array
    *   A requirement array with the current status of the API usage.
    */
   public static function status() {
