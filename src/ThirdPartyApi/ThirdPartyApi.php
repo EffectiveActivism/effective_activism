@@ -30,4 +30,18 @@ abstract class ThirdPartyApi {
     $this->thirdpartycontent->save();
   }
 
+  /**
+   * Get API status.
+   *
+   * @return $array
+   *   A requirement array with the current status of the API usage.
+   */
+  public static function status() {
+    return [
+      'title' => self::class,
+      'description' => t('Missing API status'),
+      'severity' => REQUIREMENT_ERROR,
+    ];
+  }
+
 }
