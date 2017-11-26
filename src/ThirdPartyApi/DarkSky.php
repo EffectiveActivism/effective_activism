@@ -14,6 +14,7 @@ class DarkSky extends ThirdPartyApi {
 
   const API_URL = 'https://api.darksky.net/forecast';
 
+  // The units to use for measurements.
   const UNITS = 'si';
 
   // The maximum number of API calls per day.
@@ -22,12 +23,32 @@ class DarkSky extends ThirdPartyApi {
   // A warning threshold for API calls.
   const API_THRESHOLD = 800;
 
+  /**
+   * Dark Sky API key.
+   *
+   * @var string
+   */
   private $key;
 
+  /**
+   * Latitude.
+   *
+   * @var float
+   */
   private $latitude;
 
+  /**
+   * Longitude.
+   *
+   * @var float
+   */
   private $longitude;
 
+  /**
+   * Timestamp.
+   *
+   * @var int
+   */
   private $time;
 
   /**
