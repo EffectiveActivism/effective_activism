@@ -1,0 +1,100 @@
+uuid: 9831ae87-c1d2-482b-870f-f03dadd6cb07
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.third_party_content_type.extended_location_information
+    - field.field.third_party_content.extended_location_information.field_latitude
+    - field.field.third_party_content.extended_location_information.field_longitude
+id: third_party_content.extended_location_information.default
+targetEntityType: third_party_content
+bundle: extended_location_information
+mode: default
+content:
+  field_address_area_level_1:
+    weight: 3
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_address_area_level_2:
+    weight: 4
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_address_area_level_3:
+    weight: 5
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_address_country:
+    weight: 6
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_address_locality:
+    weight: 7
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_address_neighborhood:
+    weight: 8
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_address_postal_code:
+    weight: 9
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_address_street:
+    weight: 10
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_address_sublocality:
+    weight: 11
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_latitude:
+    weight: 1
+    settings:
+      placeholder: Latitude
+    third_party_settings: {  }
+    type: number
+    region: content
+  field_longitude:
+    weight: 2
+    settings:
+      placeholder: Longitude
+    third_party_settings: {  }
+    type: number
+    region: content
+hidden: {  }

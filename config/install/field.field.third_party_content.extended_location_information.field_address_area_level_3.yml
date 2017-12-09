@@ -1,0 +1,19 @@
+uuid: 9589aac1-2c96-46ad-a1c1-1f8cbad89eb1
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.third_party_content_type.extended_location_information
+    - field.storage.third_party_content.field_address_area_level_3
+id: third_party_content.extended_location_information.field_address_area_level_3
+field_name: field_address_area_level_3
+entity_type: third_party_content
+bundle: extended_location_information
+label: 'Administrative area level 3'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

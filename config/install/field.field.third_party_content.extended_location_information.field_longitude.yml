@@ -1,0 +1,25 @@
+uuid: 62028b28-c19f-432d-9a4a-e23cceb54338
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.third_party_content_type.extended_location_information
+    - field.storage.third_party_content.field_longitude
+id: third_party_content.extended_location_information.field_longitude
+field_name: field_longitude
+entity_type: third_party_content
+bundle: extended_location_information
+label: Longitude
+description: ''
+required: true
+translatable: false
+default_value:
+  -
+    value: !!float 0
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: decimal

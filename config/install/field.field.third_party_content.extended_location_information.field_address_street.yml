@@ -1,0 +1,19 @@
+uuid: 1370aaeb-b1dc-49b8-b0ef-532172c5d636
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.third_party_content_type.extended_location_information
+    - field.storage.third_party_content.field_address_street
+id: third_party_content.extended_location_information.field_address_street
+field_name: field_address_street
+entity_type: third_party_content
+bundle: extended_location_information
+label: 'Street name'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string
