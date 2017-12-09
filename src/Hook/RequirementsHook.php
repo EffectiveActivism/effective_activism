@@ -4,6 +4,7 @@ namespace Drupal\effective_activism\Hook;
 
 use Drupal\effective_activism\ThirdPartyApi\ArcGis;
 use Drupal\effective_activism\ThirdPartyApi\DarkSky;
+use Drupal\effective_activism\ThirdPartyApi\GoogleMaps;
 
 /**
  * Implements hook_requirements().
@@ -36,6 +37,7 @@ class RequirementsHook implements HookInterface {
     if ($phase === 'runtime') {
       $requirements['effective_activism-arcgis'] = ArcGis::status();
       $requirements['effective_activism-darksky'] = Darksky::status();
+      $requirements['effective_activism-googlemaps'] = GoogleMaps::status();
     }
     return $requirements;
   }

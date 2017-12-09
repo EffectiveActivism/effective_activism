@@ -7,6 +7,7 @@ use Drupal\effective_activism\Constant;
 use Drupal\effective_activism\Entity\ThirdPartyContent;
 use Drupal\effective_activism\ThirdPartyApi\ArcGis;
 use Drupal\effective_activism\ThirdPartyApi\DarkSky;
+use Drupal\effective_activism\ThirdPartyApi\GoogleMaps;
 use Drupal\effective_activism\ThirdPartyApi\ThirdPartyApiException;
 
 /**
@@ -40,6 +41,14 @@ class PopulateThirdPartyContent {
 
             case Constant::THIRD_PARTY_CONTENT_TYPE_DEMOGRAPHICS:
               $api = new ArcGis($third_party_content);
+              break;
+
+            case Constant::THIRD_PARTY_CONTENT_TYPE_EXTENDED_LOCATION_INFORMATION:
+              $api = new GoogleMaps($third_party_content);
+              break;
+
+            default:
+              throw new ThirdPartyAPIException('Unknown third-party content bundle');
               break;
 
           }
