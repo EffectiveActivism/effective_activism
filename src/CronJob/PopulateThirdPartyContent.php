@@ -47,13 +47,14 @@ class PopulateThirdPartyContent {
               $api = new GoogleMaps($third_party_content);
               break;
 
-            default:
-              throw new ThirdPartyAPIException('Unknown third-party content bundle');
-              break;
-
           }
           // Populate entity with API data.
-          $api->request();
+          if (isset($api)) {
+            $api->request();
+          }
+          else {
+            throw new ThirdPartyAPIException('Unknown third-party content bundle');
+          }
         }
         catch (ThirdPartyApiException $exception) {
           Drupal::logger('effective_activism')->warning(sprintf('ThirdPartyContent id: %d Message: %s', $third_party_content->id(), $exception->getMessage()));
