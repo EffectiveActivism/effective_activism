@@ -90,6 +90,7 @@ class Constant {
    */
   const THIRD_PARTY_CONTENT_TYPE_WEATHER_INFORMATION = 'weather_information';
   const THIRD_PARTY_CONTENT_TYPE_DEMOGRAPHICS = 'demographics';
+  const THIRD_PARTY_CONTENT_TYPE_EXTENDED_LOCATION_INFORMATION = 'extended_location_information';
 
   /**
    * Cache tags.
