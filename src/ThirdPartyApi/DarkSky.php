@@ -136,21 +136,17 @@ class DarkSky extends ThirdPartyApi {
       $header = $request->getHeader('X-Forecast-API-Calls');
       if (!empty($header) && is_array($header) && is_numeric($header[0])) {
         $calls = $header[0];
-        switch ($calls) {
-          case $calls < self::API_THRESHOLD:
-            $status = REQUIREMENT_OK;
-            $description = sprintf('You have made %d calls out of %d for today.', $calls, self::API_MAX);
-            break;
-
-          case $calls < self::API_THRESHOLD:
-            $status = REQUIREMENT_WARNING;
-            $description = sprintf('You have less than %d calls left for today. %d out of %d remain.', self::API_THRESHOLD, $calls, self::API_MAX);
-            break;
-
-          case $calls >= self::API_MAX:
-            $status = REQUIREMENT_ERROR;
-            $description = sprintf('You have no API calls left for today.');
-            break;
+        if ($calls < self::API_THRESHOLD) {
+          $status = REQUIREMENT_OK;
+          $description = sprintf('You have made %d calls out of %d for today.', $calls, self::API_MAX);
+        }
+        elseif ($calls >= self::API_MAX) {
+          $status = REQUIREMENT_ERROR;
+          $description = sprintf('You have no API calls left for today.');
+        }
+        elseif ($calls >= self::API_THRESHOLD) {
+          $status = REQUIREMENT_WARNING;
+          $description = sprintf('You have less than %d calls left for today. %d out of %d remain.', self::API_MAX - self::API_THRESHOLD, $calls, self::API_MAX);
         }
       }
       else {
