@@ -117,7 +117,7 @@ class GoogleMaps extends ThirdPartyApi {
                 isset($component->types) &&
                 isset($component->long_name)
               ) {
-                switch ($component->types) {
+                switch (TRUE) {
                   case in_array('country', $component->types):
                     $this->thirdpartycontent->field_address_country = $component->long_name;
                     break;
