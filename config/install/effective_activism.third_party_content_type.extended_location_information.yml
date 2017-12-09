@@ -1,0 +1,7 @@
+uuid: 7d5b3f95-7f76-4730-aafe-358809ec0226
+langcode: en
+status: true
+dependencies: {  }
+id: extended_location_information
+label: 'Extended location information'
+description: 'Stores extended location information data for a specific location.'

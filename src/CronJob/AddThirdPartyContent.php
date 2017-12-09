@@ -69,6 +69,30 @@ class AddThirdPartyContent {
       }
       Drupal::logger('effective_activism')->info(sprintf('%d event(s) added demographics', count($event_ids_without_demographics)));
     }
+    // Add extended location information.
+    $event_ids_without_extended_location_information = ThirdPartyContentHelper::getEventsWithoutThirdPartyContentType(Constant::THIRD_PARTY_CONTENT_TYPE_EXTENDED_LOCATION_INFORMATION, self::BATCH_SIZE);
+    if (!empty($event_ids_without_extended_location_information)) {
+      foreach ($event_ids_without_extended_location_information as $id) {
+        $event = Event::load($id);
+        // Create or get matching third-party content.
+        $extended_location_information = ThirdPartyContentHelper::getThirdPartyContent([
+          'type' => Constant::THIRD_PARTY_CONTENT_TYPE_EXTENDED_LOCATION_INFORMATION,
+          'field_latitude' => $event->get('location')->latitude,
+          'field_longitude' => $event->get('location')->longitude,
+        ]);
+        if ($extended_location_information === FALSE) {
+          Drupal::logger('effective_activism')->warning(sprintf('Failed to create extended location information for event with id %s', $id));
+          return;
+        }
+        // Add entity to event.
+        $event->third_party_content[] = [
+          'target_id' => $extended_location_information->id(),
+        ];
+        $event->setNewRevision();
+        $event->save();
+      }
+      Drupal::logger('effective_activism')->info(sprintf('%d event(s) added extended location information', count($event_ids_without_extended_location_information)));
+    }
   }
 
 }

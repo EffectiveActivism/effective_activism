@@ -1,0 +1,19 @@
+uuid: c6cae574-8ffa-4730-b587-df1fc7b67790
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.third_party_content_type.extended_location_information
+    - field.storage.third_party_content.field_address_country
+id: third_party_content.extended_location_information.field_address_country
+field_name: field_address_country
+entity_type: third_party_content
+bundle: extended_location_information
+label: Country
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

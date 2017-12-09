@@ -219,26 +219,27 @@ class ArcGis extends ThirdPartyApi {
           !empty($data->subscriptionInfo->availableCredits)
         ) {
           $credits = $data->subscriptionInfo->availableCredits;
-          switch ($credits) {
-            case $credits >= self::API_THRESHOLD:
-              $status = REQUIREMENT_OK;
-              $description = sprintf('You have %d credits out of %d left for this month.', $credits, self::API_MAX);
-              break;
-
-            case $credits < self::API_THRESHOLD:
-              $status = REQUIREMENT_WARNING;
-              $description = sprintf('You have less than %d credits left for this month. %d out of %d remain.', self::API_THRESHOLD, $credits, self::API_MAX);
-              break;
-
-            case $credits = 0:
-              $status = REQUIREMENT_ERROR;
-              $description = sprintf('You have no credits left for this month. No more API calls can be made.');
-              break;
+          if ($credits >= self::API_THRESHOLD) {
+            $status = REQUIREMENT_OK;
+            $description = sprintf('You have %d credits out of %d left for this month.', $credits, self::API_MAX);
+          }
+          elseif ($credits = 0) {
+            $status = REQUIREMENT_ERROR;
+            $description = sprintf('You have no credits left for this month. No more API calls can be made.');
+          }
+          elseif ($credits < self::API_THRESHOLD) {
+            $status = REQUIREMENT_WARNING;
+            $description = sprintf('You have less than %d credits left for this month. %d out of %d remain.', self::API_THRESHOLD, $credits, self::API_MAX);
           }
         }
         else {
           $status = REQUIREMENT_ERROR;
-          $description = 'Failed to parse JSON response from ArcGIS API';
+          if (isset($data->error->message)) {
+            $description = sprintf('ArcGIS API error: %s', $data->error->message);
+          }
+          else {
+            $description = 'Failed to parse JSON response from ArcGIS API';
+          }
         }
       }
       else {

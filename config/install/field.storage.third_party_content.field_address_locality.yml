@@ -1,0 +1,21 @@
+uuid: 3683f3ae-06c7-494c-82a7-f4119128ad11
+langcode: en
+status: true
+dependencies:
+  module:
+    - effective_activism
+id: third_party_content.field_address_locality
+field_name: field_address_locality
+entity_type: third_party_content
+type: string
+settings:
+  max_length: 255
+  is_ascii: false
+  case_sensitive: true
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

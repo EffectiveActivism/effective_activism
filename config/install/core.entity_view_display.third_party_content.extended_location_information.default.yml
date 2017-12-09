@@ -1,0 +1,95 @@
+uuid: 9d571c69-a9c5-4f95-ac03-3a0ddbe34131
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.third_party_content_type.extended_location_information
+    - field.field.third_party_content.extended_location_information.field_latitude
+    - field.field.third_party_content.extended_location_information.field_longitude
+id: third_party_content.extended_location_information.default
+targetEntityType: third_party_content
+bundle: extended_location_information
+mode: default
+content:
+  field_address_area_level_1:
+    weight: 3
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_address_area_level_2:
+    weight: 4
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_address_area_level_3:
+    weight: 5
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_address_country:
+    weight: 6
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_address_locality:
+    weight: 7
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_address_neighborhood:
+    weight: 8
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_address_postal_code:
+    weight: 9
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_address_street:
+    weight: 10
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_address_sublocality:
+    weight: 11
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_latitude:
+    weight: 1
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_decimal
+    region: content
+  field_longitude:
+    weight: 2
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_decimal
+    region: content
+hidden: {  }
