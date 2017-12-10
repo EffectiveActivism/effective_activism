@@ -77,15 +77,15 @@ class GroupForm extends ContentEntityForm {
         })) {
           foreach ($form_state->getValue('result_types') as $result_type_id => $enabled) {
             $result_type = ResultType::load($result_type_id);
-            $groups = $result_type->groups;
+            $groups = array_keys($result_type->groups);
             if ($enabled !== 0 && !in_array($entity->id(), $groups)) {
               $groups[] = $entity->id();
             }
             elseif ($enabled === 0) {
               $groups = array_diff($groups, [$entity->id()]);
             }
-            if ($result_type->groups !== $groups) {
-              $result_type->groups = $groups;
+            if (array_keys($result_type->groups) !== $groups) {
+              $result_type->groups = array_combine($groups, $groups);
               $result_type->save();
             }
           }
