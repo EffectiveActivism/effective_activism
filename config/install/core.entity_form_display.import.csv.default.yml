@@ -1,3 +1,4 @@
+uuid: dc3c281c-7d1b-41d3-9936-b32806c94cc9
 langcode: en
 status: true
 dependencies:
@@ -5,7 +6,10 @@ dependencies:
     - effective_activism.import_type.csv
     - field.field.import.csv.field_file_csv
   module:
+    - effective_activism
     - file
+_core:
+  default_config_hash: TZUlljNb3X-HL6SdBN1-M_RIfwLTkGGfaDWwCYh8zaY
 id: import.csv.default
 targetEntityType: import
 bundle: csv
@@ -17,20 +21,5 @@ content:
     settings:
       progress_indicator: throbber
     third_party_settings: {  }
-  parent:
-    type: entity_reference_autocomplete
-    settings:
-      match_operator: CONTAINS
-      size: 60
-      placeholder: ''
-    weight: -4
-    third_party_settings: {  }
-  user_id:
-    type: entity_reference_autocomplete
-    weight: 5
-    settings:
-      match_operator: CONTAINS
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
+    region: content
 hidden: {  }

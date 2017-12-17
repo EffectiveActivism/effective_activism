@@ -1,3 +1,4 @@
+uuid: 5f0c801e-01f7-459a-8e6b-923b8a573340
 langcode: en
 status: true
 dependencies:
@@ -8,16 +9,16 @@ id: third_party_content.weather_information.field_windspeed
 field_name: field_windspeed
 entity_type: third_party_content
 bundle: weather_information
-label: Wind speed
+label: 'Wind speed'
 description: 'The wind speed, as measured in m/s.'
 required: false
 translatable: false
 default_value:
   -
-    value: 0
+    value: !!float 0
 default_value_callback: ''
 settings:
-  min: 0
+  min: !!float 0
   max: null
   prefix: ''
   suffix: ''

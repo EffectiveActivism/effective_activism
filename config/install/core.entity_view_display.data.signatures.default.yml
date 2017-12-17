@@ -1,9 +1,14 @@
+uuid: a7856e1d-947b-4e5b-8151-50a31a04fa44
 langcode: en
 status: true
 dependencies:
   config:
     - effective_activism.data_type.signatures
     - field.field.data.signatures.field_signatures
+  module:
+    - user
+_core:
+  default_config_hash: SOdOsuMC4KHwqimzA9IkIciV21I9jil8lle59QnLK1g
 id: data.signatures.default
 targetEntityType: data
 bundle: signatures
@@ -17,4 +22,5 @@ content:
       prefix_suffix: true
     third_party_settings: {  }
     type: number_integer
+    region: content
 hidden: {  }

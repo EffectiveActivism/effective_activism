@@ -1,8 +1,11 @@
+uuid: 0d44b543-f1ff-468a-a76a-b8f0e134fbfe
 langcode: en
 status: true
 dependencies:
   module:
     - effective_activism
+_core:
+  default_config_hash: D42D3aSVGvjQuQjCLDQYNH6X-g8YAiqcVgZQisimyVU
 id: data.field_signatures
 field_name: field_signatures
 entity_type: data

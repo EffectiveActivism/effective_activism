@@ -1,3 +1,4 @@
+uuid: 450fc610-8d7f-424d-871e-c794f4fbc05d
 langcode: en
 status: true
 dependencies:
@@ -10,15 +11,17 @@ targetEntityType: data
 bundle: expense
 mode: default
 content:
-  field_transaction:
-    weight: 26
-    settings:
-      placeholder: 'Expense'
-    third_party_settings: {  }
-    type: number
   field_currency:
     weight: 31
     settings: {  }
     third_party_settings: {  }
     type: options_select
+    region: content
+  field_transaction:
+    weight: 26
+    settings:
+      placeholder: Expense
+    third_party_settings: {  }
+    type: number
+    region: content
 hidden: {  }

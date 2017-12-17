@@ -1,3 +1,4 @@
+uuid: 4a389f20-930b-4619-9653-39cfefd7e9f3
 langcode: en
 status: true
 dependencies:
@@ -6,22 +7,12 @@ dependencies:
     - field.field.import.csv.field_file_csv
   module:
     - user
+_core:
+  default_config_hash: 6129RSdQjJRwZXEhKDkohedTnEI9T5Ol9_puQTkAyFU
 id: import.csv.default
 targetEntityType: import
 bundle: csv
 mode: default
-content:
-  parent:
-    type: entity_reference_entity_id
-    weight: 0
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-  user_id:
-    label: hidden
-    type: author
-    weight: 1
-    settings: {  }
-    third_party_settings: {  }
+content: {  }
 hidden:
   field_file_csv: true

@@ -1,3 +1,4 @@
+uuid: 8ff3095d-fa46-4d9f-aea4-f9265d16c003
 langcode: en
 status: true
 dependencies:
@@ -24,6 +25,7 @@ content:
       prefix_suffix: true
     third_party_settings: {  }
     type: number_decimal
+    region: content
   field_longitude:
     weight: 2
     label: above
@@ -32,28 +34,7 @@ content:
       prefix_suffix: true
     third_party_settings: {  }
     type: number_decimal
-  field_timestamp:
-    weight: 3
-    label: above
-    settings:
-      thousand_separator: ''
-      prefix_suffix: true
-    third_party_settings: {  }
-    type: number_integer
-  field_temperature:
-    weight: 4
-    label: above
-    settings:
-      thousand_separator: ''
-      prefix_suffix: true
-    third_party_settings: {  }
-    type: number_decimal
-  field_precipitation_type:
-    weight: 5
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-    type: list_default
+    region: content
   field_precipitation_intensity:
     weight: 6
     label: above
@@ -62,14 +43,32 @@ content:
       prefix_suffix: true
     third_party_settings: {  }
     type: number_decimal
-  field_windspeed:
-    weight: 7
+    region: content
+  field_precipitation_type:
+    weight: 5
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: list_default
+    region: content
+  field_temperature:
+    weight: 4
     label: above
     settings:
       thousand_separator: ''
       prefix_suffix: true
     third_party_settings: {  }
     type: number_decimal
+    region: content
+  field_timestamp:
+    weight: 3
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
+    region: content
   field_visibility:
     weight: 8
     label: above
@@ -78,4 +77,14 @@ content:
       prefix_suffix: true
     third_party_settings: {  }
     type: number_decimal
+    region: content
+  field_windspeed:
+    weight: 7
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_decimal
+    region: content
 hidden: {  }

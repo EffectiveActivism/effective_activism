@@ -1,6 +1,7 @@
+uuid: a381d72c-cd61-4415-a0ce-763439170fcd
 langcode: en
 status: true
 dependencies: {  }
 id: paid_views
-label: Paid views
+label: 'Paid views'
 description: 'Type in the number of paid viewers at the event.'

@@ -1,3 +1,4 @@
+uuid: 5e64178c-b82b-440e-8100-65e5f7ca225a
 langcode: en
 status: true
 dependencies:
@@ -17,20 +18,5 @@ content:
     settings:
       progress_indicator: throbber
     third_party_settings: {  }
-  parent:
-    type: entity_reference_autocomplete
-    settings:
-      match_operator: CONTAINS
-      size: 60
-      placeholder: ''
-    weight: -4
-    third_party_settings: {  }
-  user_id:
-    type: entity_reference_autocomplete
-    weight: 5
-    settings:
-      match_operator: CONTAINS
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
+    region: content
 hidden: {  }

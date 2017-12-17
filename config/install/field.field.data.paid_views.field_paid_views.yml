@@ -1,3 +1,4 @@
+uuid: 171d779e-80a9-4bf5-8653-071ea5198e83
 langcode: en
 status: true
 dependencies:
@@ -8,7 +9,7 @@ id: data.paid_views.field_paid_views
 field_name: field_paid_views
 entity_type: data
 bundle: paid_views
-label: Paid views
+label: 'Paid views'
 description: ''
 required: false
 translatable: false

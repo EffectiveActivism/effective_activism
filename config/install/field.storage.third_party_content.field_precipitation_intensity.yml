@@ -1,3 +1,4 @@
+uuid: 52cc6199-5c46-45f0-b37d-4ab69031b2b2
 langcode: en
 status: true
 dependencies:
@@ -7,9 +8,7 @@ id: third_party_content.field_precipitation_intensity
 field_name: field_precipitation_intensity
 entity_type: third_party_content
 type: float
-settings:
-  unsigned: false
-  size: normal
+settings: {  }
 module: core
 locked: false
 cardinality: 1

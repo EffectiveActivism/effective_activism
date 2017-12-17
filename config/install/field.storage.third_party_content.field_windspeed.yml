@@ -1,3 +1,4 @@
+uuid: 42d30b57-0013-4c44-99d9-72176f43babf
 langcode: en
 status: true
 dependencies:
@@ -7,9 +8,7 @@ id: third_party_content.field_windspeed
 field_name: field_windspeed
 entity_type: third_party_content
 type: float
-settings:
-  unsigned: false
-  size: normal
+settings: {  }
 module: core
 locked: false
 cardinality: 1
