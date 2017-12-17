@@ -1,3 +1,4 @@
+uuid: 3fe91b10-3fda-4165-ba62-9474b02b48a8
 langcode: en
 status: true
 dependencies:
@@ -15,4 +16,5 @@ content:
       placeholder: 'Paid views'
     third_party_settings: {  }
     type: number
+    region: content
 hidden: {  }

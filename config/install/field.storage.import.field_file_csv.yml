@@ -1,9 +1,12 @@
+uuid: 911b6f51-5d18-4470-b00f-1643cdb02856
 langcode: en
 status: true
 dependencies:
   module:
     - effective_activism
     - file
+_core:
+  default_config_hash: tFrH5kum5etEi8yvqP5cqrH3P5JiP6uYZ4pM25hMvzE
 id: import.field_file_csv
 field_name: field_file_csv
 entity_type: import

@@ -1,3 +1,4 @@
+uuid: 9237f2f4-b4ca-42e4-b5c3-103866d22d9b
 langcode: en
 status: true
 dependencies:
@@ -14,10 +15,10 @@ required: false
 translatable: false
 default_value:
   -
-    value: 0
+    value: !!float 0
 default_value_callback: ''
 settings:
-  min: 0
+  min: !!float 0
   max: null
   prefix: ''
   suffix: ''

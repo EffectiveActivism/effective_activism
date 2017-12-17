@@ -1,8 +1,11 @@
+uuid: bb075137-f48b-46ae-bcda-7793c19ab939
 langcode: en
 status: true
 dependencies:
   module:
     - effective_activism
+_core:
+  default_config_hash: FA6xmD0e0B3RaVuGLLQ1xN5YppDXFQLxlUCpZR4CBC4
 id: data.field_leaflets
 field_name: field_leaflets
 entity_type: data

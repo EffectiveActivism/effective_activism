@@ -1,6 +1,9 @@
+uuid: 5b525269-7082-484d-837b-b5c7168d2ba6
 langcode: en
 status: true
 dependencies: {  }
+_core:
+  default_config_hash: tbxNeI85jm0rFEfogRr2_iSb8rA3VAxJrHt7gCOLjKU
 id: leaflets
 label: Leaflets
 description: 'Type in the number of leaflets accepted at the event.'

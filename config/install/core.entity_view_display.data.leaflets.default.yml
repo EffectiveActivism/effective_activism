@@ -1,9 +1,14 @@
+uuid: a06cc9d2-11d0-4635-885b-9ac221a1e3a5
 langcode: en
 status: true
 dependencies:
   config:
     - effective_activism.data_type.leaflets
     - field.field.data.leaflets.field_leaflets
+  module:
+    - user
+_core:
+  default_config_hash: TssBgSlU3d6MzXquMPn1S9Ft5MFr0Fl1waw5mpttCR4
 id: data.leaflets.default
 targetEntityType: data
 bundle: leaflets
@@ -17,4 +22,5 @@ content:
       prefix_suffix: true
     third_party_settings: {  }
     type: number_integer
+    region: content
 hidden: {  }

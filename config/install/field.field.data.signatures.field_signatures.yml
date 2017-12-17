@@ -1,9 +1,12 @@
+uuid: 63056651-99b5-4b1b-b7f0-240945529be8
 langcode: en
 status: true
 dependencies:
   config:
     - effective_activism.data_type.signatures
     - field.storage.data.field_signatures
+_core:
+  default_config_hash: xQ8ArvlnK_o30brgMAmQHpRFUa8QKRqRPST0IF4iRko
 id: data.signatures.field_signatures
 field_name: field_signatures
 entity_type: data

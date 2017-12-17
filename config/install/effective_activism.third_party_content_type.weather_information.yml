@@ -1,6 +1,7 @@
+uuid: 70bcff1e-5cc0-4258-ab26-b7a47f9a7af2
 langcode: en
 status: true
 dependencies: {  }
 id: weather_information
-label: Weather information
+label: 'Weather information'
 description: 'Stores data about the weather within a specific location and time.'

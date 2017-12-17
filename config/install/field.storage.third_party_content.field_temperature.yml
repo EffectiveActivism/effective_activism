@@ -1,3 +1,4 @@
+uuid: 12b5def4-8414-4d30-9032-73eeb2aff0d5
 langcode: en
 status: true
 dependencies:
@@ -7,9 +8,7 @@ id: third_party_content.field_temperature
 field_name: field_temperature
 entity_type: third_party_content
 type: float
-settings:
-  unsigned: false
-  size: normal
+settings: {  }
 module: core
 locked: false
 cardinality: 1

@@ -1,3 +1,4 @@
+uuid: fb02757e-3676-4ddf-a3d0-7e4522e0a7da
 langcode: en
 status: true
 dependencies:
@@ -10,6 +11,13 @@ targetEntityType: data
 bundle: income
 mode: default
 content:
+  field_currency:
+    weight: 2
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: list_default
+    region: content
   field_transaction:
     weight: 1
     label: above
@@ -18,10 +26,5 @@ content:
       prefix_suffix: true
     third_party_settings: {  }
     type: number_integer
-  field_currency:
-    weight: 2
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-    type: list_default
+    region: content
 hidden: {  }
