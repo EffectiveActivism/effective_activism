@@ -1,3 +1,4 @@
+uuid: e3c0fce6-d7fa-48fe-a910-a238a0b027a1
 langcode: en
 status: true
 dependencies:
@@ -6,6 +7,8 @@ dependencies:
     - field.storage.import.field_file_csv
   module:
     - file
+_core:
+  default_config_hash: fY_nqptdXhpYfSb7IpsUVOiYARPs6S0-BXbf6jeyO-k
 id: import.csv.field_file_csv
 field_name: field_file_csv
 entity_type: import

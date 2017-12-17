@@ -1,5 +1,8 @@
+uuid: c3633d59-93a3-4919-90ca-a1e66edc25da
 langcode: en
 status: true
 dependencies: {  }
+_core:
+  default_config_hash: S_dJ4Uj4LpeRXyfMZztzA79QBr-3K_w3U8-vnQKAvFc
 id: csv
 label: CSV

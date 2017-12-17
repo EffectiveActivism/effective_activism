@@ -1,3 +1,4 @@
+uuid: 44c18d2f-3f30-413a-b761-9cae1a5b0e96
 langcode: en
 status: true
 dependencies:
@@ -12,7 +13,8 @@ content:
   field_attendees:
     weight: 26
     settings:
-      placeholder: 'Attendees'
+      placeholder: Attendees
     third_party_settings: {  }
     type: number
+    region: content
 hidden: {  }

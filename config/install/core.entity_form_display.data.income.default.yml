@@ -1,3 +1,4 @@
+uuid: b5a6cf48-c2b2-42fb-8664-1fb815afb50e
 langcode: en
 status: true
 dependencies:
@@ -10,15 +11,17 @@ targetEntityType: data
 bundle: income
 mode: default
 content:
-  field_transaction:
-    weight: 26
-    settings:
-      placeholder: 'Income'
-    third_party_settings: {  }
-    type: number
   field_currency:
     weight: 31
     settings: {  }
     third_party_settings: {  }
     type: options_select
+    region: content
+  field_transaction:
+    weight: 26
+    settings:
+      placeholder: Income
+    third_party_settings: {  }
+    type: number
+    region: content
 hidden: {  }

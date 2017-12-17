@@ -1,9 +1,12 @@
+uuid: bede9f83-b15d-4eba-9519-21314115976c
 langcode: en
 status: true
 dependencies:
   config:
     - effective_activism.data_type.leaflets
     - field.storage.data.field_leaflets
+_core:
+  default_config_hash: '-aCF1N0EevxaKdtf3JMBASOCfEqX9MXzo136-p836Lw'
 id: data.leaflets.field_leaflets
 field_name: field_leaflets
 entity_type: data

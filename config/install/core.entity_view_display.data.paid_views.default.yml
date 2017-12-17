@@ -1,3 +1,4 @@
+uuid: 38d53436-b653-4b55-baa6-86c64e389996
 langcode: en
 status: true
 dependencies:
@@ -17,4 +18,5 @@ content:
       prefix_suffix: true
     third_party_settings: {  }
     type: number_integer
+    region: content
 hidden: {  }

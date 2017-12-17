@@ -1,6 +1,9 @@
+uuid: 9390f0e6-3c89-46e7-91c3-1aec5e79efe6
 langcode: en
 status: true
 dependencies: {  }
+_core:
+  default_config_hash: 1uuzKjJEUr12bNnUeG4nLrdUtRf3A9GRtDDlpZrcpHU
 id: signatures
 label: Signatures
 description: 'Type in the number of signatures received at the event.'
