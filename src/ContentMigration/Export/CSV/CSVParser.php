@@ -23,6 +23,8 @@ class CSVParser implements ParserInterface {
     'created',
     'default_langcode',
     'external_uid',
+    'field_latitude',
+    'field_longitude',
     'field_timestamp',
     'import',
     'langcode',
@@ -133,19 +135,17 @@ class CSVParser implements ParserInterface {
     $row = [];
     foreach ($event->toArray() as $field_name => $data) {
       if (!in_array($field_name, self::FIELDS_BLACKLIST)) {
-        if (isset($data[0])) {
-          foreach ($data as $delta => $properties) {
-            foreach ($properties as $key => $value) {
-              switch ($key) {
-                case 'value':
-                  $row[$field_name] = $value;
-                  break;
+        foreach ($data as $delta => $properties) {
+          foreach ($properties as $key => $value) {
+            switch ($key) {
+              case 'value':
+                $row[$field_name] = $value;
+                break;
 
-                case 'target_id':
-                  $referenced_entity = $this->unpackEntityReference($event, $field_name);
-                  $row[key($referenced_entity)][] = current($referenced_entity);
-                  break;
-              }
+              case 'target_id':
+                $referenced_entity = $this->unpackEntityReference($event, $field_name, $delta);
+                $row[key($referenced_entity)][] = current($referenced_entity);
+                break;
             }
           }
         }
@@ -181,33 +181,35 @@ class CSVParser implements ParserInterface {
    *   The parent entity.
    * @param string $parent_field_name
    *   The field name of the parent entity reference field.
+   * @param int $delta
+   *   The delta of the field.
    *
    * @return string
    *   An array of the entity fields, with the entity bundle id as key.
    */
-  private function unpackEntityReference(EntityInterface $parent_entity, $parent_field_name) {
+  private function unpackEntityReference(EntityInterface $parent_entity, $parent_field_name, $field_delta = 0) {
     // Set entity type/import name.
-    $bundle_entity_type = $parent_entity->get($parent_field_name)->entity->getEntityType()->getBundleEntityType();
-    $bundle_id = $parent_entity->get($parent_field_name)->entity->bundle();
+    $bundle_entity_type = $parent_entity->get($parent_field_name)->get($field_delta)->entity->getEntityType()->getBundleEntityType();
+    $bundle_id = $parent_entity->get($parent_field_name)->get($field_delta)->entity->bundle();
     $bundle = Drupal::entityTypeManager()->getStorage($bundle_entity_type)->load($bundle_id);
     if ($bundle && $bundle->get('importname') !== NULL) {
       $entity_identifier = $bundle->get('importname');
     }
     else {
-      $entity_identifier = $parent_entity->get($parent_field_name)->entity->bundle();
+      $entity_identifier = $parent_entity->get($parent_field_name)->get($field_delta)->entity->bundle();
     }
     // Iterate entity fields.
-    foreach ($parent_entity->get($parent_field_name)->entity->toArray() as $field_name => $data) {
+    foreach ($parent_entity->get($parent_field_name)->get($field_delta)->entity->toArray() as $field_name => $data) {
       if (!in_array($field_name, self::FIELDS_BLACKLIST)) {
-        if (isset($data[0])) {
-          foreach ($data[0] as $key => $value) {
+        foreach ($data as $delta) {
+          foreach ($delta as $key => $value) {
             switch ($key) {
               case 'value':
                 $pieces[$field_name] = $value;
                 break;
 
               case 'target_id':
-                $pieces[$field_name] = $this->unpackEntityReference($parent_entity->get($parent_field_name)->entity, $field_name);
+                $pieces[$field_name] = $this->unpackEntityReference($parent_entity->get($parent_field_name)->get($field_delta)->entity, $field_name);
                 break;
             }
           }
