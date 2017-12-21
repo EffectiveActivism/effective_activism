@@ -181,7 +181,7 @@ class CSVParser implements ParserInterface {
    *   The parent entity.
    * @param string $parent_field_name
    *   The field name of the parent entity reference field.
-   * @param int $delta
+   * @param int $field_delta
    *   The delta of the field.
    *
    * @return string
