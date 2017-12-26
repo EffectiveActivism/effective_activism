@@ -2,66 +2,67 @@
 
 namespace Drupal\effective_activism\Entity;
 
-use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\Core\Entity\EntityStorageInterface;
-use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\Core\Entity\RevisionableContentEntityBase;
 use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\Entity\RevisionableContentEntityBase;
+use Drupal\Core\Entity\EntityChangedTrait;
+use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\user\UserInterface;
 
 /**
- * Defines the Export entity.
+ * Defines the Filter entity.
  *
  * @ingroup effective_activism
  *
  * @ContentEntityType(
- *   id = "export",
- *   label = @Translation("Export"),
- *   bundle_label = @Translation("Export type"),
+ *   id = "filter",
+ *   label = @Translation("Filter"),
  *   handlers = {
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
- *     "list_builder" = "Drupal\effective_activism\Helper\ListBuilder\ExportListBuilder",
- *     "views_data" = "Drupal\effective_activism\Helper\ViewsData\ExportViewsData",
+ *     "list_builder" = "Drupal\effective_activism\Helper\ListBuilder\FilterListBuilder",
+ *     "views_data" = "Drupal\effective_activism\Helper\ViewsData\FilterViewsData",
  *     "form" = {
- *       "default" = "Drupal\effective_activism\Form\Export\ExportForm",
- *       "add" = "Drupal\effective_activism\Form\Export\ExportForm",
- *       "edit" = "Drupal\effective_activism\Form\Export\ExportForm",
- *       "publish" = "Drupal\effective_activism\Form\Export\ExportPublishForm",
+ *       "default" = "Drupal\effective_activism\Form\Filter\FilterForm",
+ *       "add" = "Drupal\effective_activism\Form\Filter\FilterForm",
+ *       "edit" = "Drupal\effective_activism\Form\Filter\FilterForm",
+ *       "publish" = "Drupal\effective_activism\Form\Filter\GroupPublishForm",
  *     },
- *     "access" = "Drupal\effective_activism\Helper\AccessControlHandler\ExportAccessControlHandler",
+ *     "access" = "Drupal\effective_activism\Helper\AccessControlHandler\FilterAccessControlHandler",
  *     "route_provider" = {
- *       "html" = "Drupal\effective_activism\Helper\RouteProvider\ExportHtmlRouteProvider",
+ *       "html" = "Drupal\effective_activism\Helper\RouteProvider\FilterHtmlRouteProvider",
  *     },
  *   },
- *   base_table = "exports",
- *   revision_table = "exports_revision",
+ *   base_table = "filter",
+ *   revision_table = "filter_revision",
+ *   revision_data_table = "filter_field_revision",
  *   entity_keys = {
  *     "id" = "id",
- *     "bundle" = "type",
- *     "revision" = "revision_id",
- *     "label" = "id",
+ *     "revision" = "vid",
+ *     "label" = "name",
  *     "uuid" = "uuid",
  *     "uid" = "user_id",
  *     "langcode" = "langcode",
  *     "status" = "status",
  *   },
- *   bundle_entity_type = "export_type",
  *   links = {
- *     "canonical" = "/manage/exports/{export}",
- *     "add-form" = "/manage/exports/add/{export_type}",
- *     "edit-form" = "/manage/exports/{export}/edit",
- *     "publish-form" = "/manage/exports/{export}/publish",
- *     "collection" = "/manage/exports",
+ *     "canonical" = "/manage/filters/{filter}",
+ *     "add-form" = "/manage/filters/add",
+ *     "edit-form" = "/manage/filters/{filter}/edit",
+ *     "publish-form" = "/manage/filters/{group}/publish",
+ *     "version-history" = "/manage/filters/{filter}/revisions",
+ *     "revision" = "/manage/filters/{filter}/revisions/{filter_revision}/view",
+ *     "revision_revert" = "/manage/filters/{filter}/revisions/{filter_revision}/revert",
+ *     "revision_delete" = "/manage/filters/{filter}/revisions/{filter_revision}/delete",
+ *     "collection" = "/manage/filters",
  *   },
  * )
  */
-class Export extends RevisionableContentEntityBase implements ExportInterface {
+class Filter extends RevisionableContentEntityBase implements FilterInterface {
 
   use EntityChangedTrait;
 
   const WEIGHTS = [
     'organization',
-    'filter',
     'user_id',
   ];
 
@@ -78,8 +79,38 @@ class Export extends RevisionableContentEntityBase implements ExportInterface {
   /**
    * {@inheritdoc}
    */
-  public function getType() {
-    return $this->bundle();
+  public function preSave(EntityStorageInterface $storage) {
+    parent::preSave($storage);
+
+    foreach (array_keys($this->getTranslationLanguages()) as $langcode) {
+      $translation = $this->getTranslation($langcode);
+
+      // If no owner has been set explicitly, make the anonymous user the owner.
+      if (!$translation->getOwner()) {
+        $translation->setOwnerId(0);
+      }
+    }
+
+    // If no revision author has been set explicitly, make the filter owner the
+    // revision author.
+    if (!$this->getRevisionUser()) {
+      $this->setRevisionUserId($this->getOwnerId());
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getName() {
+    return $this->get('name')->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setName($name) {
+    $this->set('name', $name);
+    return $this;
   }
 
   /**
@@ -138,7 +169,7 @@ class Export extends RevisionableContentEntityBase implements ExportInterface {
    * {@inheritdoc}
    */
   public function setPublished($published) {
-    $this->set('status', $published ? NODE_PUBLISHED : NODE_NOT_PUBLISHED);
+    $this->set('status', $published ? TRUE : FALSE);
     return $this;
   }
 
@@ -147,13 +178,9 @@ class Export extends RevisionableContentEntityBase implements ExportInterface {
    */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $fields = parent::baseFieldDefinitions($entity_type);
-    $fields['revision_id'] = BaseFieldDefinition::create('integer')
-      ->setLabel(t('Revision ID'))
-      ->setDescription(t('The Revision ID of the Export entity.'))
-      ->setReadOnly(TRUE);
     $fields['organization'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Organization'))
-      ->setDescription(t('The organization of the export.'))
+      ->setDescription(t('The organization of the group.'))
       ->setRevisionable(TRUE)
       ->setSetting('target_type', 'organization')
       ->setSetting('handler', 'default')
@@ -166,48 +193,53 @@ class Export extends RevisionableContentEntityBase implements ExportInterface {
         'type' => 'organization_selector',
         'weight' => array_search('organization', self::WEIGHTS),
       ]);
-    $fields['filter'] = BaseFieldDefinition::create('entity_reference')
-      ->setLabel(t('Filter'))
-      ->setRevisionable(TRUE)
-      ->setSetting('target_type', 'filter')
-      ->setSetting('handler', 'default')
-      ->setCardinality(1)
-      ->setDisplayOptions('view', [
-        'type' => 'string',
-        'weight' => array_search('filter', self::WEIGHTS),
-      ])
-      ->setDisplayOptions('form', [
-        'type' => 'inline_entity_form_simple',
-        'settings' => [
-          'allow_new' => FALSE,
-          'allow_existing' => TRUE,
-        ],
-        'weight' => array_search('filter', self::WEIGHTS),
-      ]);
     $fields['user_id'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Authored by'))
-      ->setDescription(t('The user ID of author of the Export entity.'))
+      ->setDescription(t('The user ID of author of the filter.'))
       ->setRevisionable(TRUE)
       ->setSetting('target_type', 'user')
       ->setSetting('handler', 'default')
+      ->setTranslatable(TRUE)
       ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'author',
-        'weight' => array_search('user_id', self::WEIGHTS),
+        'weight' => 0,
       ])
       ->setDisplayOptions('form', [
         'type' => 'entity_reference_autocomplete',
-        'weight' => array_search('user_id', self::WEIGHTS),
+        'weight' => 5,
         'settings' => [
           'match_operator' => 'CONTAINS',
           'size' => '60',
           'autocomplete_type' => 'tags',
           'placeholder' => '',
         ],
-      ]);
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE);
+    $fields['name'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('Name'))
+      ->setDescription(t('The name of the filter.'))
+      ->setRevisionable(TRUE)
+      ->setSettings([
+        'max_length' => 50,
+        'text_processing' => 0,
+      ])
+      ->setDefaultValue('')
+      ->setDisplayOptions('view', [
+        'label' => 'above',
+        'type' => 'string',
+        'weight' => -4,
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'string_textfield',
+        'weight' => -4,
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE);
     $fields['status'] = BaseFieldDefinition::create('boolean')
       ->setLabel(t('Publishing status'))
-      ->setDescription(t('A boolean indicating whether the Export is published.'))
+      ->setDescription(t('A boolean indicating whether the filter is published.'))
       ->setRevisionable(TRUE)
       ->setDefaultValue(TRUE);
     $fields['created'] = BaseFieldDefinition::create('created')

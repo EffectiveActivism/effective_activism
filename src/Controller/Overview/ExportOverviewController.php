@@ -4,15 +4,15 @@ namespace Drupal\effective_activism\Controller\Overview;
 
 use Drupal\Core\Cache\Cache;
 use Drupal\effective_activism\Constant;
-use Drupal\effective_activism\Entity\Group;
-use Drupal\effective_activism\Helper\GroupHelper;
+use Drupal\effective_activism\Entity\Organization;
+use Drupal\effective_activism\Helper\OrganizationHelper;
 
 /**
  * Controller class for export entities.
  */
 class ExportOverviewController extends ListBaseController {
 
-  const THEME_ID = 'group_export_overview';
+  const THEME_ID = 'organization_export_overview';
 
   const CACHE_MAX_AGE = Cache::PERMANENT;
 
@@ -29,7 +29,7 @@ class ExportOverviewController extends ListBaseController {
    */
   public function content() {
     $content['#theme'] = self::THEME_ID;
-    $content['#storage']['entities']['group'] = empty($this->entities['group']) ? NULL : $this->entities['group'];
+    $content['#storage']['entities']['organization'] = empty($this->entities['organization']) ? NULL : $this->entities['organization'];
     $content['#storage']['entities']['exports'] = $this->entities['exports'];
     $content['#cache'] = [
       'max-age' => self::CACHE_MAX_AGE,
@@ -41,16 +41,16 @@ class ExportOverviewController extends ListBaseController {
   /**
    * A callback for routes.
    *
-   * @param \Drupal\effective_activism\Entity\Group $group
-   *   The group to render exports for.
+   * @param \Drupal\effective_activism\Entity\Organization $organization
+   *   The organization to render exports for.
    *
    * @return array
    *   A render array.
    */
-  public function routeCallback(Group $group) {
+  public function routeCallback(Organization $organization) {
     $content['#theme'] = self::THEME_ID;
-    $content['#storage']['entities']['group'] = $group;
-    $content['#storage']['entities']['exports'] = GroupHelper::getExportsPaged($group);
+    $content['#storage']['entities']['organization'] = $organization;
+    $content['#storage']['entities']['exports'] = OrganizationHelper::getExportsPaged($organization);
     $content['#cache'] = [
       'max-age' => self::CACHE_MAX_AGE,
       'tags' => self::CACHE_TAGS,

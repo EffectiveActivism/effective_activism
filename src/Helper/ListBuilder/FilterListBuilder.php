@@ -2,7 +2,6 @@
 
 namespace Drupal\effective_activism\Helper\ListBuilder;
 
-use DateTime;
 use Drupal;
 use Drupal\effective_activism\Helper\AccountHelper;
 use Drupal\Core\Entity\EntityInterface;
@@ -11,11 +10,11 @@ use Drupal\Core\Routing\LinkGeneratorTrait;
 use Drupal\Core\Url;
 
 /**
- * Defines a class to build a listing of Export entities.
+ * Defines a class to build a listing of Filter entities.
  *
  * @ingroup effective_activism
  */
-class ExportListBuilder extends EntityListBuilder {
+class FilterListBuilder extends EntityListBuilder {
 
   use LinkGeneratorTrait;
 
@@ -23,9 +22,8 @@ class ExportListBuilder extends EntityListBuilder {
    * {@inheritdoc}
    */
   public function buildHeader() {
-    $header['created'] = $this->t('Created');
+    $header['name'] = $this->t('Name');
     $header['organization'] = $this->t('Organization');
-    $header['filter'] = $this->t('Filter');
     return $header + parent::buildHeader();
   }
 
@@ -33,20 +31,19 @@ class ExportListBuilder extends EntityListBuilder {
    * {@inheritdoc}
    */
   public function buildRow(EntityInterface $entity) {
-    $row['created'] = DateTime::createFromFormat('U', $entity->getCreatedTime())->format('d/m Y H:i');
-    $row['organization'] = $this->l(
+    $row['name'] = $this->l(
+      $entity->getName(),
+      new Url(
+        'entity.filter.canonical', [
+          'filter' => $entity->id(),
+        ]
+      )
+    );
+    $row['organization'] = empty($entity->get('organization')->entity) ? '' : $this->l(
       $entity->get('organization')->entity->label(),
       new Url(
         'entity.organization.canonical', [
           'organization' => $entity->get('organization')->entity->id(),
-        ]
-      )
-    );
-    $row['filter'] = $this->l(
-      $entity->filter->entity->getName(),
-      new Url(
-        'entity.filter.canonical', [
-          'filter' => $entity->filter->entity->id(),
         ]
       )
     );
@@ -58,11 +55,11 @@ class ExportListBuilder extends EntityListBuilder {
    */
   protected function getEntityIds() {
     $query = $this->getStorage()->getQuery()
-      ->sort($this->entityType->getKey('id'));
+      ->sort('name');
     // Filter entities for non-admin users.
     if (Drupal::currentUser()->id() !== '1') {
-      $group_ids = AccountHelper::getGroups(Drupal::currentUser(), FALSE);
-      $query->condition('parent', $group_ids, 'IN');
+      $filter_ids = AccountHelper::getFilters(Drupal::currentUser(), FALSE);
+      $query->condition('id', $filter_ids, 'IN');
     }
     // Only add the pager if a limit is specified.
     if ($this->limit) {

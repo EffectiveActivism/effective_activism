@@ -14,6 +14,54 @@ use Drupal\effective_activism\Entity\Organization;
 class OrganizationHelper {
 
   /**
+   * Get group exports.
+   *
+   * @param \Drupal\effective_activism\Entity\Organization $organization
+   *   The organization to get exports from.
+   * @param int $position
+   *   The position to start from.
+   * @param int $limit
+   *   The number of events to return.
+   * @param bool $load_entities
+   *   Wether to return full entity objects or entity ids.
+   *
+   * @return array
+   *   An array of events related to the organization.
+   */
+  public static function getExports(Organization $organization, $position = 0, $limit = 0, $load_entities = TRUE) {
+    $query = \Drupal::entityQuery('export')
+      ->condition('organization', $organization->id())
+      ->sort('created');
+    if ($limit > 0) {
+      $query->range($position, $limit + $position);
+    }
+    $result = $query->execute();
+    return $load_entities ? Export::loadMultiple($result) : array_values($result);
+  }
+
+  /**
+   * Get paged organization exports.
+   *
+   * @param \Drupal\effective_activism\Entity\Organization $organization
+   *   The organization to get exports from.
+   * @param int $page_count
+   *   How many entities to include.
+   * @param bool $load_entities
+   *   Wether to return full entity objects or entity ids.
+   *
+   * @return array
+   *   An array of events related to the organization.
+   */
+  public static function getExportsPaged(Organization $organization, $page_count = 20, $load_entities = TRUE) {
+    $query = \Drupal::entityQuery('export')
+      ->condition('organization', $organization->id())
+      ->pager($page_count)
+      ->sort('created');
+    $result = $query->execute();
+    return $load_entities ? Export::loadMultiple($result) : array_values($result);
+  }
+
+  /**
    * Get organization groups.
    *
    * @param \Drupal\effective_activism\Entity\Organization $organization
