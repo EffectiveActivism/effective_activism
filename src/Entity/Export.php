@@ -159,6 +159,7 @@ class Export extends RevisionableContentEntityBase implements ExportInterface {
       ->setSetting('handler', 'default')
       ->setCardinality(1)
       ->setDisplayOptions('view', [
+        'label' => 'hidden',
         'type' => 'string',
         'weight' => array_search('organization', self::WEIGHTS),
       ])
@@ -173,6 +174,7 @@ class Export extends RevisionableContentEntityBase implements ExportInterface {
       ->setSetting('handler', 'default')
       ->setCardinality(1)
       ->setDisplayOptions('view', [
+        'label' => 'hidden',
         'type' => 'string',
         'weight' => array_search('filter', self::WEIGHTS),
       ])

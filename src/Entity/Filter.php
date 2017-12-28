@@ -186,6 +186,7 @@ class Filter extends RevisionableContentEntityBase implements FilterInterface {
       ->setSetting('handler', 'default')
       ->setCardinality(1)
       ->setDisplayOptions('view', [
+        'label' => 'hidden',
         'type' => 'string',
         'weight' => array_search('organization', self::WEIGHTS),
       ])
@@ -227,7 +228,7 @@ class Filter extends RevisionableContentEntityBase implements FilterInterface {
       ])
       ->setDefaultValue('')
       ->setDisplayOptions('view', [
-        'label' => 'above',
+        'label' => 'hidden',
         'type' => 'string',
         'weight' => -4,
       ])

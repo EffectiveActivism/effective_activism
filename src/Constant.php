@@ -100,6 +100,7 @@ class Constant {
   const CACHE_TAG_GROUP = 'group_list';
   const CACHE_TAG_IMPORT = 'import_list';
   const CACHE_TAG_EXPORT = 'export_list';
+  const CACHE_TAG_FILTER = 'filter_list';
   const CACHE_TAG_EVENT = 'event_list';
   const CACHE_TAG_RESULT_TYPE = 'config:result_type_list';
 

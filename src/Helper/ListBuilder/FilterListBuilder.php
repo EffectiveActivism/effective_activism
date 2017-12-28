@@ -3,11 +3,13 @@
 namespace Drupal\effective_activism\Helper\ListBuilder;
 
 use Drupal;
-use Drupal\effective_activism\Helper\AccountHelper;
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
 use Drupal\Core\Routing\LinkGeneratorTrait;
 use Drupal\Core\Url;
+use Drupal\effective_activism\Constant;
+use Drupal\effective_activism\Helper\AccountHelper;
 
 /**
  * Defines a class to build a listing of Filter entities.
@@ -18,12 +20,20 @@ class FilterListBuilder extends EntityListBuilder {
 
   use LinkGeneratorTrait;
 
+  const THEME_ID = 'filter_list';
+
+  const CACHE_MAX_AGE = Cache::PERMANENT;
+
+  const CACHE_TAGS = [
+    Constant::CACHE_TAG_USER,
+    Constant::CACHE_TAG_FILTER,
+  ];
+
   /**
    * {@inheritdoc}
    */
   public function buildHeader() {
     $header['name'] = $this->t('Name');
-    $header['organization'] = $this->t('Organization');
     return $header + parent::buildHeader();
   }
 
@@ -39,14 +49,6 @@ class FilterListBuilder extends EntityListBuilder {
         ]
       )
     );
-    $row['organization'] = empty($entity->get('organization')->entity) ? '' : $this->l(
-      $entity->get('organization')->entity->label(),
-      new Url(
-        'entity.organization.canonical', [
-          'organization' => $entity->get('organization')->entity->id(),
-        ]
-      )
-    );
     return $row + parent::buildRow($entity);
   }
 
@@ -58,8 +60,8 @@ class FilterListBuilder extends EntityListBuilder {
       ->sort('name');
     // Filter entities for non-admin users.
     if (Drupal::currentUser()->id() !== '1') {
-      $filter_ids = AccountHelper::getFilters(Drupal::currentUser(), FALSE);
-      $query->condition('id', $filter_ids, 'IN');
+      $organization_ids = AccountHelper::getOrganizations(Drupal::currentUser(), FALSE);
+      $query->condition('organization', $organization_ids, 'IN');
     }
     // Only add the pager if a limit is specified.
     if ($this->limit) {
@@ -67,6 +69,19 @@ class FilterListBuilder extends EntityListBuilder {
     }
     $result = $query->execute();
     return $result;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function render() {
+    $build['#storage']['entities']['filters'] = $this->load();
+    $build['#theme'] = self::THEME_ID;
+    $build['#cache'] = [
+      'max-age' => self::CACHE_MAX_AGE,
+      'tags' => self::CACHE_TAGS,
+    ];
+    return $build;
   }
 
 }

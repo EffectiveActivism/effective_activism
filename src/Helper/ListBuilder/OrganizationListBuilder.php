@@ -4,6 +4,7 @@ namespace Drupal\effective_activism\Helper\ListBuilder;
 
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\EntityListBuilder;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\effective_activism\Constant;
 use Drupal\effective_activism\Helper\AccountHelper;
 
@@ -14,7 +15,7 @@ use Drupal\effective_activism\Helper\AccountHelper;
  */
 class OrganizationListBuilder extends EntityListBuilder {
 
-  const THEME_ID = 'organization_overview';
+  const THEME_ID = 'organization_list';
 
   const CACHE_MAX_AGE = Cache::PERMANENT;
 
@@ -22,6 +23,29 @@ class OrganizationListBuilder extends EntityListBuilder {
     Constant::CACHE_TAG_USER,
     Constant::CACHE_TAG_ORGANIZATION,
   ];
+
+  /**
+   * {@inheritdoc}
+   */
+  public function buildHeader() {
+    $header['title'] = $this->t('Title');
+    return $header + parent::buildHeader();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function buildRow(EntityInterface $entity) {
+    $row['title'] = $this->l(
+      $entity->label(),
+      new Url(
+        'entity.organization.canonical', [
+          'organization' => $entity->id(),
+        ]
+      )
+    );
+    return $row + parent::buildRow($entity);
+  }
 
   /**
    * {@inheritdoc}
@@ -46,8 +70,8 @@ class OrganizationListBuilder extends EntityListBuilder {
    * {@inheritdoc}
    */
   public function render() {
+    $build['#storage']['entities']['organizations'] = $this->load();
     $build['#theme'] = self::THEME_ID;
-    $build['#storage']['organizations'] = $this->load();
     $build['#cache'] = [
       'max-age' => self::CACHE_MAX_AGE,
       'tags' => self::CACHE_TAGS,
