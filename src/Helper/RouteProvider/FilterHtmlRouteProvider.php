@@ -3,13 +3,13 @@
 namespace Drupal\effective_activism\Helper\RouteProvider;
 
 use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\Core\Entity\Routing\AdminHtmlRouteProvider;
+use Drupal\Core\Entity\Routing\DefaultHtmlRouteProvider;
 use Symfony\Component\Routing\Route;
 
 /**
  * Provides routes for Filter entities.
  */
-class FilterHtmlRouteProvider extends AdminHtmlRouteProvider {
+class FilterHtmlRouteProvider extends DefaultHtmlRouteProvider {
 
   /**
    * {@inheritdoc}
@@ -19,6 +19,9 @@ class FilterHtmlRouteProvider extends AdminHtmlRouteProvider {
     $entity_type_id = $entity_type->id();
     if ($collection_route = $this->getCollectionRoute($entity_type)) {
       $collection->add("entity.{$entity_type_id}.collection", $collection_route);
+    }
+    if ($add_form_route = $this->getAddFormRoute($entity_type)) {
+      $collection->add("entity.{$entity_type_id}.add_form", $add_form_route);
     }
     if ($history_route = $this->getHistoryRoute($entity_type)) {
       $collection->add("entity.{$entity_type_id}.version_history", $history_route);
@@ -54,6 +57,38 @@ class FilterHtmlRouteProvider extends AdminHtmlRouteProvider {
           '_title' => "{$entity_type->getLabel()} list",
         ])
         ->setRequirement('_custom_access', '\Drupal\effective_activism\Permission\Permission::isAnyManager');
+      return $route;
+    }
+  }
+
+  /**
+   * Gets the add-form route.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
+   *   The entity type.
+   *
+   * @return \Symfony\Component\Routing\Route|null
+   *   The generated route, if available.
+   */
+  protected function getAddFormRoute(EntityTypeInterface $entity_type) {
+    if ($entity_type->hasLinkTemplate('add-form')) {
+      $entity_type_id = $entity_type->id();
+      $parameters = [
+        $entity_type_id => ['type' => 'entity:' . $entity_type_id],
+      ];
+      $route = new Route($entity_type->getLinkTemplate('add-form'));
+      // Use the add form handler, if available, otherwise default.
+      $operation = 'default';
+      if ($entity_type->getFormClass('add')) {
+        $operation = 'add';
+      }
+      $route
+        ->setDefaults([
+          '_entity_form' => "{$entity_type_id}.{$operation}",
+          '_title' => "Add {$entity_type->getLabel()}",
+        ])
+        ->setRequirement('_custom_access', '\Drupal\effective_activism\Permission\Permission::isAnyManager')
+        ->setOption('parameters', $parameters);
       return $route;
     }
   }

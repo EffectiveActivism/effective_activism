@@ -104,6 +104,10 @@ class Publisher {
         $entities[] = [$entity->getEntityTypeId(), $entity->id()];
         break;
 
+      case 'Drupal\effective_activism\Entity\Filter':
+        $entities[] = [$entity->getEntityTypeId(), $entity->id()];
+        break;
+
       case 'Drupal\effective_activism\Entity\Event':
         $entities[] = [$entity->getEntityTypeId(), $entity->id()];
         if (!empty($entity->get('results'))) {

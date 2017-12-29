@@ -2,6 +2,7 @@
 
 namespace Drupal\effective_activism\Helper\ListBuilder;
 
+use Drupal;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\EntityListBuilder;
 use Drupal\Core\Entity\EntityInterface;
@@ -51,18 +52,18 @@ class OrganizationListBuilder extends EntityListBuilder {
    * {@inheritdoc}
    */
   protected function getEntityIds() {
-    $result = [];
-    $organizations = AccountHelper::getOrganizations(NULL, FALSE);
-    if (!empty($organizations)) {
-      $query = $this->getStorage()->getQuery()
-        ->sort('title')
-        ->condition('id', $organizations, 'IN');
-      // Only add the pager if a limit is specified.
-      if ($this->limit) {
-        $query->pager($this->limit);
-      }
-      $result = $query->execute();
+    $query = $this->getStorage()->getQuery()
+        ->sort('title');
+    // Filter entities for non-admin users.
+    if (Drupal::currentUser()->id() !== '1') {
+      $organizations = AccountHelper::getOrganizations(NULL, FALSE);
+      $query->condition('id', $organizations, 'IN');
     }
+    // Only add the pager if a limit is specified.
+    if ($this->limit) {
+      $query->pager($this->limit);
+    }
+    $result = $query->execute();
     return $result;
   }
 

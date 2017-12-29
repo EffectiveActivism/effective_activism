@@ -99,7 +99,6 @@ class EventHtmlRouteProvider extends DefaultHtmlRouteProvider {
     if ($entity_type->hasLinkTemplate('publish-form')) {
       $entity_type_id = $entity_type->id();
       $route = new Route($entity_type->getLinkTemplate('publish-form'));
-      $operation = 'publish';
       $route
         ->setDefaults([
           '_form' => '\Drupal\effective_activism\Form\Event\EventPublishForm',

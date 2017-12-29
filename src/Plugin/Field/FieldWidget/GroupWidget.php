@@ -8,7 +8,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\effective_activism\Helper\AccountHelper;
 
 /**
- * Plugin implementation of the group widget.
+ * Allows for selection of groups belonging to organization.
  *
  * @FieldWidget(
  *   id = "group_selector",
@@ -24,6 +24,8 @@ class GroupWidget extends WidgetBase {
    * {@inheritdoc}
    */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
+    $group = $form_state->getFormObject()->getEntity();
+    $current_id = !empty($group) ? $group->id() : FALSE;
     $allowed_groups = AccountHelper::getGroups();
     $options = [];
     foreach ($allowed_groups as $gid => $group) {
@@ -43,6 +45,7 @@ class GroupWidget extends WidgetBase {
       '#type' => 'radios',
       '#default_value' => $default_value,
       '#options' => $options,
+      '#disabled' => $current_id ? TRUE : FALSE,
     ];
     return $element;
   }

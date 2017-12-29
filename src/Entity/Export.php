@@ -173,13 +173,14 @@ class Export extends RevisionableContentEntityBase implements ExportInterface {
       ->setSetting('target_type', 'filter')
       ->setSetting('handler', 'default')
       ->setCardinality(1)
+      ->setRequired(TRUE)
       ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'string',
         'weight' => array_search('filter', self::WEIGHTS),
       ])
       ->setDisplayOptions('form', [
-        'type' => 'inline_entity_form_simple',
+        'type' => 'options_select',
         'settings' => [
           'allow_new' => FALSE,
           'allow_existing' => TRUE,

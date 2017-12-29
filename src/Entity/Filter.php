@@ -25,7 +25,7 @@ use Drupal\user\UserInterface;
  *       "default" = "Drupal\effective_activism\Form\Filter\FilterForm",
  *       "add" = "Drupal\effective_activism\Form\Filter\FilterForm",
  *       "edit" = "Drupal\effective_activism\Form\Filter\FilterForm",
- *       "publish" = "Drupal\effective_activism\Form\Filter\GroupPublishForm",
+ *       "publish" = "Drupal\effective_activism\Form\Filter\FilterPublishForm",
  *     },
  *     "access" = "Drupal\effective_activism\Helper\AccessControlHandler\FilterAccessControlHandler",
  *     "route_provider" = {
@@ -48,7 +48,7 @@ use Drupal\user\UserInterface;
  *     "canonical" = "/manage/filters/{filter}",
  *     "add-form" = "/manage/filters/add",
  *     "edit-form" = "/manage/filters/{filter}/edit",
- *     "publish-form" = "/manage/filters/{group}/publish",
+ *     "publish-form" = "/manage/filters/{filter}/publish",
  *     "version-history" = "/manage/filters/{filter}/revisions",
  *     "revision" = "/manage/filters/{filter}/revisions/{filter_revision}/view",
  *     "revision_revert" = "/manage/filters/{filter}/revisions/{filter_revision}/revert",
@@ -180,7 +180,7 @@ class Filter extends RevisionableContentEntityBase implements FilterInterface {
     $fields = parent::baseFieldDefinitions($entity_type);
     $fields['organization'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Organization'))
-      ->setDescription(t('The organization of the group.'))
+      ->setDescription(t('The organization of the filter.'))
       ->setRevisionable(TRUE)
       ->setSetting('target_type', 'organization')
       ->setSetting('handler', 'default')
@@ -235,6 +235,9 @@ class Filter extends RevisionableContentEntityBase implements FilterInterface {
       ->setDisplayOptions('form', [
         'type' => 'string_textfield',
         'weight' => -4,
+        'settings' => [
+          'placeholder' => t('Title'),
+        ],
       ])
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);

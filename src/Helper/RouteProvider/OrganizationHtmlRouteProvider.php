@@ -31,6 +31,9 @@ class OrganizationHtmlRouteProvider extends DefaultHtmlRouteProvider {
     if ($export_overview_route = $this->getExportsRoute($entity_type)) {
       $collection->add("entity.{$entity_type_id}.exports", $export_overview_route);
     }
+    if ($export_overview_route = $this->getFiltersRoute($entity_type)) {
+      $collection->add("entity.{$entity_type_id}.filters", $export_overview_route);
+    }
     if ($group_overview_route = $this->getGroupsRoute($entity_type)) {
       $collection->add("entity.{$entity_type_id}.groups", $group_overview_route);
     }
@@ -140,6 +143,37 @@ class OrganizationHtmlRouteProvider extends DefaultHtmlRouteProvider {
         ->setDefaults([
           '_controller' => '\Drupal\effective_activism\Controller\Overview\ExportOverviewController::routeCallback',
           '_title' => "Exports",
+        ])
+        ->setRequirement('_entity_access', "{$entity_type_id}.view")
+        ->setOption('parameters', [
+          $entity_type_id => ['type' => 'entity:' . $entity_type_id],
+        ]);
+      // Entity types with serial IDs can specify this in their route
+      // requirements, improving the matching process.
+      if ($this->getEntityTypeIdKeyType($entity_type) === 'integer') {
+        $route->setRequirement($entity_type_id, '\d+');
+      }
+      return $route;
+    }
+  }
+
+  /**
+   * Gets the filters overview route.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
+   *   The entity type.
+   *
+   * @return \Symfony\Component\Routing\Route|null
+   *   The generated route, if available.
+   */
+  protected function getFiltersRoute(EntityTypeInterface $entity_type) {
+    if ($entity_type->hasLinkTemplate('filters')) {
+      $entity_type_id = $entity_type->id();
+      $route = new Route($entity_type->getLinkTemplate('filters'));
+      $route
+        ->setDefaults([
+          '_controller' => '\Drupal\effective_activism\Controller\Overview\FilterOverviewController::routeCallback',
+          '_title' => "Filters",
         ])
         ->setRequirement('_entity_access', "{$entity_type_id}.view")
         ->setOption('parameters', [

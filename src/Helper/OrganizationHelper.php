@@ -5,6 +5,7 @@ namespace Drupal\effective_activism\Helper;
 use Drupal;
 use Drupal\effective_activism\Entity\Event;
 use Drupal\effective_activism\Entity\Export;
+use Drupal\effective_activism\Entity\Filter;
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\ResultType;
 use Drupal\effective_activism\Entity\Organization;

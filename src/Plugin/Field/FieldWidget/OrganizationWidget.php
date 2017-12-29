@@ -24,8 +24,8 @@ class OrganizationWidget extends WidgetBase {
    * {@inheritdoc}
    */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
-    $group = $form_state->getFormObject()->getEntity();
-    $current_id = !empty($group) ? $group->id() : FALSE;
+    $organization = $form_state->getFormObject()->getEntity();
+    $current_id = !empty($organization) ? $organization->id() : FALSE;
     $allowed_organizations = AccountHelper::getManagedOrganizations();
     $options = [];
     foreach ($allowed_organizations as $oid => $organization) {

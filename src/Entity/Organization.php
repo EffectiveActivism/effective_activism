@@ -52,6 +52,7 @@ use Drupal\user\UserInterface;
  *     "collection" = "/manage/organizations",
  *     "groups" = "/manage/organizations/{organization}/groups",
  *     "exports" = "/manage/organizations/{organization}/exports",
+ *     "filters" = "/manage/organizations/{organization}/filters",
  *   },
  * )
  */

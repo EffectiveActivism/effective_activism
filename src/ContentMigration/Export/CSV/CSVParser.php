@@ -6,8 +6,8 @@ use Drupal;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\effective_activism\Entity\Event;
 use Drupal\effective_activism\Entity\Export;
-use Drupal\effective_activism\Entity\Group;
-use Drupal\effective_activism\Helper\GroupHelper;
+use Drupal\effective_activism\Entity\Organization;
+use Drupal\effective_activism\Helper\OrganizationHelper;
 use Drupal\effective_activism\ContentMigration\ParserInterface;
 
 /**
@@ -30,7 +30,6 @@ class CSVParser implements ParserInterface {
     'langcode',
     'location',
     'organization',
-    'parent',
     'revision_created',
     'revision_log_message',
     'revision_id',
@@ -53,11 +52,11 @@ class CSVParser implements ParserInterface {
   private $itemCount;
 
   /**
-   * Group.
+   * Organization.
    *
-   * @var \Drupal\effective_activism\Entity\Group
+   * @var \Drupal\effective_activism\Entity\Organization
    */
-  private $group;
+  private $organization;
 
   /**
    * Export.
@@ -69,13 +68,13 @@ class CSVParser implements ParserInterface {
   /**
    * Creates the CSVParser Object.
    *
-   * @param \Drupal\effective_activism\Entity\Group $group
-   *   The group to export events from.
+   * @param \Drupal\effective_activism\Entity\Organization $organization
+   *   The organization to export events from.
    * @param \Drupal\effective_activism\Entity\Export $export
    *   The export to save the file to.
    */
-  public function __construct(Group $group, Export $export) {
-    $this->group = $group;
+  public function __construct(Organization $organization, Export $export) {
+    $this->organization = $organization;
     $this->export = $export;
     $this->setItemCount();
     return $this;
@@ -109,7 +108,7 @@ class CSVParser implements ParserInterface {
    * Set the number of items to be exported.
    */
   private function setItemCount() {
-    $this->itemCount = GroupHelper::getEvents($this->group, 0, 0, FALSE);
+    $this->itemCount = OrganizationHelper::getEvents($this->organization, 0, 0, FALSE);
     return $this;
   }
 
