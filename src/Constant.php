@@ -20,6 +20,7 @@ class Constant {
   const ENTITY_EVENT = 'event';
   const ENTITY_EXPORT = 'export';
   const ENTITY_EXPORT_TYPE = 'export_type';
+  const ENTITY_FILTER = 'filter';
   const ENTITY_RESULT = 'result';
   const ENTITY_RESULT_TYPE = 'result_type';
   const ENTITY_DATA = 'data';

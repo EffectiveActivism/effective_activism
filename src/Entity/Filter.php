@@ -81,16 +81,13 @@ class Filter extends RevisionableContentEntityBase implements FilterInterface {
    */
   public function preSave(EntityStorageInterface $storage) {
     parent::preSave($storage);
-
     foreach (array_keys($this->getTranslationLanguages()) as $langcode) {
       $translation = $this->getTranslation($langcode);
-
       // If no owner has been set explicitly, make the anonymous user the owner.
       if (!$translation->getOwner()) {
         $translation->setOwnerId(0);
       }
     }
-
     // If no revision author has been set explicitly, make the filter owner the
     // revision author.
     if (!$this->getRevisionUser()) {

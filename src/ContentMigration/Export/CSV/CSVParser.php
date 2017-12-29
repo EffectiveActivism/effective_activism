@@ -187,6 +187,14 @@ class CSVParser implements ParserInterface {
    *   An array of the entity fields, with the entity bundle id as key.
    */
   private function unpackEntityReference(EntityInterface $parent_entity, $parent_field_name, $field_delta = 0) {
+    // For entities without bundles, simply return the name of the entity.
+    if ($parent_entity->get($parent_field_name)->get($field_delta)->entity->getEntityType()->getBundleEntityType() === NULL) {
+      return [
+        $parent_field_name => [
+          $parent_entity->get($parent_field_name)->get($field_delta)->entity->getEntityType()->id() => $parent_entity->get($parent_field_name)->get($field_delta)->entity->label(),
+        ],
+      ];
+    }
     // Set entity type/import name.
     $bundle_entity_type = $parent_entity->get($parent_field_name)->get($field_delta)->entity->getEntityType()->getBundleEntityType();
     $bundle_id = $parent_entity->get($parent_field_name)->get($field_delta)->entity->bundle();
@@ -269,6 +277,7 @@ class CSVParser implements ParserInterface {
   public static function buildHeaders(array $rows) {
     // Force some column names to be first.
     $headers = [
+      'parent_group',
       'title',
     ];
     foreach ($rows as $row) {

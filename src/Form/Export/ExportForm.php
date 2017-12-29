@@ -34,8 +34,9 @@ class ExportForm extends ContentEntityForm {
 
       case 'export_csv_edit_form':
         // Restrict access to existing export entities.
-        $form['parent']['#disabled'] = TRUE;
+        $form['organization']['#disabled'] = TRUE;
         $form['field_file_csv']['#disabled'] = TRUE;
+        $form['filter']['#disabled'] = TRUE;
         break;
     }
     return $form;

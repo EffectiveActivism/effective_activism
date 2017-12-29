@@ -8,6 +8,8 @@ use Symfony\Component\Routing\Route;
 
 /**
  * Provides routes for Filter entities.
+ *
+ * @see Drupal\Core\Entity\Routing\DefaultHtmlRouteProvider
  */
 class FilterHtmlRouteProvider extends DefaultHtmlRouteProvider {
 
