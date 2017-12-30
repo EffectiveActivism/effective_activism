@@ -3,7 +3,6 @@
 namespace Drupal\effective_activism\Helper;
 
 use Drupal\effective_activism\Entity\Event;
-use Drupal\effective_activism\Entity\Export;
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\Import;
 
