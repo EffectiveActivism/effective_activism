@@ -31,7 +31,7 @@ class ExportForm extends ContentEntityForm {
     // Get organization id.
     $organization_id = $form_state->getValue('organization')[0]['target_id'];
     if (!isset($organization_id)) {
-      $organization_id = $form['organization']['widget'][0]['target_id']['#default_value'];      
+      $organization_id = $form['organization']['widget'][0]['target_id']['#default_value'];
     }
     // Remove filter options that do not belong to selected organization.
     if (!empty($form['organization']['widget'][0]['target_id']['#default_value'])) {
@@ -78,7 +78,7 @@ class ExportForm extends ContentEntityForm {
   public function validateForm(array &$form, FormStateInterface $form_state) {
     parent::validateForm($form, $form_state);
     $organization_id = $form_state->getValue('organization')[0]['target_id'];
-    $filter_id =$form_state->getValue('filter')[0]['target_id'];
+    $filter_id = $form_state->getValue('filter')[0]['target_id'];
     $allowed_filter_ids = OrganizationHelper::getFilters(Organization::load($organization_id), 0, 0, FALSE);
     if (!in_array($filter_id, $allowed_filter_ids)) {
       $form_state->setErrorByName('filter', $this->t('<em>@organization</em> does not allow the filter <em>@filter</em>. Please select another organization or filter.', [
