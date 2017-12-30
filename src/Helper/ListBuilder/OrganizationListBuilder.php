@@ -53,7 +53,7 @@ class OrganizationListBuilder extends EntityListBuilder {
    */
   protected function getEntityIds() {
     $query = $this->getStorage()->getQuery()
-        ->sort('title');
+      ->sort('title');
     // Filter entities for non-admin users.
     if (Drupal::currentUser()->id() !== '1') {
       $organizations = AccountHelper::getOrganizations(NULL, FALSE);
