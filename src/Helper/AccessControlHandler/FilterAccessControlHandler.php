@@ -9,11 +9,11 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\effective_activism\Permission\Permission;
 
 /**
- * Access controller for the Export entity.
+ * Access controller for the Filter entity.
  *
- * @see \Drupal\effective_activism\Entity\Export.
+ * @see \Drupal\effective_activism\Entity\Filter.
  */
-class ExportAccessControlHandler extends EntityAccessControlHandler {
+class FilterAccessControlHandler extends EntityAccessControlHandler {
 
   /**
    * {@inheritdoc}

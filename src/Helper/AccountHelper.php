@@ -2,9 +2,11 @@
 
 namespace Drupal\effective_activism\Helper;
 
+use Drupal;
 use Drupal\Core\Session\AccountProxyInterface;
-use Drupal\effective_activism\Entity\Organization;
+use Drupal\effective_activism\Entity\Filter;
 use Drupal\effective_activism\Entity\Group;
+use Drupal\effective_activism\Entity\Organization;
 
 /**
  * Helper functions for user accounts.
@@ -24,7 +26,7 @@ class AccountHelper {
    */
   public static function isManager(Organization $organization, AccountProxyInterface $account = NULL) {
     if (empty($account)) {
-      $account = \Drupal::currentUser();
+      $account = Drupal::currentUser();
     }
     $is_manager = FALSE;
     foreach ($organization->get('managers')->getValue() as $entity_reference) {
@@ -49,7 +51,7 @@ class AccountHelper {
    */
   public static function isManagerOfGroup(Group $group, AccountProxyInterface $account = NULL) {
     if (empty($account)) {
-      $account = \Drupal::currentUser();
+      $account = Drupal::currentUser();
     }
     $is_manager = FALSE;
 
@@ -75,7 +77,7 @@ class AccountHelper {
    */
   public static function isOrganizer(Group $group, AccountProxyInterface $account = NULL) {
     if (empty($account)) {
-      $account = \Drupal::currentUser();
+      $account = Drupal::currentUser();
     }
     $is_organizer = FALSE;
     foreach ($group->get('organizers')->getValue() as $entity_reference) {
@@ -100,7 +102,7 @@ class AccountHelper {
    */
   public static function isOrganizerOfOrganization(Organization $organization, AccountProxyInterface $account = NULL) {
     if (empty($account)) {
-      $account = \Drupal::currentUser();
+      $account = Drupal::currentUser();
     }
     $is_organizer = FALSE;
     foreach (OrganizationHelper::getGroups($organization) as $group) {
@@ -125,9 +127,9 @@ class AccountHelper {
    */
   public static function getManagedOrganizations(AccountProxyInterface $account = NULL, $load_entities = TRUE) {
     if (empty($account)) {
-      $account = \Drupal::currentUser();
+      $account = Drupal::currentUser();
     }
-    $result = \Drupal::entityQuery('organization')
+    $result = Drupal::entityQuery('organization')
       ->condition('managers', $account->id())
       ->sort('title')
       ->execute();
@@ -147,7 +149,7 @@ class AccountHelper {
    */
   public static function getOrganizations(AccountProxyInterface $account = NULL, $load_entities = TRUE) {
     if (empty($account)) {
-      $account = \Drupal::currentUser();
+      $account = Drupal::currentUser();
     }
     $result = self::getManagedOrganizations($account, FALSE);
     $organized_groups = self::getOrganizedGroups($account);
@@ -166,11 +168,11 @@ class AccountHelper {
    *   Wether to return fully loaded entities or ids.
    *
    * @return array
-   *   An array of organizations that the user account is manager of.
+   *   An array of groups that the user account is manager of.
    */
   public static function getGroups(AccountProxyInterface $account = NULL, $load_entities = TRUE) {
     if (empty($account)) {
-      $account = \Drupal::currentUser();
+      $account = Drupal::currentUser();
     }
     $result = self::getOrganizedGroups($account, FALSE);
     foreach (self::getManagedOrganizations($account) as $organization) {
@@ -179,6 +181,29 @@ class AccountHelper {
       $result = array_merge($result, $organization_groups);
     }
     return $load_entities ? Group::loadMultiple($result) : array_values($result);
+  }
+
+  /**
+   * Get filters that a user account is manager of.
+   *
+   * @param \Drupal\Core\Session\AccountProxyInterface $account
+   *   The user object to check relationship for.
+   * @param bool $load_entities
+   *   Wether to return fully loaded entities or ids.
+   *
+   * @return array
+   *   An array of filters that the user account is manager of.
+   */
+  public static function getFilters(AccountProxyInterface $account = NULL, $load_entities = TRUE) {
+    if (empty($account)) {
+      $account = Drupal::currentUser();
+    }
+    $organizations = self::getOrganizations($account, FALSE);
+    $result = Drupal::entityQuery('filter')
+      ->condition('organization', $organizations, 'IN')
+      ->sort('name')
+      ->execute();
+    return $load_entities ? Filter::loadMultiple($result) : array_values($result);
   }
 
   /**
@@ -194,9 +219,9 @@ class AccountHelper {
    */
   public static function getOrganizedGroups(AccountProxyInterface $account = NULL, $load_entities = TRUE) {
     if (empty($account)) {
-      $account = \Drupal::currentUser();
+      $account = Drupal::currentUser();
     }
-    $result = \Drupal::entityQuery('group')
+    $result = Drupal::entityQuery('group')
       ->condition('organizers', $account->id())
       ->sort('title')
       ->execute();

@@ -51,6 +51,8 @@ use Drupal\user\UserInterface;
  *     "publish-form" = "/manage/organizations/{organization}/publish",
  *     "collection" = "/manage/organizations",
  *     "groups" = "/manage/organizations/{organization}/groups",
+ *     "exports" = "/manage/organizations/{organization}/exports",
+ *     "filters" = "/manage/organizations/{organization}/filters",
  *   },
  * )
  */

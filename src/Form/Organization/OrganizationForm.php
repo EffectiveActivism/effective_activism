@@ -6,6 +6,7 @@ use Drupal;
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\effective_activism\Constant;
+use Drupal\effective_activism\Entity\Filter;
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\ResultType;
 use Drupal\effective_activism\Helper\InvitationHelper;
@@ -83,6 +84,12 @@ class OrganizationForm extends ContentEntityForm {
             ResultTypeHelper::addTaxonomyField($result_type);
           }
         }
+        // Create a filter when creating an organization.
+        $filter = Filter::create([
+          'organization' => $entity->id(),
+          'name' => sprintf('All events of \'%s\'', $entity->label()),
+        ]);
+        $filter->save();
         break;
 
       default:

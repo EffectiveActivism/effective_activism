@@ -4,6 +4,8 @@ namespace Drupal\effective_activism\Helper;
 
 use Drupal;
 use Drupal\effective_activism\Entity\Event;
+use Drupal\effective_activism\Entity\Export;
+use Drupal\effective_activism\Entity\Filter;
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\ResultType;
 use Drupal\effective_activism\Entity\Organization;
@@ -12,6 +14,102 @@ use Drupal\effective_activism\Entity\Organization;
  * Helper functions for Organization entities.
  */
 class OrganizationHelper {
+
+  /**
+   * Get organization exports.
+   *
+   * @param \Drupal\effective_activism\Entity\Organization $organization
+   *   The organization to get exports from.
+   * @param int $position
+   *   The position to start from.
+   * @param int $limit
+   *   The number of exports to return.
+   * @param bool $load_entities
+   *   Wether to return full entity objects or entity ids.
+   *
+   * @return array
+   *   An array of exports related to the organization.
+   */
+  public static function getExports(Organization $organization, $position = 0, $limit = 0, $load_entities = TRUE) {
+    $query = \Drupal::entityQuery('export')
+      ->condition('organization', $organization->id())
+      ->sort('created');
+    if ($limit > 0) {
+      $query->range($position, $limit + $position);
+    }
+    $result = $query->execute();
+    return $load_entities ? Export::loadMultiple($result) : array_values($result);
+  }
+
+  /**
+   * Get paged organization exports.
+   *
+   * @param \Drupal\effective_activism\Entity\Organization $organization
+   *   The organization to get exports from.
+   * @param int $page_count
+   *   How many entities to include.
+   * @param bool $load_entities
+   *   Wether to return full entity objects or entity ids.
+   *
+   * @return array
+   *   An array of exports related to the organization.
+   */
+  public static function getExportsPaged(Organization $organization, $page_count = 20, $load_entities = TRUE) {
+    $query = \Drupal::entityQuery('export')
+      ->condition('organization', $organization->id())
+      ->pager($page_count)
+      ->sort('created');
+    $result = $query->execute();
+    return $load_entities ? Export::loadMultiple($result) : array_values($result);
+  }
+
+  /**
+   * Get organization filters.
+   *
+   * @param \Drupal\effective_activism\Entity\Organization $organization
+   *   The organization to get filters from.
+   * @param int $position
+   *   The position to start from.
+   * @param int $limit
+   *   The number of filters to return.
+   * @param bool $load_entities
+   *   Wether to return full entity objects or entity ids.
+   *
+   * @return array
+   *   An array of filters related to the organization.
+   */
+  public static function getFilters(Organization $organization, $position = 0, $limit = 0, $load_entities = TRUE) {
+    $query = \Drupal::entityQuery('filter')
+      ->condition('organization', $organization->id())
+      ->sort('created');
+    if ($limit > 0) {
+      $query->range($position, $limit + $position);
+    }
+    $result = $query->execute();
+    return $load_entities ? Filter::loadMultiple($result) : array_values($result);
+  }
+
+  /**
+   * Get paged organization exports.
+   *
+   * @param \Drupal\effective_activism\Entity\Organization $organization
+   *   The organization to get filters from.
+   * @param int $page_count
+   *   How many entities to include.
+   * @param bool $load_entities
+   *   Wether to return full entity objects or entity ids.
+   *
+   * @return array
+   *   An array of filters related to the organization.
+   */
+  public static function getFiltersPaged(Organization $organization, $page_count = 20, $load_entities = TRUE) {
+    $query = \Drupal::entityQuery('filter')
+      ->condition('organization', $organization->id())
+      ->pager($page_count)
+      ->sort('created');
+    $result = $query->execute();
+    return $load_entities ? Filter::loadMultiple($result) : array_values($result);
+  }
 
   /**
    * Get organization groups.

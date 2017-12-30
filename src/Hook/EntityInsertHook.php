@@ -60,9 +60,9 @@ class EntityInsertHook implements HookInterface {
         // If the export is a CSV file, export it to a file and add to export.
         if ($entity->bundle() === 'csv') {
           $field_file_csv = $entity->get('field_file_csv')->getValue();
-          $group = $entity->get('parent')->entity;
+          $organization = $entity->get('organization')->entity;
           // Get CSV file.
-          $csvParser = new ExportCSVParser($group, $entity);
+          $csvParser = new ExportCSVParser($organization, $entity);
           $batch = [
             'title' => t('Exporting...'),
             'operations' => [

@@ -40,7 +40,6 @@ class OrganizerToolboxController extends ControllerBase {
         break;
 
       case 'event':
-      case 'export':
       case 'import':
         $access = AccountHelper::isOrganizer($this->entity->get('parent')->entity);
         break;

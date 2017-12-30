@@ -6,6 +6,7 @@ use Drupal;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\Event;
+use Drupal\effective_activism\Entity\Filter;
 use Drupal\effective_activism\Entity\Import;
 use Drupal\effective_activism\Entity\Export;
 
@@ -58,6 +59,22 @@ class Publisher {
             $entities = array_merge($entities, self::calculateEntities($group));
           }
         }
+        $exports = Drupal::entityQuery('export')
+          ->condition('organization', $entity->id())
+          ->execute();
+        if (!empty($exports)) {
+          foreach (Export::loadMultiple($exports) as $export) {
+            $entities[] = [$export->getEntityTypeId(), $export->id()];
+          }
+        }
+        $filters = Drupal::entityQuery('filter')
+          ->condition('organization', $entity->id())
+          ->execute();
+        if (!empty($filters)) {
+          foreach (Filter::loadMultiple($filters) as $filter) {
+            $entities[] = [$filter->getEntityTypeId(), $filter->id()];
+          }
+        }
         break;
 
       case 'Drupal\effective_activism\Entity\Group':
@@ -78,14 +95,6 @@ class Publisher {
             $entities[] = [$import->getEntityTypeId(), $import->id()];
           }
         }
-        $exports = Drupal::entityQuery('export')
-          ->condition('parent', $entity->id())
-          ->execute();
-        if (!empty($exports)) {
-          foreach (Export::loadMultiple($exports) as $export) {
-            $entities[] = [$export->getEntityTypeId(), $export->id()];
-          }
-        }
         break;
 
       case 'Drupal\effective_activism\Entity\Import':
@@ -101,6 +110,10 @@ class Publisher {
         break;
 
       case 'Drupal\effective_activism\Entity\Export':
+        $entities[] = [$entity->getEntityTypeId(), $entity->id()];
+        break;
+
+      case 'Drupal\effective_activism\Entity\Filter':
         $entities[] = [$entity->getEntityTypeId(), $entity->id()];
         break;
 

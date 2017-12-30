@@ -2,7 +2,6 @@
 
 namespace Drupal\effective_activism\Helper\ListBuilder;
 
-use DateTime;
 use Drupal;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\EntityInterface;
@@ -13,28 +12,28 @@ use Drupal\effective_activism\Constant;
 use Drupal\effective_activism\Helper\AccountHelper;
 
 /**
- * Defines a class to build a listing of Export entities.
+ * Defines a class to build a listing of Filter entities.
  *
  * @ingroup effective_activism
  */
-class ExportListBuilder extends EntityListBuilder {
+class FilterListBuilder extends EntityListBuilder {
 
   use LinkGeneratorTrait;
 
-  const THEME_ID = 'export_list';
+  const THEME_ID = 'filter_list';
 
   const CACHE_MAX_AGE = Cache::PERMANENT;
 
   const CACHE_TAGS = [
     Constant::CACHE_TAG_USER,
-    Constant::CACHE_TAG_EXPORT,
+    Constant::CACHE_TAG_FILTER,
   ];
 
   /**
    * {@inheritdoc}
    */
   public function buildHeader() {
-    $header['created'] = $this->t('Created');
+    $header['name'] = $this->t('Name');
     return $header + parent::buildHeader();
   }
 
@@ -42,7 +41,14 @@ class ExportListBuilder extends EntityListBuilder {
    * {@inheritdoc}
    */
   public function buildRow(EntityInterface $entity) {
-    $row['created'] = DateTime::createFromFormat('U', $entity->getCreatedTime())->format('d/m Y H:i');
+    $row['name'] = $this->l(
+      $entity->getName(),
+      new Url(
+        'entity.filter.canonical', [
+          'filter' => $entity->id(),
+        ]
+      )
+    );
     return $row + parent::buildRow($entity);
   }
 
@@ -51,7 +57,7 @@ class ExportListBuilder extends EntityListBuilder {
    */
   protected function getEntityIds() {
     $query = $this->getStorage()->getQuery()
-      ->sort($this->entityType->getKey('id'));
+      ->sort('name');
     // Filter entities for non-admin users.
     if (Drupal::currentUser()->id() !== '1') {
       $organization_ids = AccountHelper::getOrganizations(Drupal::currentUser(), FALSE);
@@ -69,7 +75,7 @@ class ExportListBuilder extends EntityListBuilder {
    * {@inheritdoc}
    */
   public function render() {
-    $build['#storage']['entities']['exports'] = $this->load();
+    $build['#storage']['entities']['filters'] = $this->load();
     $build['#theme'] = self::THEME_ID;
     $build['#cache'] = [
       'max-age' => self::CACHE_MAX_AGE,

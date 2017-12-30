@@ -6,8 +6,8 @@ use Drupal;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\effective_activism\Entity\Event;
 use Drupal\effective_activism\Entity\Export;
-use Drupal\effective_activism\Entity\Group;
-use Drupal\effective_activism\Helper\GroupHelper;
+use Drupal\effective_activism\Entity\Organization;
+use Drupal\effective_activism\Helper\OrganizationHelper;
 use Drupal\effective_activism\ContentMigration\ParserInterface;
 
 /**
@@ -30,7 +30,6 @@ class CSVParser implements ParserInterface {
     'langcode',
     'location',
     'organization',
-    'parent',
     'revision_created',
     'revision_log_message',
     'revision_id',
@@ -53,11 +52,11 @@ class CSVParser implements ParserInterface {
   private $itemCount;
 
   /**
-   * Group.
+   * Organization.
    *
-   * @var \Drupal\effective_activism\Entity\Group
+   * @var \Drupal\effective_activism\Entity\Organization
    */
-  private $group;
+  private $organization;
 
   /**
    * Export.
@@ -69,13 +68,13 @@ class CSVParser implements ParserInterface {
   /**
    * Creates the CSVParser Object.
    *
-   * @param \Drupal\effective_activism\Entity\Group $group
-   *   The group to export events from.
+   * @param \Drupal\effective_activism\Entity\Organization $organization
+   *   The organization to export events from.
    * @param \Drupal\effective_activism\Entity\Export $export
    *   The export to save the file to.
    */
-  public function __construct(Group $group, Export $export) {
-    $this->group = $group;
+  public function __construct(Organization $organization, Export $export) {
+    $this->organization = $organization;
     $this->export = $export;
     $this->setItemCount();
     return $this;
@@ -109,7 +108,7 @@ class CSVParser implements ParserInterface {
    * Set the number of items to be exported.
    */
   private function setItemCount() {
-    $this->itemCount = GroupHelper::getEvents($this->group, 0, 0, FALSE);
+    $this->itemCount = OrganizationHelper::getEvents($this->organization, 0, 0, FALSE);
     return $this;
   }
 
@@ -188,6 +187,14 @@ class CSVParser implements ParserInterface {
    *   An array of the entity fields, with the entity bundle id as key.
    */
   private function unpackEntityReference(EntityInterface $parent_entity, $parent_field_name, $field_delta = 0) {
+    // For entities without bundles, simply return the name of the entity.
+    if ($parent_entity->get($parent_field_name)->get($field_delta)->entity->getEntityType()->getBundleEntityType() === NULL) {
+      return [
+        $parent_field_name => [
+          $parent_entity->get($parent_field_name)->get($field_delta)->entity->getEntityType()->id() => $parent_entity->get($parent_field_name)->get($field_delta)->entity->label(),
+        ],
+      ];
+    }
     // Set entity type/import name.
     $bundle_entity_type = $parent_entity->get($parent_field_name)->get($field_delta)->entity->getEntityType()->getBundleEntityType();
     $bundle_id = $parent_entity->get($parent_field_name)->get($field_delta)->entity->bundle();
@@ -270,6 +277,7 @@ class CSVParser implements ParserInterface {
   public static function buildHeaders(array $rows) {
     // Force some column names to be first.
     $headers = [
+      'parent_group',
       'title',
     ];
     foreach ($rows as $row) {
