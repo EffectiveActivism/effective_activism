@@ -48,13 +48,13 @@ class FilterForm extends ContentEntityForm {
     $status = parent::save($form, $form_state);
     switch ($status) {
       case SAVED_NEW:
-        drupal_set_message($this->t('Created the %label Filter.', [
+        drupal_set_message($this->t('Created the %label filter.', [
           '%label' => $entity->label(),
         ]));
         break;
 
       default:
-        drupal_set_message($this->t('Saved the %label Filter.', [
+        drupal_set_message($this->t('Saved the %label filter.', [
           '%label' => $entity->label(),
         ]));
     }
