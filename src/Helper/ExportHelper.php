@@ -4,7 +4,6 @@ namespace Drupal\effective_activism\Helper;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\effective_activism\Entity\Filter;
-use Drupal\effective_activism\Helper\FilterHelper;
 
 /**
  * Helper functions for querying export.
