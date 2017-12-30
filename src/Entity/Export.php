@@ -154,6 +154,7 @@ class Export extends RevisionableContentEntityBase implements ExportInterface {
     $fields['organization'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Organization'))
       ->setDescription(t('The organization of the export.'))
+      ->setRequired(TRUE)
       ->setRevisionable(TRUE)
       ->setSetting('target_type', 'organization')
       ->setSetting('handler', 'default')
@@ -180,7 +181,7 @@ class Export extends RevisionableContentEntityBase implements ExportInterface {
         'weight' => array_search('filter', self::WEIGHTS),
       ])
       ->setDisplayOptions('form', [
-        'type' => 'options_select',
+        'type' => 'filter_selector',
         'settings' => [
           'allow_new' => FALSE,
           'allow_existing' => TRUE,

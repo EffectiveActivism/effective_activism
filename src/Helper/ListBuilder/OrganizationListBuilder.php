@@ -57,7 +57,12 @@ class OrganizationListBuilder extends EntityListBuilder {
     // Filter entities for non-admin users.
     if (Drupal::currentUser()->id() !== '1') {
       $organizations = AccountHelper::getOrganizations(NULL, FALSE);
-      $query->condition('id', $organizations, 'IN');
+      if (!empty($organizations)) {
+        $query->condition('id', $organizations, 'IN');
+      }
+      else {
+        return [];
+      }
     }
     // Only add the pager if a limit is specified.
     if ($this->limit) {

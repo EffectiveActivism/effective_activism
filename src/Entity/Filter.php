@@ -178,6 +178,7 @@ class Filter extends RevisionableContentEntityBase implements FilterInterface {
     $fields['organization'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Organization'))
       ->setDescription(t('The organization of the filter.'))
+      ->setRequired(TRUE)
       ->setRevisionable(TRUE)
       ->setSetting('target_type', 'organization')
       ->setSetting('handler', 'default')
@@ -218,6 +219,7 @@ class Filter extends RevisionableContentEntityBase implements FilterInterface {
     $fields['name'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Name'))
       ->setDescription(t('The name of the filter.'))
+      ->setRequired(TRUE)
       ->setRevisionable(TRUE)
       ->setSettings([
         'max_length' => 50,

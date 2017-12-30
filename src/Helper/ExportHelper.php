@@ -25,7 +25,7 @@ class ExportHelper {
       isset($filter_id) &&
       count(FilterHelper::getEvents(Filter::load($filter_id), 0, 0, FALSE)) === 0
     ) {
-      $form_state->setErrorByName('', t('There are no events to export for this group.'));
+      $form_state->setErrorByName('', t('There are no events to export for this organization.'));
     }
   }
 
