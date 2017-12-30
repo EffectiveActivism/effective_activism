@@ -3,7 +3,8 @@
 namespace Drupal\effective_activism\Helper;
 
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\effective_activism\Entity\Group;
+use Drupal\effective_activism\Entity\Filter;
+use Drupal\effective_activism\Helper\FilterHelper;
 
 /**
  * Helper functions for querying export.
@@ -19,11 +20,12 @@ class ExportHelper {
    *   The form state to validate.
    */
   public static function validateCsv(array &$form, FormStateInterface $form_state) {
-    $trigger = $form_state->getTriggeringElement();
-    $gid = $form_state->getValue('parent')[0]['target_id'];
-    $group = Group::load($gid);
-    if (count(GroupHelper::getEvents(Group::load($gid), 0, 0, FALSE)) === 0) {
-      $form_state->setErrorByName('', t('There are no events to export for this group.'));
+    $filter_id = isset($form_state->getValue('filter')[0]['target_id']) ? $form_state->getValue('filter')[0]['target_id'] : NULL;
+    if (
+      isset($filter_id) &&
+      count(FilterHelper::getEvents(Filter::load($filter_id), 0, 0, FALSE)) === 0
+    ) {
+      $form_state->setErrorByName('', t('There are no events to export for this organization.'));
     }
   }
 

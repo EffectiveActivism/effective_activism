@@ -8,17 +8,17 @@ use Drupal\effective_activism\Entity\Organization;
 use Drupal\effective_activism\Helper\OrganizationHelper;
 
 /**
- * Controller class for export entities.
+ * Controller class for filter entities.
  */
-class ExportOverviewController extends ListBaseController {
+class FilterOverviewController extends ListBaseController {
 
-  const THEME_ID = 'organization_export_overview';
+  const THEME_ID = 'organization_filter_overview';
 
   const CACHE_MAX_AGE = Cache::PERMANENT;
 
   const CACHE_TAGS = [
     Constant::CACHE_TAG_USER,
-    Constant::CACHE_TAG_EXPORT,
+    Constant::CACHE_TAG_FILTER,
   ];
 
   /**
@@ -30,7 +30,7 @@ class ExportOverviewController extends ListBaseController {
   public function content() {
     $content['#theme'] = self::THEME_ID;
     $content['#storage']['entities']['organization'] = empty($this->entities['organization']) ? NULL : $this->entities['organization'];
-    $content['#storage']['entities']['exports'] = $this->entities['exports'];
+    $content['#storage']['entities']['filters'] = $this->entities['filters'];
     $content['#cache'] = [
       'max-age' => self::CACHE_MAX_AGE,
       'tags' => self::CACHE_TAGS,
@@ -42,7 +42,7 @@ class ExportOverviewController extends ListBaseController {
    * A callback for routes.
    *
    * @param \Drupal\effective_activism\Entity\Organization $organization
-   *   The organization to render exports for.
+   *   The organization to render filters for.
    *
    * @return array
    *   A render array.
@@ -50,7 +50,7 @@ class ExportOverviewController extends ListBaseController {
   public function routeCallback(Organization $organization) {
     $content['#theme'] = self::THEME_ID;
     $content['#storage']['entities']['organization'] = $organization;
-    $content['#storage']['entities']['exports'] = OrganizationHelper::getExportsPaged($organization);
+    $content['#storage']['entities']['filters'] = OrganizationHelper::getFiltersPaged($organization);
     $content['#cache'] = [
       'max-age' => self::CACHE_MAX_AGE,
       'tags' => self::CACHE_TAGS,
