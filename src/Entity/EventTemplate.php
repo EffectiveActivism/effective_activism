@@ -62,6 +62,8 @@ class EventTemplate extends RevisionableContentEntityBase implements EventTempla
   const WEIGHTS = [
     'name',
     'organization',
+    'event_title',
+    'event_description',
     'user_id',
   ];
 
@@ -174,23 +176,6 @@ class EventTemplate extends RevisionableContentEntityBase implements EventTempla
    */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $fields = parent::baseFieldDefinitions($entity_type);
-    $fields['organization'] = BaseFieldDefinition::create('entity_reference')
-      ->setLabel(t('Organization'))
-      ->setDescription(t('The organization of the filter.'))
-      ->setRequired(TRUE)
-      ->setRevisionable(TRUE)
-      ->setSetting('target_type', 'organization')
-      ->setSetting('handler', 'default')
-      ->setCardinality(1)
-      ->setDisplayOptions('view', [
-        'label' => 'hidden',
-        'type' => 'string',
-        'weight' => array_search('organization', self::WEIGHTS),
-      ])
-      ->setDisplayOptions('form', [
-        'type' => 'organization_selector',
-        'weight' => array_search('organization', self::WEIGHTS),
-      ]);
     $fields['user_id'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Authored by'))
       ->setDescription(t('The user ID of author of the Event template entity.'))
@@ -239,6 +224,59 @@ class EventTemplate extends RevisionableContentEntityBase implements EventTempla
       ])
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
+    $fields['organization'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(t('Organization'))
+      ->setDescription(t('The organization of the filter.'))
+      ->setRequired(TRUE)
+      ->setRevisionable(TRUE)
+      ->setSetting('target_type', 'organization')
+      ->setSetting('handler', 'default')
+      ->setCardinality(1)
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'string',
+        'weight' => array_search('organization', self::WEIGHTS),
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'organization_selector',
+        'weight' => array_search('organization', self::WEIGHTS),
+      ]);
+    $fields['event_title'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('Event title'))
+      ->setDescription(t('The title of the event.'))
+      ->setRevisionable(TRUE)
+      ->setSettings([
+        'text_processing' => 0,
+      ])
+      ->setDefaultValue('')
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'string',
+        'weight' => array_search('event_title', self::WEIGHTS),
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'string_textfield',
+        'weight' => array_search('event_title', self::WEIGHTS),
+        'settings' => [
+          'placeholder' => t('Event title'),
+        ],
+      ]);
+    $fields['event_description'] = BaseFieldDefinition::create('string_long')
+      ->setLabel(t('Event description'))
+      ->setDescription(t('The description of the event.'))
+      ->setRevisionable(TRUE)
+      ->setDisplayOptions('form', [
+        'type' => 'string_textarea',
+        'weight' => array_search('event_description', self::WEIGHTS),
+        'settings' => [
+          'rows' => 6,
+          'placeholder' => t('Event description'),
+        ],
+      ])
+      ->setDisplayOptions('view', [
+        'type' => 'basic_string',
+        'weight' => array_search('event_description', self::WEIGHTS),
+      ]);
     $fields['status'] = BaseFieldDefinition::create('boolean')
       ->setLabel(t('Publishing status'))
       ->setDescription(t('A boolean indicating whether the Event template is published.'))
