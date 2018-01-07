@@ -10,31 +10,31 @@ use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\user\UserInterface;
 
 /**
- * Defines the Filter entity.
+ * Defines the Event template entity.
  *
  * @ingroup effective_activism
  *
  * @ContentEntityType(
- *   id = "filter",
- *   label = @Translation("Filter"),
+ *   id = "event_template",
+ *   label = @Translation("Event template"),
  *   handlers = {
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
- *     "list_builder" = "Drupal\effective_activism\Helper\ListBuilder\FilterListBuilder",
- *     "views_data" = "Drupal\effective_activism\Helper\ViewsData\FilterViewsData",
+ *     "list_builder" = "Drupal\effective_activism\Helper\ListBuilder\EventTemplateListBuilder",
+ *     "views_data" = "Drupal\effective_activism\Helper\ViewsData\EventTemplateViewsData",
+ *
  *     "form" = {
- *       "default" = "Drupal\effective_activism\Form\Filter\FilterForm",
- *       "add" = "Drupal\effective_activism\Form\Filter\FilterForm",
- *       "edit" = "Drupal\effective_activism\Form\Filter\FilterForm",
- *       "publish" = "Drupal\effective_activism\Form\Filter\FilterPublishForm",
+ *       "default" = "Drupal\effective_activism\Form\EventTemplate\EventTemplateForm",
+ *       "add" = "Drupal\effective_activism\Form\EventTemplate\EventTemplateForm",
+ *       "edit" = "Drupal\effective_activism\Form\EventTemplate\EventTemplateForm",
  *     },
- *     "access" = "Drupal\effective_activism\Helper\AccessControlHandler\FilterAccessControlHandler",
+ *     "access" = "Drupal\effective_activism\Helper\AccessControlHandler\EventTemplateAccessControlHandler",
  *     "route_provider" = {
- *       "html" = "Drupal\effective_activism\Helper\RouteProvider\FilterHtmlRouteProvider",
+ *       "html" = "Drupal\effective_activism\Helper\RouteProvider\EventTemplateHtmlRouteProvider",
  *     },
  *   },
- *   base_table = "filter",
- *   revision_table = "filter_revision",
- *   revision_data_table = "filter_field_revision",
+ *   base_table = "event_template",
+ *   revision_table = "event_template_revision",
+ *   revision_data_table = "event_template_field_revision",
  *   entity_keys = {
  *     "id" = "id",
  *     "revision" = "vid",
@@ -45,19 +45,17 @@ use Drupal\user\UserInterface;
  *     "status" = "status",
  *   },
  *   links = {
- *     "canonical" = "/manage/filters/{filter}",
- *     "add-form" = "/manage/filters/add",
- *     "edit-form" = "/manage/filters/{filter}/edit",
- *     "publish-form" = "/manage/filters/{filter}/publish",
- *     "version-history" = "/manage/filters/{filter}/revisions",
- *     "revision" = "/manage/filters/{filter}/revisions/{filter_revision}/view",
- *     "revision_revert" = "/manage/filters/{filter}/revisions/{filter_revision}/revert",
- *     "revision_delete" = "/manage/filters/{filter}/revisions/{filter_revision}/delete",
- *     "collection" = "/manage/filters",
+ *     "canonical" = "/manage/event_template/{event_template}",
+ *     "add-form" = "/manage/event_template/add",
+ *     "edit-form" = "/manage/event_template/{event_template}/edit",
+ *     "version-history" = "/manage/event_template/{event_template}/revisions",
+ *     "revision" = "/manage/event_template/{event_template}/revisions/{event_template_revision}/view",
+ *     "revision_revert" = "/manage/event_template/{event_template}/revisions/{event_template_revision}/revert",
+ *     "collection" = "/manage/event_template",
  *   },
  * )
  */
-class Filter extends RevisionableContentEntityBase implements FilterInterface {
+class EventTemplate extends RevisionableContentEntityBase implements EventTemplateInterface {
 
   use EntityChangedTrait;
 
@@ -89,7 +87,7 @@ class Filter extends RevisionableContentEntityBase implements FilterInterface {
         $translation->setOwnerId(0);
       }
     }
-    // If no revision author has been set explicitly, make the filter owner the
+    // If no revision author has been set explicitly, make the event_template owner the
     // revision author.
     if (!$this->getRevisionUser()) {
       $this->setRevisionUserId($this->getOwnerId());
@@ -195,7 +193,7 @@ class Filter extends RevisionableContentEntityBase implements FilterInterface {
       ]);
     $fields['user_id'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Authored by'))
-      ->setDescription(t('The user ID of author of the filter.'))
+      ->setDescription(t('The user ID of author of the Event template entity.'))
       ->setRevisionable(TRUE)
       ->setSetting('target_type', 'user')
       ->setSetting('handler', 'default')
@@ -219,7 +217,7 @@ class Filter extends RevisionableContentEntityBase implements FilterInterface {
       ->setDisplayConfigurable('view', TRUE);
     $fields['name'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Name'))
-      ->setDescription(t('The name of the filter.'))
+      ->setDescription(t('The name of the Event template entity.'))
       ->setRequired(TRUE)
       ->setRevisionable(TRUE)
       ->setSettings([
@@ -243,7 +241,7 @@ class Filter extends RevisionableContentEntityBase implements FilterInterface {
       ->setDisplayConfigurable('view', TRUE);
     $fields['status'] = BaseFieldDefinition::create('boolean')
       ->setLabel(t('Publishing status'))
-      ->setDescription(t('A boolean indicating whether the filter is published.'))
+      ->setDescription(t('A boolean indicating whether the Event template is published.'))
       ->setRevisionable(TRUE)
       ->setDefaultValue(TRUE);
     $fields['created'] = BaseFieldDefinition::create('created')
