@@ -17,9 +17,7 @@ class EventTemplateSelectionForm extends FormBase {
 
   const FORM_ID = 'effective_activism_event_template_selection';
 
-  const THEME_ID = self::FORM_ID;
-
-  const AJAX_WRAPPER = 'ajax';
+  const AJAX_WRAPPER = 'ajax-event-template-selection';
 
   /**
    * {@inheritdoc}
@@ -45,14 +43,14 @@ class EventTemplateSelectionForm extends FormBase {
       return $result;
     });
     // Get event template default value.
-    $selected_event_template = !empty($form_state->getValue('event_template')) ? $form_state->getValue('event_template') : (!empty($available_event_templates) ? key($available_event_templates) : NULL);
-    $form['form'] = [
-     '#prefix' => sprintf('<div id="%s">', self::AJAX_WRAPPER),
-      '#suffix' => '</div>',
-      '#type' => 'fieldset',
-      '#title' => $this->t('Please select an event template.'),
-    ];
-    $form['form']['organization'] = [
+    if (!empty($form_state->getValue('event_template')) && in_array($form_state->getValue('event_template'), $available_event_templates)) {
+      $selected_event_template = $form_state->getValue('event_template');
+    }
+    else {
+     $selected_event_template = key($available_event_templates);
+    }
+    $form['#theme'] = sprintf('%s-form', self::FORM_ID);
+    $form['organization'] = [
       '#type' => 'select',
       '#title' => $this->t('Organization'),
       '#default_value' => $selected_organization,
@@ -66,7 +64,9 @@ class EventTemplateSelectionForm extends FormBase {
       ],
     ];
     if (!empty($available_event_templates)) {
-      $form['form']['event_template'] = [
+      $form['event_template'] = [
+        '#prefix' => sprintf('<div id="%s">', self::AJAX_WRAPPER),
+        '#suffix' => '</div>',
         '#type' => 'select',
         '#title' => $this->t('Event template'),
         '#default_value' => $selected_event_template,
@@ -74,17 +74,18 @@ class EventTemplateSelectionForm extends FormBase {
         '#options' => $available_event_templates,
         '#required' => TRUE,
       ];
-      $form['form']['select'] = [
+      $form['select'] = [
         '#type' => 'submit',
         '#value' => $this->t('Select'),
         '#name' => 'select',
       ];
     }
     else {
-      $form['form']['event_template'] = [
+      $form['event_template'] = [
         '#prefix' => sprintf('<div id="%s">', self::AJAX_WRAPPER),
         '#suffix' => '</div>',
-        '#type' => 'markup',
+        '#type' => 'item',
+        '#title' => $this->t('Event template'),
         '#markup' => sprintf('<p>%s</p>', $this->t('There are no available event templates for this organization.')),
       ];
     }
@@ -110,7 +111,7 @@ class EventTemplateSelectionForm extends FormBase {
    *   The form array.
    */
   public function updateAvailableEventTemplates(array &$form, FormStateInterface $form_state) {
-    return $form;
+    return $form['event_template'];
   }
 
 }
