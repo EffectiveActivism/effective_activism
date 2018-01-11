@@ -6,6 +6,7 @@ use Drupal;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\Event;
+use Drupal\effective_activism\Entity\EventTemplate;
 use Drupal\effective_activism\Entity\Filter;
 use Drupal\effective_activism\Entity\Import;
 use Drupal\effective_activism\Entity\Export;
@@ -75,6 +76,14 @@ class Publisher {
             $entities[] = [$filter->getEntityTypeId(), $filter->id()];
           }
         }
+        $event_templates = Drupal::entityQuery('event_template')
+          ->condition('organization', $entity->id())
+          ->execute();
+        if (!empty($event_templates)) {
+          foreach (EventTemplate::loadMultiple($event_templates) as $event_template) {
+            $entities[] = [$event_template->getEntityTypeId(), $event_template->id()];
+          }
+        }
         break;
 
       case 'Drupal\effective_activism\Entity\Group':
@@ -110,6 +119,10 @@ class Publisher {
         break;
 
       case 'Drupal\effective_activism\Entity\Export':
+        $entities[] = [$entity->getEntityTypeId(), $entity->id()];
+        break;
+
+      case 'Drupal\effective_activism\Entity\EventTemplate':
         $entities[] = [$entity->getEntityTypeId(), $entity->id()];
         break;
 
