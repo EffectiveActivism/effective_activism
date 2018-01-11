@@ -85,4 +85,3 @@ class EventTemplateListBuilder extends EntityListBuilder {
   }
 
 }
-
