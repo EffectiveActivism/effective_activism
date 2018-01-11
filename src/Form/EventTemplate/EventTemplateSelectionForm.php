@@ -31,7 +31,7 @@ class EventTemplateSelectionForm extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     // Get available organizations.
-    $available_organizations = array_reduce(AccountHelper::getManagedOrganizations(), function ($result, $organization) {
+    $available_organizations = array_reduce(AccountHelper::getOrganizations(), function ($result, $organization) {
       $result[$organization->id()] = $organization->label();
       return $result;
     }, []);
