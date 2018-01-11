@@ -2,12 +2,8 @@
 
 namespace Drupal\effective_activism\Form\EventTemplate;
 
-use Drupal;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
-
-use Drupal\effective_activism\Entity\Event;
-use Drupal\effective_activism\Entity\EventTemplate;
 use Drupal\effective_activism\Entity\Organization;
 use Drupal\effective_activism\Helper\OrganizationHelper;
 use Drupal\effective_activism\Helper\AccountHelper;
@@ -52,7 +48,7 @@ class EventTemplateSelectionForm extends FormBase {
       $selected_event_template = $form_state->getValue('event_template');
     }
     elseif (!empty($available_event_templates)) {
-     $selected_event_template = key($available_event_templates);
+      $selected_event_template = key($available_event_templates);
     }
     $form['#theme'] = sprintf('%s-form', self::FORM_ID);
     $form['organization'] = [

@@ -20,7 +20,7 @@ class EventTemplateHelper {
    * @return array
    *   The event form with default values set.
    */
-  public static function applyEventTemplate(EventTemplate $event_template, $event_form) {
+  public static function applyEventTemplate(EventTemplate $event_template, array $event_form) {
     $event_form['title']['widget'][0]['value']['#default_value'] = $event_template->event_title->value;
     $event_form['description']['widget'][0]['value']['#default_value'] = $event_template->event_description->value;
     return $event_form;
