@@ -4,6 +4,7 @@ namespace Drupal\effective_activism\Helper;
 
 use Drupal;
 use Drupal\effective_activism\Entity\Event;
+use Drupal\effective_activism\Entity\EventTemplate;
 use Drupal\effective_activism\Entity\Export;
 use Drupal\effective_activism\Entity\Filter;
 use Drupal\effective_activism\Entity\Group;
@@ -14,6 +15,54 @@ use Drupal\effective_activism\Entity\Organization;
  * Helper functions for Organization entities.
  */
 class OrganizationHelper {
+
+  /**
+   * Get organization event templates.
+   *
+   * @param \Drupal\effective_activism\Entity\Organization $organization
+   *   The organization to get event templates from.
+   * @param int $position
+   *   The position to start from.
+   * @param int $limit
+   *   The number of event templates to return.
+   * @param bool $load_entities
+   *   Wether to return full entity objects or entity ids.
+   *
+   * @return array
+   *   An array of event templates related to the organization.
+   */
+  public static function getEventTemplates(Organization $organization, $position = 0, $limit = 0, $load_entities = TRUE) {
+    $query = \Drupal::entityQuery('event_template')
+      ->condition('organization', $organization->id())
+      ->sort('created');
+    if ($limit > 0) {
+      $query->range($position, $limit + $position);
+    }
+    $result = $query->execute();
+    return $load_entities ? EventTemplate::loadMultiple($result) : array_values($result);
+  }
+
+  /**
+   * Get paged organization event templates.
+   *
+   * @param \Drupal\effective_activism\Entity\Organization $organization
+   *   The organization to get event templates from.
+   * @param int $page_count
+   *   How many entities to include.
+   * @param bool $load_entities
+   *   Wether to return full entity objects or entity ids.
+   *
+   * @return array
+   *   An array of event templates related to the organization.
+   */
+  public static function getEventTemplatesPaged(Organization $organization, $page_count = 20, $load_entities = TRUE) {
+    $query = \Drupal::entityQuery('event_template')
+      ->condition('organization', $organization->id())
+      ->pager($page_count)
+      ->sort('created');
+    $result = $query->execute();
+    return $load_entities ? EventTemplate::loadMultiple($result) : array_values($result);
+  }
 
   /**
    * Get organization exports.
@@ -90,7 +139,7 @@ class OrganizationHelper {
   }
 
   /**
-   * Get paged organization exports.
+   * Get paged organization filters.
    *
    * @param \Drupal\effective_activism\Entity\Organization $organization
    *   The organization to get filters from.

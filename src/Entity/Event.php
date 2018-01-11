@@ -47,6 +47,7 @@ use Drupal\user\UserInterface;
  *   links = {
  *     "canonical" = "/manage/events/{event}",
  *     "add-form" = "/manage/events/add",
+ *     "add-from-template-form" = "/manage/events/add/{event_template}",
  *     "edit-form" = "/manage/events/{event}/edit",
  *     "publish-form" = "/manage/events/{event}/publish",
  *     "collection" = "/manage/events",
