@@ -28,11 +28,14 @@ class OrganizationHtmlRouteProvider extends DefaultHtmlRouteProvider {
     if ($publish_form_route = $this->getPublishFormRoute($entity_type)) {
       $collection->add("entity.{$entity_type_id}.publish_form", $publish_form_route);
     }
+    if ($event_template_overview_route = $this->getEventTemplatesRoute($entity_type)) {
+      $collection->add("entity.{$entity_type_id}.event_templates", $event_template_overview_route);
+    }
     if ($export_overview_route = $this->getExportsRoute($entity_type)) {
       $collection->add("entity.{$entity_type_id}.exports", $export_overview_route);
     }
-    if ($export_overview_route = $this->getFiltersRoute($entity_type)) {
-      $collection->add("entity.{$entity_type_id}.filters", $export_overview_route);
+    if ($filter_overview_route = $this->getFiltersRoute($entity_type)) {
+      $collection->add("entity.{$entity_type_id}.filters", $filter_overview_route);
     }
     if ($group_overview_route = $this->getGroupsRoute($entity_type)) {
       $collection->add("entity.{$entity_type_id}.groups", $group_overview_route);
@@ -114,6 +117,37 @@ class OrganizationHtmlRouteProvider extends DefaultHtmlRouteProvider {
           '_title' => "Publish {$entity_type->getLabel()}",
         ])
         ->setRequirement('_entity_access', "{$entity_type_id}.update")
+        ->setOption('parameters', [
+          $entity_type_id => ['type' => 'entity:' . $entity_type_id],
+        ]);
+      // Entity types with serial IDs can specify this in their route
+      // requirements, improving the matching process.
+      if ($this->getEntityTypeIdKeyType($entity_type) === 'integer') {
+        $route->setRequirement($entity_type_id, '\d+');
+      }
+      return $route;
+    }
+  }
+
+  /**
+   * Gets the event templates overview route.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
+   *   The entity type.
+   *
+   * @return \Symfony\Component\Routing\Route|null
+   *   The generated route, if available.
+   */
+  protected function getEventTemplatesRoute(EntityTypeInterface $entity_type) {
+    if ($entity_type->hasLinkTemplate('event_templates')) {
+      $entity_type_id = $entity_type->id();
+      $route = new Route($entity_type->getLinkTemplate('event_templates'));
+      $route
+        ->setDefaults([
+          '_controller' => '\Drupal\effective_activism\Controller\Overview\EventTemplateOverviewController::routeCallback',
+          '_title' => "Event templates",
+        ])
+        ->setRequirement('_entity_access', "{$entity_type_id}.view")
         ->setOption('parameters', [
           $entity_type_id => ['type' => 'entity:' . $entity_type_id],
         ]);

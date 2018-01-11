@@ -18,6 +18,7 @@ class Constant {
   const ENTITY_ORGANIZATION = 'organization';
   const ENTITY_GROUP = 'group';
   const ENTITY_EVENT = 'event';
+  const ENTITY_EVENT_TEMPLATE = 'event_template';
   const ENTITY_EXPORT = 'export';
   const ENTITY_EXPORT_TYPE = 'export_type';
   const ENTITY_FILTER = 'filter';
@@ -103,6 +104,7 @@ class Constant {
   const CACHE_TAG_EXPORT = 'export_list';
   const CACHE_TAG_FILTER = 'filter_list';
   const CACHE_TAG_EVENT = 'event_list';
+  const CACHE_TAG_EVENT_TEMPLATE = 'event_template_list';
   const CACHE_TAG_RESULT_TYPE = 'config:result_type_list';
 
   /**

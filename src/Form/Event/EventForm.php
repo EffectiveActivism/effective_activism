@@ -6,6 +6,7 @@ use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\ResultType;
+use Drupal\effective_activism\Helper\EventTemplateHelper;
 
 /**
  * Form controller for Event edit forms.
@@ -17,10 +18,25 @@ class EventForm extends ContentEntityForm {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state) {
+  public function buildForm(array $form, FormStateInterface $form_state, $event_template = NULL) {
     /* @var $entity \Drupal\effective_activism\Entity */
     $form = parent::buildForm($form, $form_state);
     $entity = $this->entity;
+    // Retrieve group id.
+    $gid = $form_state->getTemporaryValue('gid');
+    // If the form is fresh, it has no parent group id.
+    // Use default value instead.
+    if (empty($gid) && !empty($form['parent']['widget'][0]['target_id']['#default_value'])) {
+      $gid = $form['parent']['widget'][0]['target_id']['#default_value'];
+    }
+    // Use event template if valid.
+    if (
+      $event_template !== NULL &&
+      $event_template->access('view')
+    ) {
+      // Use event template.
+      $form = EventTemplateHelper::applyEventTemplate($event_template, $form);
+    }
     $form['#prefix'] = '<div id="ajax">';
     $form['#suffix'] = '</div>';
     $form['parent']['widget'][0]['target_id']['#ajax'] = [
@@ -31,13 +47,6 @@ class EventForm extends ContentEntityForm {
     // 'allow_existing' setting to force inline entity form to display
     // the 'Remove' button.
     unset($form['results']['widget']['actions']['ief_add_existing']);
-    // Retrieve group id.
-    $gid = $form_state->getTemporaryValue('gid');
-    // If the form is fresh, it has no parent group id.
-    // Use default value instead.
-    if (empty($gid) && !empty($form['parent']['widget'][0]['target_id']['#default_value'])) {
-      $gid = $form['parent']['widget'][0]['target_id']['#default_value'];
-    }
     // Limit result inline entity form options by result type access settings.
     if (!empty($form['results']['widget']['actions']['bundle']['#options'])) {
       foreach ($form['results']['widget']['actions']['bundle']['#options'] as $machine_name => $human_name) {
