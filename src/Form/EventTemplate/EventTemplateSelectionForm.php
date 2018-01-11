@@ -39,7 +39,9 @@ class EventTemplateSelectionForm extends FormBase {
     $selected_organization = !empty($form_state->getValue('organization')) ? $form_state->getValue('organization') : key($available_organizations);
     // Get available event templates.
     $available_event_templates = array_reduce(OrganizationHelper::getEventTemplates(Organization::load($selected_organization)), function ($result, $event_template) {
-      $result[$event_template->id()] = $event_template->label();
+      if ($event_template->isPublished()) {
+        $result[$event_template->id()] = $event_template->label();
+      }
       return $result;
     });
     // Get event template default value.
