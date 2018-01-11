@@ -48,6 +48,7 @@ use Drupal\user\UserInterface;
  *     "canonical" = "/manage/event_template/{event_template}",
  *     "add-form" = "/manage/event_template/add",
  *     "edit-form" = "/manage/event_template/{event_template}/edit",
+ *     "publish-form" = "/manage/event_template/{event_template}/publish",
  *     "version-history" = "/manage/event_template/{event_template}/revisions",
  *     "revision" = "/manage/event_template/{event_template}/revisions/{event_template_revision}/view",
  *     "revision_revert" = "/manage/event_template/{event_template}/revisions/{event_template_revision}/revert",
@@ -274,6 +275,7 @@ class EventTemplate extends RevisionableContentEntityBase implements EventTempla
         ],
       ])
       ->setDisplayOptions('view', [
+        'label' => 'hidden',
         'type' => 'basic_string',
         'weight' => array_search('event_description', self::WEIGHTS),
       ]);

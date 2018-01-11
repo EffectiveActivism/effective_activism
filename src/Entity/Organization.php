@@ -51,7 +51,7 @@ use Drupal\user\UserInterface;
  *     "publish-form" = "/manage/organizations/{organization}/publish",
  *     "collection" = "/manage/organizations",
  *     "groups" = "/manage/organizations/{organization}/groups",
- *     "event_templates" = "/manage/organizations/{organization}/event_templates",
+ *     "event_templates" = "/manage/organizations/{organization}/event-templates",
  *     "exports" = "/manage/organizations/{organization}/exports",
  *     "filters" = "/manage/organizations/{organization}/filters",
  *   },

@@ -47,10 +47,11 @@ class EventTemplateSelectionForm extends FormBase {
       return $result;
     });
     // Get event template default value.
+    $selected_event_template = NULL;
     if (!empty($form_state->getValue('event_template')) && in_array($form_state->getValue('event_template'), $available_event_templates)) {
       $selected_event_template = $form_state->getValue('event_template');
     }
-    else {
+    elseif (!empty($available_event_templates)) {
      $selected_event_template = key($available_event_templates);
     }
     $form['#theme'] = sprintf('%s-form', self::FORM_ID);
