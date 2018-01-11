@@ -90,8 +90,8 @@ class EventTemplate extends RevisionableContentEntityBase implements EventTempla
         $translation->setOwnerId(0);
       }
     }
-    // If no revision author has been set explicitly, make the event_template owner the
-    // revision author.
+    // If no revision author has been set explicitly, make the event_template
+    // owner the revision author.
     if (!$this->getRevisionUser()) {
       $this->setRevisionUserId($this->getOwnerId());
     }

@@ -14,8 +14,6 @@ use Drupal\user\EntityOwnerInterface;
  */
 interface EventTemplateInterface extends ContentEntityInterface, RevisionLogInterface, EntityChangedInterface, EntityOwnerInterface {
 
-  // Add get/set methods for your configuration properties here.
-
   /**
    * Gets the Event template name.
    *
@@ -68,7 +66,7 @@ interface EventTemplateInterface extends ContentEntityInterface, RevisionLogInte
    * Sets the published status of a Event template.
    *
    * @param bool $published
-   *   TRUE to set this Event template to published, FALSE to set it to unpublished.
+   *   TRUE to set this Event template to published, FALSE to unpublished.
    *
    * @return \Drupal\effective_activism\Entity\EventTemplateInterface
    *   The called Event template entity.
