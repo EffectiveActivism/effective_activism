@@ -21,17 +21,16 @@ use Drupal\user\UserInterface;
  *   label = @Translation("Event"),
  *   handlers = {
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
- *     "list_builder" = "Drupal\effective_activism\Helper\ListBuilder\EventListBuilder",
- *     "views_data" = "Drupal\effective_activism\Helper\ViewsData\EventViewsData",
+ *     "list_builder" = "Drupal\effective_activism\ListBuilder\EventListBuilder",
  *     "form" = {
- *       "default" = "Drupal\effective_activism\Form\Event\EventForm",
- *       "add" = "Drupal\effective_activism\Form\Event\EventForm",
- *       "edit" = "Drupal\effective_activism\Form\Event\EventForm",
- *       "publish" = "Drupal\effective_activism\Form\Event\EventPublishForm",
+ *       "default" = "Drupal\effective_activism\Form\EventForm",
+ *       "add" = "Drupal\effective_activism\Form\EventForm",
+ *       "edit" = "Drupal\effective_activism\Form\EventForm",
+ *       "publish" = "Drupal\effective_activism\Form\EventPublishForm",
  *     },
- *     "access" = "Drupal\effective_activism\Helper\AccessControlHandler\EventAccessControlHandler",
+ *     "access" = "Drupal\effective_activism\AccessControlHandler\EventAccessControlHandler",
  *     "route_provider" = {
- *       "html" = "Drupal\effective_activism\Helper\RouteProvider\EventHtmlRouteProvider",
+ *       "html" = "Drupal\effective_activism\RouteProvider\EventHtmlRouteProvider",
  *     },
  *   },
  *   base_table = "events",
@@ -57,6 +56,8 @@ use Drupal\user\UserInterface;
 class Event extends RevisionableContentEntityBase implements EventInterface {
 
   use EntityChangedTrait;
+
+  const THEME_ID = self::class;
 
   const WEIGHTS = [
     'title',

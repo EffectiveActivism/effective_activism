@@ -19,13 +19,7 @@ use Drupal\user\UserInterface;
  *   label = @Translation("Data"),
  *   bundle_label = @Translation("Data type"),
  *   handlers = {
- *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
- *     "list_builder" = "Drupal\effective_activism\Helper\ListBuilder\DataListBuilder",
- *     "views_data" = "Drupal\effective_activism\Helper\ViewsData\DataViewsData",
- *     "access" = "Drupal\effective_activism\Helper\AccessControlHandler\DataAccessControlHandler",
- *     "route_provider" = {
- *       "html" = "Drupal\effective_activism\Helper\RouteProvider\DataHtmlRouteProvider",
- *     },
+ *     "access" = "Drupal\effective_activism\AccessControlHandler\DataAccessControlHandler",
  *   },
  *   base_table = "data",
  *   revision_table = "data_revision",

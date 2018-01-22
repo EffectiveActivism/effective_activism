@@ -12,14 +12,14 @@ use Drupal\Core\Config\Entity\ConfigEntityInterface;
  *   id = "result_type",
  *   label = @Translation("Result type"),
  *   handlers = {
- *     "list_builder" = "Drupal\effective_activism\Helper\ListBuilder\ResultTypeListBuilder",
+ *     "list_builder" = "Drupal\effective_activism\ListBuilder\ResultTypeListBuilder",
  *     "form" = {
- *       "add" = "Drupal\effective_activism\Form\Result\ResultTypeForm",
- *       "edit" = "Drupal\effective_activism\Form\Result\ResultTypeForm",
+ *       "add" = "Drupal\effective_activism\Form\ResultTypeForm",
+ *       "edit" = "Drupal\effective_activism\Form\ResultTypeForm",
  *     },
- *     "access" = "Drupal\effective_activism\Helper\AccessControlHandler\ResultTypeAccessControlHandler",
+ *     "access" = "Drupal\effective_activism\AccessControlHandler\ResultTypeAccessControlHandler",
  *     "route_provider" = {
- *       "html" = "Drupal\effective_activism\Helper\RouteProvider\ResultTypeHtmlRouteProvider",
+ *       "html" = "Drupal\effective_activism\RouteProvider\ResultTypeHtmlRouteProvider",
  *     },
  *   },
  *   config_prefix = "result_type",

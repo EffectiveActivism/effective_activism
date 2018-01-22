@@ -11,9 +11,10 @@ use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
  *   id = "third_party_content_type",
  *   label = @Translation("Third-party content type"),
  *   handlers = {
- *     "list_builder" = "Drupal\effective_activism\Helper\ListBuilder\ThirdPartyContentTypeListBuilder",
+ *     "list_builder" = "Drupal\effective_activism\ListBuilder\ThirdPartyContentTypeListBuilder",
+ *     "access" = "Drupal\effective_activism\AccessControlHandler\ThirdPartyContentTypeAccessControlHandler",
  *     "route_provider" = {
- *       "html" = "Drupal\effective_activism\Helper\RouteProvider\ThirdPartyContentTypeHtmlRouteProvider",
+ *       "html" = "Drupal\effective_activism\RouteProvider\ThirdPartyContentTypeHtmlRouteProvider",
  *     },
  *   },
  *   config_prefix = "third_party_content_type",

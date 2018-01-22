@@ -28,6 +28,28 @@ class Constant {
   const ENTITY_DATA_TYPE = 'data_type';
   const ENTITY_IMPORT = 'import';
   const ENTITY_IMPORT_TYPE = 'import_type';
+  const ENTITY_THIRD_PARTY_CONTENT = 'third_party_content';
+  const ENTITY_THIRD_PARTY_CONTENT_TYPE = 'third_party_content_type';
+
+  /**
+   * Slugs for parameter upcasting.
+   */
+  const SLUG_POSTFIX = '_slug';
+  const SLUG_ORGANIZATION = self::ENTITY_ORGANIZATION . self::SLUG_POSTFIX;
+  const SLUG_GROUP = self::ENTITY_GROUP . self::SLUG_POSTFIX;
+  const SLUG_EVENT = self::ENTITY_EVENT . self::SLUG_POSTFIX;
+  const SLUG_EVENT_TEMPLATE = self::ENTITY_EVENT_TEMPLATE . self::SLUG_POSTFIX;
+  const SLUG_EXPORT = self::ENTITY_EXPORT . self::SLUG_POSTFIX;
+  const SLUG_EXPORT_TYPE = self::ENTITY_EXPORT_TYPE . self::SLUG_POSTFIX;
+  const SLUG_FILTER = self::ENTITY_FILTER . self::SLUG_POSTFIX;
+  const SLUG_RESULT = self::ENTITY_RESULT . self::SLUG_POSTFIX;
+  const SLUG_RESULT_TYPE = self::ENTITY_RESULT_TYPE . self::SLUG_POSTFIX;
+  const SLUG_DATA = self::ENTITY_DATA . self::SLUG_POSTFIX;
+  const SLUG_DATA_TYPE = self::ENTITY_DATA_TYPE . self::SLUG_POSTFIX;
+  const SLUG_IMPORT = self::ENTITY_IMPORT . self::SLUG_POSTFIX;
+  const SLUG_IMPORT_TYPE = self::ENTITY_IMPORT_TYPE . self::SLUG_POSTFIX;
+  const SLUG_THIRD_PARTY_CONTENT = self::ENTITY_THIRD_PARTY_CONTENT . self::SLUG_POSTFIX;
+  const SLUG_THIRD_PARTY_CONTENT_TYPE = self::ENTITY_THIRD_PARTY_CONTENT_TYPE . self::SLUG_POSTFIX;
 
   /**
    * The default result types.

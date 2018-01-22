@@ -20,11 +20,10 @@ use Drupal\user\UserInterface;
  *   bundle_label = @Translation("Third-party content type"),
  *   handlers = {
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
- *     "list_builder" = "Drupal\effective_activism\Helper\ListBuilder\ThirdPartyContentListBuilder",
- *     "views_data" = "Drupal\effective_activism\Helper\ViewsData\ThirdPartyContentViewsData",
- *     "access" = "Drupal\effective_activism\Helper\AccessControlHandler\ThirdPartyContentAccessControlHandler",
+ *     "list_builder" = "Drupal\effective_activism\ListBuilder\ThirdPartyContentListBuilder",
+ *     "access" = "Drupal\effective_activism\AccessControlHandler\ThirdPartyContentAccessControlHandler",
  *     "route_provider" = {
- *       "html" = "Drupal\effective_activism\Helper\RouteProvider\ThirdPartyContentHtmlRouteProvider",
+ *       "html" = "Drupal\effective_activism\RouteProvider\ThirdPartyContentHtmlRouteProvider",
  *     },
  *   },
  *   base_table = "third_party_content",

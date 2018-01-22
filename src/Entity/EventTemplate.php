@@ -19,17 +19,15 @@ use Drupal\user\UserInterface;
  *   label = @Translation("Event template"),
  *   handlers = {
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
- *     "list_builder" = "Drupal\effective_activism\Helper\ListBuilder\EventTemplateListBuilder",
- *     "views_data" = "Drupal\effective_activism\Helper\ViewsData\EventTemplateViewsData",
- *
+ *     "list_builder" = "Drupal\effective_activism\ListBuilder\EventTemplateListBuilder",
  *     "form" = {
- *       "default" = "Drupal\effective_activism\Form\EventTemplate\EventTemplateForm",
- *       "add" = "Drupal\effective_activism\Form\EventTemplate\EventTemplateForm",
- *       "edit" = "Drupal\effective_activism\Form\EventTemplate\EventTemplateForm",
+ *       "default" = "Drupal\effective_activism\Form\EventTemplateForm",
+ *       "add" = "Drupal\effective_activism\Form\EventTemplateForm",
+ *       "edit" = "Drupal\effective_activism\Form\EventTemplateForm",
  *     },
- *     "access" = "Drupal\effective_activism\Helper\AccessControlHandler\EventTemplateAccessControlHandler",
+ *     "access" = "Drupal\effective_activism\AccessControlHandler\EventTemplateAccessControlHandler",
  *     "route_provider" = {
- *       "html" = "Drupal\effective_activism\Helper\RouteProvider\EventTemplateHtmlRouteProvider",
+ *       "html" = "Drupal\effective_activism\RouteProvider\EventTemplateHtmlRouteProvider",
  *     },
  *   },
  *   base_table = "event_template",
