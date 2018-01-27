@@ -4,6 +4,7 @@ namespace Drupal\effective_activism\Form\Filter;
 
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\effective_activism\Helper\FilterHelper;
 
 /**
  * Form controller for Filter edit forms.
@@ -26,6 +27,17 @@ class FilterForm extends ContentEntityForm {
         '#weight' => 10,
       ];
     }
+    // Get result types.
+    $available_result_types = array_map(function ($result_type) {
+      return $result_type->label();
+    }, OrganizationHelper::getResultTypes($organization));
+    $form['result_types'] = [
+      '#type' => 'checkboxes',
+      '#title' => $this->t('Result types'),
+      '#default_value' => $form_state->getValue('result_types'),
+      '#options' => $available_result_types,
+      '#description' => $this->t('Available result types.'),
+    ];
     $entity = $this->entity;
     return $form;
   }
@@ -58,6 +70,7 @@ class FilterForm extends ContentEntityForm {
           '%label' => $entity->label(),
         ]));
     }
+    dpm('Events matching filter: ' . count(FilterHelper::getEvents($entity)));
     $form_state->setRedirect('entity.filter.canonical', ['filter' => $entity->id()]);
   }
 

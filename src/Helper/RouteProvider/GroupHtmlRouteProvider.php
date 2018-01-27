@@ -32,9 +32,6 @@ class GroupHtmlRouteProvider extends DefaultHtmlRouteProvider {
     if ($event_overview_route = $this->getEventsRoute($entity_type)) {
       $collection->add("entity.{$entity_type_id}.events", $event_overview_route);
     }
-    if ($result_overview_route = $this->getResultsRoute($entity_type)) {
-      $collection->add("entity.{$entity_type_id}.results", $result_overview_route);
-    }
     return $collection;
   }
 
@@ -174,37 +171,6 @@ class GroupHtmlRouteProvider extends DefaultHtmlRouteProvider {
           '_title' => "Events",
         ])
         ->setRequirement('_entity_access', "{$entity_type_id}.view")
-        ->setOption('parameters', [
-          $entity_type_id => ['type' => 'entity:' . $entity_type_id],
-        ]);
-      // Entity types with serial IDs can specify this in their route
-      // requirements, improving the matching process.
-      if ($this->getEntityTypeIdKeyType($entity_type) === 'integer') {
-        $route->setRequirement($entity_type_id, '\d+');
-      }
-      return $route;
-    }
-  }
-
-  /**
-   * Gets the results route.
-   *
-   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
-   *   The entity type.
-   *
-   * @return \Symfony\Component\Routing\Route|null
-   *   The generated route, if available.
-   */
-  protected function getResultsRoute(EntityTypeInterface $entity_type) {
-    if ($entity_type->hasLinkTemplate('results')) {
-      $entity_type_id = $entity_type->id();
-      $route = new Route($entity_type->getLinkTemplate('results'));
-      $route
-        ->setDefaults([
-          '_controller' => '\Drupal\effective_activism\Controller\Overview\ResultOverviewController::content',
-          '_title' => "Results",
-        ])
-        ->setRequirement('_entity_access', "{$entity_type_id}.update")
         ->setOption('parameters', [
           $entity_type_id => ['type' => 'entity:' . $entity_type_id],
         ]);
