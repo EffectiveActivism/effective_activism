@@ -175,7 +175,6 @@ class ChartForm extends FormBase {
       foreach ($event->get('results') as $result_entity) {
         $result_type_label = $result_entity->entity->type->entity->label();
         $time_slice = DateTime::createFromFormat(self::DRUPAL_DATE_FORMAT, $event->get(self::SORT_CRITERIA)->value)->format(self::TIME_OPTIONS[$form_state->getValue('series_1_interval')]['slice']);
-        $participants[$time_slice] += $result_entity->entity->participant_count->value;
         foreach ($result_entity->entity->getFields() as $result_field) {
           if (strpos($result_field->getName(), 'data_') === 0) {
             $data_type_label = $result_field->getDataDefinition()->getLabel();
@@ -185,7 +184,12 @@ class ChartForm extends FormBase {
                 !in_array($data_field->getName(), self::DATA_FIELDS_BLACKLIST)
               ) {
                 $date_field_label = $data_field->getDataDefinition()->getLabel();
-                $series_data[sprintf('%s - %s', $result_type_label, $date_field_label)][$time_slice] += $data_field->value;
+                if (isset($series_data[sprintf('%s - %s', $result_type_label, $date_field_label)][$time_slice])) {
+                  $series_data[sprintf('%s - %s', $result_type_label, $date_field_label)][$time_slice] += $data_field->value;
+                }
+                else {
+                  $series_data[sprintf('%s - %s', $result_type_label, $date_field_label)][$time_slice] = $data_field->value;
+                }
               }
             }
           }
@@ -198,9 +202,6 @@ class ChartForm extends FormBase {
       ],
       'title' => (object) [
         'text' => $filter->getName(),
-      ],
-      'subtitle' => (object) [
-        'text' => $series_name,
       ],
       'tooltip' => [
         'shared' => TRUE,
