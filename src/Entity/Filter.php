@@ -64,6 +64,11 @@ class Filter extends RevisionableContentEntityBase implements FilterInterface {
   const WEIGHTS = [
     'name',
     'organization',
+    'parent',
+    'start_date',
+    'end_date',
+    'location',
+    'result_types',
     'user_id',
   ];
 
@@ -176,6 +181,28 @@ class Filter extends RevisionableContentEntityBase implements FilterInterface {
    */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $fields = parent::baseFieldDefinitions($entity_type);
+    $fields['name'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('Name'))
+      ->setDescription(t('The name of the filter.'))
+      ->setRequired(TRUE)
+      ->setRevisionable(TRUE)
+      ->setSettings([
+        'max_length' => 50,
+        'text_processing' => 0,
+      ])
+      ->setDefaultValue('')
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'string',
+        'weight' => array_search('name', self::WEIGHTS),
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'string_textfield',
+        'weight' => array_search('name', self::WEIGHTS),
+        'settings' => [
+          'placeholder' => t('Title'),
+        ],
+      ]);
     $fields['organization'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Organization'))
       ->setDescription(t('The organization of the filter.'))
@@ -192,6 +219,67 @@ class Filter extends RevisionableContentEntityBase implements FilterInterface {
       ->setDisplayOptions('form', [
         'type' => 'organization_selector',
         'weight' => array_search('organization', self::WEIGHTS),
+      ]);
+    $fields['start_date'] = BaseFieldDefinition::create('datetime')
+      ->setLabel(t('Start date'))
+      ->setDescription(t('Events that start on or after this date'))
+      ->setRevisionable(TRUE)
+      ->setRequired(FALSE)
+      ->setSettings([
+        'default_value' => '',
+        'text_processing' => 0,
+        'datetime_type' => 'date',
+      ])
+      ->setDefaultValue([
+        0 => NULL,
+      ])
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'datetime_default',
+        'weight' => array_search('start_date', self::WEIGHTS),
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'datetime_default',
+        'weight' => array_search('start_date', self::WEIGHTS),
+      ]);
+    $fields['end_date'] = BaseFieldDefinition::create('datetime')
+      ->setLabel(t('End date'))
+      ->setDescription(t('Events that ends on or before this date'))
+      ->setRevisionable(TRUE)
+      ->setRequired(FALSE)
+      ->setSettings([
+        'default_value' => '',
+        'text_processing' => 0,
+        'datetime_type' => 'date',
+      ])
+      ->setDefaultValue([
+        0 => NULL,
+      ])
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'datetime_default',
+        'weight' => array_search('end_date', self::WEIGHTS),
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'datetime_default',
+        'weight' => array_search('end_date', self::WEIGHTS),
+      ]);
+    $fields['location'] = BaseFieldDefinition::create('location')
+      ->setLabel(t('Location'))
+      ->setDescription(t('Events that are held at this location.'))
+      ->setRevisionable(TRUE)
+      ->setSettings([
+        'text_processing' => 0,
+      ])
+      ->setDefaultValue('')
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'location_default',
+        'weight' => array_search('location', self::WEIGHTS),
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'location_default',
+        'weight' => array_search('location', self::WEIGHTS),
       ]);
     $fields['user_id'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Authored by'))
@@ -213,30 +301,6 @@ class Filter extends RevisionableContentEntityBase implements FilterInterface {
           'size' => '60',
           'autocomplete_type' => 'tags',
           'placeholder' => '',
-        ],
-      ])
-      ->setDisplayConfigurable('form', TRUE)
-      ->setDisplayConfigurable('view', TRUE);
-    $fields['name'] = BaseFieldDefinition::create('string')
-      ->setLabel(t('Name'))
-      ->setDescription(t('The name of the filter.'))
-      ->setRequired(TRUE)
-      ->setRevisionable(TRUE)
-      ->setSettings([
-        'max_length' => 50,
-        'text_processing' => 0,
-      ])
-      ->setDefaultValue('')
-      ->setDisplayOptions('view', [
-        'label' => 'hidden',
-        'type' => 'string',
-        'weight' => array_search('name', self::WEIGHTS),
-      ])
-      ->setDisplayOptions('form', [
-        'type' => 'string_textfield',
-        'weight' => array_search('name', self::WEIGHTS),
-        'settings' => [
-          'placeholder' => t('Title'),
         ],
       ])
       ->setDisplayConfigurable('form', TRUE)

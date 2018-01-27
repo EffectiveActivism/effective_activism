@@ -54,6 +54,7 @@ use Drupal\user\UserInterface;
  *     "event_templates" = "/manage/organizations/{organization}/event-templates",
  *     "exports" = "/manage/organizations/{organization}/exports",
  *     "filters" = "/manage/organizations/{organization}/filters",
+ *     "results" = "/manage/organizations/{organization}/results",
  *   },
  * )
  */
