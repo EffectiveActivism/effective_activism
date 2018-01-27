@@ -27,20 +27,23 @@ class FilterForm extends ContentEntityForm {
         '#weight' => 10,
       ];
     }
-    // Get result types.
-    $available_result_types = array_map(function ($result_type) {
-      return $result_type->label();
-    }, OrganizationHelper::getResultTypes($organization));
-    $form['result_types'] = [
-      '#type' => 'checkboxes',
-      '#title' => $this->t('Result types'),
-      '#default_value' => $form_state->getValue('result_types'),
-      '#options' => $available_result_types,
-      '#description' => $this->t('Available result types.'),
-    ];
     $entity = $this->entity;
     return $form;
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    parent::validateForm($form, $form_state);
+    // Start date must be older or equal to end date.
+    $start_date = $form_state->getValue('start_date')[0]['value'];
+    $end_date = $form_state->getValue('end_date')[0]['value'];
+    if ($start_date->format('U') > $end_date->format('U')) {
+      $form_state->setErrorByName('end_date', $this->t('End date must be later than start date.'));
+    }
+  }
+
 
   /**
    * {@inheritdoc}
@@ -70,7 +73,6 @@ class FilterForm extends ContentEntityForm {
           '%label' => $entity->label(),
         ]));
     }
-    dpm('Events matching filter: ' . count(FilterHelper::getEvents($entity)));
     $form_state->setRedirect('entity.filter.canonical', ['filter' => $entity->id()]);
   }
 

@@ -50,6 +50,10 @@ class ChartForm extends FormBase {
     ],
   ];
 
+  const DATA_FIELDS_BLACKLIST = [
+    'field_currency',
+  ];
+
   const DRUPAL_DATE_FORMAT = 'Y-m-d\TH:i:s';
 
   const SORT_CRITERIA = 'start_date';
@@ -119,6 +123,9 @@ class ChartForm extends FormBase {
       '#title' => $this->t('Event template'),
       '#description' => $this->t('The event template to use.'),
       '#attached' => [
+        'drupalSettings' => [
+          'highcharts' => NULL,
+        ],
         'library' => [
           'effective_activism/highcharts',
         ],
@@ -161,6 +168,10 @@ class ChartForm extends FormBase {
     $oldest_event = reset($events);
     // Get newest event.
     $newest_event = end($events);
+    if (empty($oldest_event) || empty($newest_event) || $oldest_event === $newest_event) {
+      drupal_set_message('Time range is too small for this filter to display a graph. Try extending the filter date range or create more events.', 'warning');
+      return $form['chart'];
+    }
     // Create timesliced array. Add extra time to end date to ensure it is added.
     $period = new DatePeriod(
       DateTime::createFromFormat(self::DRUPAL_DATE_FORMAT, $oldest_event->get(self::SORT_CRITERIA)->value),
@@ -183,7 +194,10 @@ class ChartForm extends FormBase {
           if (strpos($result_field->getName(), 'data_') === 0) {
             $data_type_label = $result_field->getDataDefinition()->getLabel();
             foreach ($result_field->entity->getFields() as $data_field) {
-              if (strpos($data_field->getName(), 'field_') === 0) {
+              if (
+                strpos($data_field->getName(), 'field_') === 0 &&
+                !in_array($data_field->getName(), self::DATA_FIELDS_BLACKLIST)
+              ) {
                 $date_field_label = $data_field->getDataDefinition()->getLabel();
                 $series_data[sprintf('%s - %s', $result_type_label, $date_field_label)][$time_slice] += $data_field->value;
               }
