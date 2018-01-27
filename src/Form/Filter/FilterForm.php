@@ -4,7 +4,6 @@ namespace Drupal\effective_activism\Form\Filter;
 
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\effective_activism\Helper\FilterHelper;
 
 /**
  * Form controller for Filter edit forms.
@@ -43,7 +42,6 @@ class FilterForm extends ContentEntityForm {
       $form_state->setErrorByName('end_date', $this->t('End date must be later than start date.'));
     }
   }
-
 
   /**
    * {@inheritdoc}

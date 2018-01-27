@@ -5,22 +5,14 @@ namespace Drupal\effective_activism\Form\Chart;
 use DateInterval;
 use DatePeriod;
 use DateTime;
-use Drupal;
-use Drupal\Core\Ajax\AjaxResponse;
-use Drupal\Core\Ajax\SettingsCommand;
-use Drupal\Core\Cache\Cache;
-use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\effective_activism\Chart\Providers\HighCharts\HighChartsChart;
 use Drupal\effective_activism\Chart\Providers\HighCharts\HighChartsAxis;
-use Drupal\effective_activism\Entity\Event;
 use Drupal\effective_activism\Entity\Filter;
-use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\Organization;
 use Drupal\effective_activism\Helper\FilterHelper;
 use Drupal\effective_activism\Helper\OrganizationHelper;
-use Drupal\effective_activism\Helper\ResultTypeHelper;
 
 /**
  * Form controller for Chart forms.
@@ -57,13 +49,6 @@ class ChartForm extends FormBase {
   const DRUPAL_DATE_FORMAT = 'Y-m-d\TH:i:s';
 
   const SORT_CRITERIA = 'start_date';
-
-  const CACHE_MAX_AGE = Cache::PERMANENT;
-
-  const CACHE_TAGS = [
-    'result',
-    'data',
-  ];
 
   const CHART_TYPE_OPTIONS = [
     'line' => 'Line',
@@ -172,7 +157,8 @@ class ChartForm extends FormBase {
       drupal_set_message('Time range is too small for this filter to display a graph. Try extending the filter date range or create more events.', 'warning');
       return $form['chart'];
     }
-    // Create timesliced array. Add extra time to end date to ensure it is added.
+    // Create timesliced array.
+    // Add extra time to end date to ensure it is added.
     $period = new DatePeriod(
       DateTime::createFromFormat(self::DRUPAL_DATE_FORMAT, $oldest_event->get(self::SORT_CRITERIA)->value),
       new DateInterval(self::TIME_OPTIONS[$form_state->getValue('series_1_interval')]['interval']),
@@ -184,7 +170,7 @@ class ChartForm extends FormBase {
     }
     // Populate categories and data.
     $series_value_label = '';
-    $series_data = $participants = []; //array_fill_keys($categories, NULL);
+    $series_data = $participants = [];
     foreach ($events as $event) {
       foreach ($event->get('results') as $result_entity) {
         $result_type_label = $result_entity->entity->type->entity->label();
