@@ -20,12 +20,14 @@ class EventHelper {
    *   The altered element array.
    */
   public static function setDateFormat(array $element) {
-    // Remove seconds from time fields.
-    $element['time']['#attributes']['step'] = self::DATE_STEP;
-    $element['time']['#attributes']['data-time-format'] = self::TIME_FORMAT;
-    $pieces = explode(':', $element['time']['#value']);
-    if (count($pieces) > 2) {
-      $element['time']['#value'] = sprintf('%s:%s', $pieces[0], $pieces[1]);
+    if (isset($element['time'])) {
+      // Remove seconds from time fields.
+      $element['time']['#attributes']['step'] = self::DATE_STEP;
+      $element['time']['#attributes']['data-time-format'] = self::TIME_FORMAT;
+      $pieces = explode(':', $element['time']['#value']);
+      if (count($pieces) > 2) {
+        $element['time']['#value'] = sprintf('%s:%s', $pieces[0], $pieces[1]);
+      }
     }
     return $element;
   }
