@@ -35,11 +35,20 @@ class ChartForm extends FormBase {
 
   const AJAX_WRAPPER = 'ajax-chart';
 
-  const TIME_SLICE = 'Y - n/j';
-
-  const TIME_INTERVAL = 'P1D';
-
-  const TIME_MODIFIER = '+1 day';
+  const TIME_OPTIONS = [
+    'daily' => [
+      'label' => 'Daily',
+      'slice' => 'Y - n/j',
+      'interval' => 'P1D',
+      'modifier' => '+1 day',
+    ],
+    'monthly' => [
+      'label' => 'Monthly',
+      'slice' => 'Y - M',
+      'interval' => 'P1M',
+      'modifier' => '+1 month',
+    ],
+  ];
 
   const DRUPAL_DATE_FORMAT = 'Y-m-d\TH:i:s';
 
@@ -88,8 +97,18 @@ class ChartForm extends FormBase {
       '#type' => 'select',
       '#title' => $this->t('Type'),
       '#default_value' => 'line',
-      '#description' => $this->t('The chart type for the first data series.'),
+      '#description' => $this->t('The chart type.'),
       '#options' => self::CHART_TYPE_OPTIONS,
+      '#required' => TRUE,
+    ];
+    $form['series_1_interval'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Interval'),
+      '#default_value' => 'line',
+      '#description' => $this->t('The time interval.'),
+      '#options' => array_combine(array_keys(self::TIME_OPTIONS), array_map(function ($element) {
+        return $element['label'];
+      }, self::TIME_OPTIONS)),
       '#required' => TRUE,
     ];
     $form['chart'] = [
@@ -145,12 +164,12 @@ class ChartForm extends FormBase {
     // Create timesliced array. Add extra time to end date to ensure it is added.
     $period = new DatePeriod(
       DateTime::createFromFormat(self::DRUPAL_DATE_FORMAT, $oldest_event->get(self::SORT_CRITERIA)->value),
-      new DateInterval(self::TIME_INTERVAL),
-      DateTime::createFromFormat(self::DRUPAL_DATE_FORMAT, $newest_event->get(self::SORT_CRITERIA)->value)->modify(self::TIME_MODIFIER)
+      new DateInterval(self::TIME_OPTIONS[$form_state->getValue('series_1_interval')]['interval']),
+      DateTime::createFromFormat(self::DRUPAL_DATE_FORMAT, $newest_event->get(self::SORT_CRITERIA)->value)->modify(self::TIME_OPTIONS[$form_state->getValue('series_1_interval')]['modifier'])
     );
     $categories = [];
     foreach ($period as $date) {
-      $categories[] = $date->format(self::TIME_SLICE);
+      $categories[] = $date->format(self::TIME_OPTIONS[$form_state->getValue('series_1_interval')]['slice']);
     }
     // Populate categories and data.
     $series_value_label = '';
@@ -158,7 +177,7 @@ class ChartForm extends FormBase {
     foreach ($events as $event) {
       foreach ($event->get('results') as $result_entity) {
         $result_type_label = $result_entity->entity->type->entity->label();
-        $time_slice = DateTime::createFromFormat(self::DRUPAL_DATE_FORMAT, $event->get(self::SORT_CRITERIA)->value)->format(self::TIME_SLICE);
+        $time_slice = DateTime::createFromFormat(self::DRUPAL_DATE_FORMAT, $event->get(self::SORT_CRITERIA)->value)->format(self::TIME_OPTIONS[$form_state->getValue('series_1_interval')]['slice']);
         $participants[$time_slice] += $result_entity->entity->participant_count->value;
         foreach ($result_entity->entity->getFields() as $result_field) {
           if (strpos($result_field->getName(), 'data_') === 0) {
