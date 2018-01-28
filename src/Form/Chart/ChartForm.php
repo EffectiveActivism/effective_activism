@@ -5,6 +5,8 @@ namespace Drupal\effective_activism\Form\Chart;
 use DateInterval;
 use DatePeriod;
 use DateTime;
+use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\SettingsCommand;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\effective_activism\Chart\Providers\HighCharts\HighChartsChart;
@@ -108,9 +110,6 @@ class ChartForm extends FormBase {
       '#title' => $this->t('Event template'),
       '#description' => $this->t('The event template to use.'),
       '#attached' => [
-        'drupalSettings' => [
-          'highcharts' => NULL,
-        ],
         'library' => [
           'effective_activism/highcharts',
         ],
@@ -121,7 +120,7 @@ class ChartForm extends FormBase {
       '#name' => 'submit_button',
       '#value' => $this->t('Submit'),
       '#ajax' => [
-        'callback' => [$this, 'updateChart'],
+        'callback' => [$this, 'ajaxCallback'],
         'wrapper' => self::AJAX_WRAPPER,
       ],
     ];
@@ -135,6 +134,29 @@ class ChartForm extends FormBase {
   }
 
   /**
+   * Ajax callback.
+   *
+   * @param array $form
+   *   The form array.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The form state.
+   *
+   * @return \Drupal\Core\Ajax\AjaxResponse
+   *   Ajax response.
+   */
+  public function ajaxCallback(&$form, FormStateInterface $form_state) {
+    $response = new AjaxResponse();
+    // Clear any previous highcharts settings.
+    $response->addCommand(new SettingsCommand([
+      'highcharts' => NULL,
+    ], TRUE));
+    $response->addCommand(new SettingsCommand([
+      'highcharts' => $this->updateChart($form_state),
+    ], TRUE));
+    return $response;
+  }
+
+  /**
    * Populates the chart element.
    *
    * @param array $form
@@ -145,7 +167,7 @@ class ChartForm extends FormBase {
    * @return array
    *   The form array.
    */
-  public function updateChart(array &$form, FormStateInterface $form_state) {
+  public function updateChart(FormStateInterface $form_state) {
     $filter = Filter::load($form_state->getValue('filter'));
     // Get events.
     $events = FilterHelper::getEvents($filter);
@@ -246,8 +268,7 @@ class ChartForm extends FormBase {
       'crosshair' => TRUE,
     ], $categories);
     $chart->attach($category_axis);
-    $form['chart']['#attached']['drupalSettings']['highcharts'] = $chart->render();
-    return $form['chart'];
+    return $chart->render();
   }
 
 }
