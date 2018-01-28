@@ -164,7 +164,7 @@ class ChartForm extends FormBase {
       $form['messages']['status'] = [
         '#type' => 'status_messages',
       ];
-      $response->addCommand(new InsertCommand(null, $form['messages']));
+      $response->addCommand(new InsertCommand(NULL, $form['messages']));
 
       return $response;
     }
@@ -257,7 +257,7 @@ class ChartForm extends FormBase {
     $category_axis = new HighChartsAxis(HighChartsAxis::TYPE_CATEGORIES, [
       'crosshair' => TRUE,
     ], $categories);
-    $chart->attach($category_axis);    
+    $chart->attach($category_axis);
     $response->addCommand(new SettingsCommand([
       'highcharts' => $chart->render(),
     ], TRUE));
