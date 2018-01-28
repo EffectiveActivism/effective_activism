@@ -177,7 +177,7 @@ class ChartForm extends FormBase {
     $newest_event = end($events);
     if (empty($oldest_event) || empty($newest_event) || $oldest_event === $newest_event) {
       drupal_set_message('Time range is too small for this filter to display a graph. Try extending the filter date range or create more events.', 'warning');
-      return $form['chart'];
+      return NULL;
     }
     // Create timesliced array.
     // Add extra time to end date to ensure it is added.
