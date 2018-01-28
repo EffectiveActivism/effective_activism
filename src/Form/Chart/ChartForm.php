@@ -6,6 +6,7 @@ use DateInterval;
 use DatePeriod;
 use DateTime;
 use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\InsertCommand;
 use Drupal\Core\Ajax\SettingsCommand;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -150,22 +151,6 @@ class ChartForm extends FormBase {
     $response->addCommand(new SettingsCommand([
       'highcharts' => NULL,
     ], TRUE));
-    $response->addCommand(new SettingsCommand([
-      'highcharts' => $this->updateChart($form_state),
-    ], TRUE));
-    return $response;
-  }
-
-  /**
-   * Populates the chart element.
-   *
-   * @param \Drupal\Core\Form\FormStateInterface $form_state
-   *   The form state.
-   *
-   * @return array
-   *   The form array.
-   */
-  public function updateChart(FormStateInterface $form_state) {
     $filter = Filter::load($form_state->getValue('filter'));
     // Get events.
     $events = FilterHelper::getEvents($filter);
@@ -175,7 +160,13 @@ class ChartForm extends FormBase {
     $newest_event = end($events);
     if (empty($oldest_event) || empty($newest_event) || $oldest_event === $newest_event) {
       drupal_set_message('Time range is too small for this filter to display a graph. Try extending the filter date range or create more events.', 'warning');
-      return NULL;
+      drupal_set_message($action);
+      $form['messages']['status'] = [
+        '#type' => 'status_messages',
+      ];
+      $response->addCommand(new InsertCommand(null, $form['messages']));
+
+      return $response;
     }
     // Create timesliced array.
     // Add extra time to end date to ensure it is added.
@@ -243,6 +234,7 @@ class ChartForm extends FormBase {
         $series[$time_slice] = isset($data[$time_slice]) ? $data[$time_slice] : 0;
       }
       $chart->attach(new HighChartsAxis(HighChartsAxis::TYPE_LINE, [
+        'turboThreshold' => 0,
         // Axis settings.
         'labels' => [
           'format' => '{value}',
@@ -265,8 +257,11 @@ class ChartForm extends FormBase {
     $category_axis = new HighChartsAxis(HighChartsAxis::TYPE_CATEGORIES, [
       'crosshair' => TRUE,
     ], $categories);
-    $chart->attach($category_axis);
-    return $chart->render();
+    $chart->attach($category_axis);    
+    $response->addCommand(new SettingsCommand([
+      'highcharts' => $chart->render(),
+    ], TRUE));
+    return $response;
   }
 
 }
