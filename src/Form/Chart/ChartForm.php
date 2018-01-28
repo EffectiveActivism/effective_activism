@@ -144,7 +144,7 @@ class ChartForm extends FormBase {
    * @return \Drupal\Core\Ajax\AjaxResponse
    *   Ajax response.
    */
-  public function ajaxCallback(&$form, FormStateInterface $form_state) {
+  public function ajaxCallback(array &$form, FormStateInterface $form_state) {
     $response = new AjaxResponse();
     // Clear any previous highcharts settings.
     $response->addCommand(new SettingsCommand([
@@ -159,8 +159,6 @@ class ChartForm extends FormBase {
   /**
    * Populates the chart element.
    *
-   * @param array $form
-   *   The form array.
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    *   The form state.
    *
