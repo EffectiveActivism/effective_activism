@@ -33,7 +33,7 @@ class ChartForm extends FormBase {
   const TIME_OPTIONS = [
     'daily' => [
       'label' => 'Daily',
-      'slice' => 'Y - n/j',
+      'slice' => 'Y/n/j',
       'interval' => 'P1D',
       'modifier' => '+1 day',
     ],
@@ -160,7 +160,6 @@ class ChartForm extends FormBase {
     $newest_event = end($events);
     if (empty($oldest_event) || empty($newest_event) || $oldest_event === $newest_event) {
       drupal_set_message('Time range is too small for this filter to display a graph. Try extending the filter date range or create more events.', 'warning');
-      drupal_set_message($action);
       $form['messages']['status'] = [
         '#type' => 'status_messages',
       ];
@@ -196,10 +195,10 @@ class ChartForm extends FormBase {
               ) {
                 $date_field_label = $data_field->getDataDefinition()->getLabel();
                 if (isset($series_data[sprintf('%s - %s', $result_type_label, $date_field_label)][$time_slice])) {
-                  $series_data[sprintf('%s - %s', $result_type_label, $date_field_label)][$time_slice] += $data_field->value;
+                  $series_data[sprintf('%s - %s', $result_type_label, $date_field_label)][$time_slice] += (int) $data_field->value;
                 }
                 else {
-                  $series_data[sprintf('%s - %s', $result_type_label, $date_field_label)][$time_slice] = $data_field->value;
+                  $series_data[sprintf('%s - %s', $result_type_label, $date_field_label)][$time_slice] = (int) $data_field->value;
                 }
               }
             }
@@ -231,11 +230,11 @@ class ChartForm extends FormBase {
     foreach ($series_data as $series_name => $data) {
       $series = [];
       foreach ($categories as $time_slice) {
-        $series[$time_slice] = isset($data[$time_slice]) ? $data[$time_slice] : 0;
+        $series[] = isset($data[$time_slice]) ? $data[$time_slice] : 0;
       }
       $chart->attach(new HighChartsAxis(HighChartsAxis::TYPE_LINE, [
-        'turboThreshold' => 0,
         // Axis settings.
+        'turboThreshold' => 0,
         'labels' => [
           'format' => '{value}',
           'style' => (object) [
@@ -252,14 +251,15 @@ class ChartForm extends FormBase {
         'name' => $series_name,
         'type' => $form_state->getValue('series_1_type'),
         'yAxis' => 0,
-      ], array_values($series)));
+      ], $series));
     }
     $category_axis = new HighChartsAxis(HighChartsAxis::TYPE_CATEGORIES, [
       'crosshair' => TRUE,
     ], $categories);
     $chart->attach($category_axis);
+    $render = $chart->render();
     $response->addCommand(new SettingsCommand([
-      'highcharts' => $chart->render(),
+      'highcharts' => $render,
     ], TRUE));
     return $response;
   }
