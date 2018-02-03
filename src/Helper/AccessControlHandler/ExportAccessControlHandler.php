@@ -25,7 +25,7 @@ class ExportAccessControlHandler extends EntityAccessControlHandler {
           return Permission::isManager($entity->get('organization')->entity, $account);
         }
         else {
-          return Permission::isStaff($entity->get('organization')->entity, $account);
+          return Permission::isManager($entity->get('organization')->entity, $account);
         }
 
       case 'update':
