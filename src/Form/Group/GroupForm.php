@@ -2,9 +2,11 @@
 
 namespace Drupal\effective_activism\Form\Group;
 
+use Drupal;
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\effective_activism\Entity\ResultType;
+use Drupal\effective_activism\Helper\AccountHelper;
 use Drupal\effective_activism\Helper\InvitationHelper;
 use Drupal\effective_activism\Helper\OrganizationHelper;
 
@@ -50,8 +52,15 @@ class GroupForm extends ContentEntityForm {
       $form['result_types']['#default_value'] = $selected_result_types;
     }
     // If the group is saved, populate active invitations.
-    if ($entity->id() !== NULL) {
+    if (!$entity->isNew()) {
       $form['#invitation_list'] = InvitationHelper::getInvitationsByEntity($entity);
+      // Only allow managers to see some elements.
+      if (!AccountHelper::isManagerOfGroup($entity, Drupal::currentUser())) {
+        $form['organization']['#access'] = FALSE;
+        $form['result_types']['#access'] = FALSE;
+        $form['organizers']['#access'] = FALSE;
+        $form['invitations']['#access'] = FALSE;
+      }
     }
     return $form;
   }
