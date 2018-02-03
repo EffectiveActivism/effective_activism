@@ -298,6 +298,7 @@ class CSVParser extends EntityImportParser implements ParserInterface {
         NULL,
         NULL,
         NULL,
+        NULL,
       ];
       if (!$this->validateEvent($values)) {
         throw new ParserValidationException(self::INVALID_EVENT, $this->row, NULL);
@@ -374,6 +375,7 @@ class CSVParser extends EntityImportParser implements ParserInterface {
         $this->group->id(),
         NULL,
         $this->import->id(),
+        NULL,
         NULL,
       ]);
     }
