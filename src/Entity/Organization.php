@@ -9,6 +9,7 @@ use Drupal\Core\Entity\RevisionableContentEntityBase;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\user\UserInterface;
+use Drupal\effective_activism\Constant;
 
 /**
  * Defines the Organization entity.
@@ -73,6 +74,7 @@ class Organization extends RevisionableContentEntityBase implements Organization
     'location',
     'timezone',
     'managers',
+    'event_creation',
   ];
 
   /**
@@ -346,6 +348,27 @@ class Organization extends RevisionableContentEntityBase implements Organization
           'allow_existing' => TRUE,
         ],
         'weight' => array_search('managers', self::WEIGHTS),
+      ]);
+    $fields['event_creation'] = BaseFieldDefinition::create('list_integer')
+      ->setLabel(t('Event creation'))
+      ->setRevisionable(TRUE)
+      ->setRequired(TRUE)
+      ->setDefaultValue(0)
+      ->setSettings([
+        'allowed_values' => [
+          Constant::EVENT_CREATION_ALL => t('Show all event creation links'),
+          Constant::EVENT_CREATION_EVENT => t('Show only \'Create event\' links'),
+          Constant::EVENT_CREATION_EVENT_TEMPLATE => t('Show only \'Create event from template \' links'),
+        ],
+      ])
+      ->setDisplayOptions('view', [
+        'label' => 'above',
+        'type' => 'string',
+        'weight' => array_search('event_creation', self::WEIGHTS),
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'options_select',
+        'weight' => array_search('event_creation', self::WEIGHTS),
       ]);
     $fields['status'] = BaseFieldDefinition::create('boolean')
       ->setLabel(t('Publishing status'))
