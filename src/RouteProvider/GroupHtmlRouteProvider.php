@@ -33,9 +33,6 @@ class GroupHtmlRouteProvider extends DefaultHtmlRouteProvider {
     if ($event_overview_route = $this->getEventsRoute($entity_type)) {
       $collection->add("entity.{$entity_type_id}.events", $event_overview_route);
     }
-    if ($result_overview_route = $this->getResultsRoute($entity_type)) {
-      $collection->add("entity.{$entity_type_id}.results", $result_overview_route);
-    }
     return $collection;
   }
 
@@ -170,33 +167,6 @@ class GroupHtmlRouteProvider extends DefaultHtmlRouteProvider {
         ->setDefaults([
           '_entity_list' => 'event',
           '_title' => "Events",
-        ])
-        ->setRequirement('_custom_access', '\Drupal\effective_activism\AccessControlHandler\AccessControl::fromRouteIsGroupStaff')
-        ->setOption('parameters', [
-          Constant::SLUG_ORGANIZATION => ['type' => Constant::ENTITY_ORGANIZATION],
-          Constant::SLUG_GROUP => ['type' => Constant::ENTITY_GROUP],
-        ]);
-      return $route;
-    }
-  }
-
-  /**
-   * Gets the results route.
-   *
-   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
-   *   The entity type.
-   *
-   * @return \Symfony\Component\Routing\Route|null
-   *   The generated route, if available.
-   */
-  protected function getResultsRoute(EntityTypeInterface $entity_type) {
-    if ($entity_type->hasLinkTemplate('results')) {
-      $entity_type_id = $entity_type->id();
-      $route = new Route($entity_type->getLinkTemplate('results'));
-      $route
-        ->setDefaults([
-          '_entity_list' => 'result',
-          '_title' => "Results",
         ])
         ->setRequirement('_custom_access', '\Drupal\effective_activism\AccessControlHandler\AccessControl::fromRouteIsGroupStaff')
         ->setOption('parameters', [

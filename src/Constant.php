@@ -135,4 +135,11 @@ class Constant {
   const MAIL_KEY_INVITATION_MANAGER = self::MODULE_NAME . '_invitation_manager';
   const MAIL_KEY_INVITATION_ORGANIZER = self::MODULE_NAME . '_invitation_organizer';
 
+  /**
+   * Event creation.
+   */
+  const EVENT_CREATION_ALL = '0';
+  const EVENT_CREATION_EVENT = '1';
+  const EVENT_CREATION_EVENT_TEMPLATE = '2';
+
 }

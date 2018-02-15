@@ -2,6 +2,7 @@
 
 namespace Drupal\effective_activism\Form;
 
+use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\effective_activism\Entity\Group;
@@ -34,11 +35,12 @@ class EventForm extends ContentEntityForm {
     }
     // Use event template if valid.
     if (
+      $entity->isNew() &&
       $event_template !== NULL &&
       $event_template->access('view')
     ) {
-      // Use event template.
       $form = EventTemplateHelper::applyEventTemplate($event_template, $form);
+      $form_state->setTemporaryValue('event_template_id', $event_template->id());
     }
     $form['#prefix'] = '<div id="ajax">';
     $form['#suffix'] = '</div>';
@@ -121,7 +123,11 @@ class EventForm extends ContentEntityForm {
     // Event start date must be older or equal to end date.
     $start_date = $form_state->getValue('start_date')[0]['value'];
     $end_date = $form_state->getValue('end_date')[0]['value'];
-    if ($start_date->format('U') > $end_date->format('U')) {
+    if (
+      $start_date instanceof DrupalDateTime &&
+      $end_date instanceof DrupalDateTime &&
+      $start_date->format('U') > $end_date->format('U')
+    ) {
       $form_state->setErrorByName('end_date', $this->t('End date must be later than start date.'));
     }
   }
@@ -132,6 +138,11 @@ class EventForm extends ContentEntityForm {
   public function save(array $form, FormStateInterface $form_state) {
     $entity = $this->entity;
     $entity->setNewRevision();
+    // Store event template if any is used.
+    $event_template_id = $form_state->getTemporaryValue('event_template_id');
+    if (!empty($event_template_id)) {
+      $entity->event_template->target_id = $event_template_id;
+    }
     $status = parent::save($form, $form_state);
     switch ($status) {
       case SAVED_NEW:

@@ -33,6 +33,23 @@ class FilterForm extends ContentEntityForm {
   /**
    * {@inheritdoc}
    */
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    parent::validateForm($form, $form_state);
+    // Start date must be older or equal to end date.
+    $start_date = $form_state->getValue('start_date')[0]['value'];
+    $end_date = $form_state->getValue('end_date')[0]['value'];
+    if (
+      isset($start_date) &&
+      isset($end_date) &&
+      $start_date->format('U') > $end_date->format('U')
+    ) {
+      $form_state->setErrorByName('end_date', $this->t('End date must be later than start date.'));
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function save(array $form, FormStateInterface $form_state) {
     $entity = &$this->entity;
     // Save as a new revision if requested to do so.

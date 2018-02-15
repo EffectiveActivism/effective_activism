@@ -70,6 +70,7 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
     'external_uid',
     'import',
     'third_party_content',
+    'event_template',
     'user_id',
   ];
 
@@ -344,6 +345,29 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
       ->setDisplayOptions('form', [
         'type' => 'entity_reference_autocomplete',
         'weight' => array_search('third_party_content', self::WEIGHTS),
+        'settings' => [
+          'match_operator' => 'CONTAINS',
+          'size' => '60',
+          'autocomplete_type' => 'tags',
+          'placeholder' => '',
+        ],
+      ]);
+    $fields['event_template'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(t('Event template'))
+      ->setRevisionable(TRUE)
+      ->setDescription(t('The event template used to create this event.'))
+      ->setSetting('target_type', 'event_template')
+      ->setSetting('handler', 'default')
+      ->setCardinality(1)
+      ->setRequired(FALSE)
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'string',
+        'weight' => array_search('event_template', self::WEIGHTS),
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'entity_reference_autocomplete',
+        'weight' => array_search('event_template', self::WEIGHTS),
         'settings' => [
           'match_operator' => 'CONTAINS',
           'size' => '60',

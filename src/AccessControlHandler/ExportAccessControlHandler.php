@@ -20,12 +20,7 @@ class ExportAccessControlHandler extends EntityAccessControlHandler {
   protected function checkAccess(EntityInterface $entity, $operation, AccountInterface $account) {
     switch ($operation) {
       case 'view':
-        if (!$entity->isPublished()) {
-          return AccessControl::isManager($entity->get('organization')->entity, $account);
-        }
-        else {
-          return AccessControl::isStaff($entity->get('organization')->entity, $account);
-        }
+        return AccessControl::isManager($entity->get('organization')->entity, $account);
 
       case 'update':
         return AccessControl::isManager($entity->get('organization')->entity, $account);

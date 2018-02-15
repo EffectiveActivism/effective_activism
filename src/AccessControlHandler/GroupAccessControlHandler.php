@@ -28,7 +28,7 @@ class GroupAccessControlHandler extends EntityAccessControlHandler {
         }
 
       case 'update':
-        return AccessControl::isManager($entity->get('organization')->entity, $account);
+        return Permission::isGroupStaff([$entity], $account);
 
       case 'delete':
         return AccessResult::forbidden();
