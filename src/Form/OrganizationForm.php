@@ -12,6 +12,7 @@ use Drupal\effective_activism\Entity\ResultType;
 use Drupal\effective_activism\Helper\InvitationHelper;
 use Drupal\effective_activism\Helper\ResultTypeHelper;
 use Drupal\taxonomy\Entity\Vocabulary;
+use ReflectionClass;
 
 /**
  * Form controller for Organizer edit forms.
@@ -26,6 +27,7 @@ class OrganizationForm extends ContentEntityForm {
   public function buildForm(array $form, FormStateInterface $form_state) {
     /* @var $entity \Drupal\effective_activism\Entity\Organization */
     $form = parent::buildForm($form, $form_state);
+    $form['#theme'] = (new ReflectionClass($this))->getShortName();
     $entity = $this->entity;
     // Hide fields.
     $form['user_id']['#attributes']['class'][] = 'hidden';

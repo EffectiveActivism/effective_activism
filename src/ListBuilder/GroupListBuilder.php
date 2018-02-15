@@ -8,8 +8,6 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
-use Drupal\Core\Routing\LinkGeneratorTrait;
-use Drupal\Core\Url;
 use Drupal\effective_activism\Constant;
 use Drupal\effective_activism\Entity\Organization;
 use Drupal\effective_activism\Helper\AccountHelper;
@@ -22,8 +20,6 @@ use ReflectionClass;
  */
 class GroupListBuilder extends EntityListBuilder {
 
-  use LinkGeneratorTrait;
-
   const CACHE_MAX_AGE = Cache::PERMANENT;
 
   const CACHE_TAGS = [
@@ -32,7 +28,7 @@ class GroupListBuilder extends EntityListBuilder {
   ];
 
   /**
-   * Organization
+   * The organization that the groups belongs to.
    *
    * @var \Drupal\effective_activism\Entity\Organization
    */
@@ -43,7 +39,7 @@ class GroupListBuilder extends EntityListBuilder {
    */
   public function __construct(EntityTypeInterface $entity_type, EntityStorageInterface $storage, Organization $organization = NULL) {
     parent::__construct($entity_type, $storage);
-    $this->organization = $organization;
+    $this->organization = empty($organization) ? Drupal::request()->get('organization') : $organization;
   }
 
   /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\effective_activism\Form\Chart;
+namespace Drupal\effective_activism\Form;
 
 use DateInterval;
 use DatePeriod;

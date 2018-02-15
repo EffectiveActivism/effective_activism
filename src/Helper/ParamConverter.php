@@ -27,13 +27,13 @@ class ParamConverter implements ParamConverterInterface {
 
       case Constant::ENTITY_ORGANIZATION:
         if (!empty($value) && is_string($value)) {
-          return PathHelper::loadOrganizationByTitle($value);
+          return PathHelper::loadOrganizationBySlug($value);
         }
         break;
 
       case Constant::ENTITY_GROUP:
         if (!empty($value) && is_string($value)) {
-          return PathHelper::loadGroupByTitle($value);
+          return PathHelper::loadGroupBySlug($value);
         }
         break;
 

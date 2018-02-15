@@ -18,12 +18,6 @@ class GroupHtmlRouteProvider extends DefaultHtmlRouteProvider {
   public function getRoutes(EntityTypeInterface $entity_type) {
     $collection = parent::getRoutes($entity_type);
     $entity_type_id = $entity_type->id();
-    if ($canonical_route = $this->getCanonicalRoute($entity_type)) {
-      $collection->add("entity.{$entity_type_id}.canonical", $canonical_route);
-    }
-    if ($add_form_route = $this->getAddFormRoute($entity_type)) {
-      $collection->add("entity.{$entity_type_id}.add_form", $add_form_route);
-    }
     if ($publish_form_route = $this->getPublishFormRoute($entity_type)) {
       $collection->add("entity.{$entity_type_id}.publish_form", $publish_form_route);
     }
@@ -35,34 +29,6 @@ class GroupHtmlRouteProvider extends DefaultHtmlRouteProvider {
     }
     return $collection;
   }
-
-  /**
-   * Gets the canonical route.
-   *
-   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
-   *   The entity type.
-   *
-   * @return \Symfony\Component\Routing\Route|null
-   *   The generated route, if available.
-   */
-  protected function getCanonicalRoute(EntityTypeInterface $entity_type) {
-    if ($entity_type->hasLinkTemplate('canonical') && $entity_type->hasViewBuilderClass()) {
-      $entity_type_id = $entity_type->id();
-      $route = new Route($entity_type->getLinkTemplate('canonical'));
-      $route
-        ->addDefaults([
-          '_entity_view' => "{$entity_type_id}.full",
-          '_title_callback' => '\Drupal\Core\Entity\Controller\EntityController::title',
-        ])
-        ->setRequirement('_custom_access', '\Drupal\effective_activism\AccessControlHandler\AccessControl::fromRouteIsGroupStaff')
-        ->setOption('parameters', [
-          Constant::SLUG_ORGANIZATION => ['type' => Constant::ENTITY_ORGANIZATION],
-          Constant::SLUG_GROUP => ['type' => Constant::ENTITY_GROUP],
-        ]);
-      return $route;
-    }
-  }
-
 
   /**
    * Gets the add-form route.
@@ -87,17 +53,17 @@ class GroupHtmlRouteProvider extends DefaultHtmlRouteProvider {
           '_entity_form' => "{$entity_type_id}.{$operation}",
           '_title' => "Add {$entity_type->getLabel()}",
         ])
-        ->setRequirement('_custom_access', '\Drupal\effective_activism\AccessControlHandler\AccessControl::fromRouteIsManager')
+        ->setRequirement('_custom_access', '\Drupal\effective_activism\AccessControlHandler\AccessControl::fromRouteIsGroupStaff')
         ->setOption('parameters', [
-          Constant::SLUG_ORGANIZATION => ['type' => Constant::ENTITY_ORGANIZATION],
-          Constant::SLUG_GROUP => ['type' => Constant::ENTITY_GROUP],
+          Constant::ENTITY_ORGANIZATION => ['type' => Constant::ENTITY_ORGANIZATION],
+          $entity_type_id => ['type' => Constant::ENTITY_GROUP],
         ]);
       return $route;
     }
   }
 
   /**
-   * Gets the publish-form route.
+   * Gets the canonical route.
    *
    * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
    *   The entity type.
@@ -105,14 +71,73 @@ class GroupHtmlRouteProvider extends DefaultHtmlRouteProvider {
    * @return \Symfony\Component\Routing\Route|null
    *   The generated route, if available.
    */
-  protected function getPublishFormRoute(EntityTypeInterface $entity_type) {
-    if ($entity_type->hasLinkTemplate('publish-form')) {
+  protected function getCanonicalRoute(EntityTypeInterface $entity_type) {
+    if ($entity_type->hasLinkTemplate('canonical') && $entity_type->hasViewBuilderClass()) {
       $entity_type_id = $entity_type->id();
-      $route = new Route($entity_type->getLinkTemplate('publish-form'));
+      $route = new Route($entity_type->getLinkTemplate('canonical'));
+      $route
+        ->addDefaults([
+          '_entity_view' => "{$entity_type_id}.full",
+          '_title_callback' => '\Drupal\Core\Entity\Controller\EntityController::title',
+        ])
+        ->setRequirement('_custom_access', '\Drupal\effective_activism\AccessControlHandler\AccessControl::fromRouteIsGroupStaff')
+        ->setOption('parameters', [
+          Constant::ENTITY_ORGANIZATION => ['type' => Constant::ENTITY_ORGANIZATION],
+          $entity_type_id => ['type' => Constant::ENTITY_GROUP],
+        ]);
+      return $route;
+    }
+  }
+
+  /**
+   * Gets the edit-form route.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
+   *   The entity type.
+   *
+   * @return \Symfony\Component\Routing\Route|null
+   *   The generated route, if available.
+   */
+  protected function getEditFormRoute(EntityTypeInterface $entity_type) {
+    if ($entity_type->hasLinkTemplate('edit-form')) {
+      $entity_type_id = $entity_type->id();
+      $route = new Route($entity_type->getLinkTemplate('edit-form'));
+      // Use the edit form handler, if available, otherwise default.
+      $operation = 'default';
+      if ($entity_type->getFormClass('edit')) {
+        $operation = 'edit';
+      }
       $route
         ->setDefaults([
-          '_form' => '\Drupal\effective_activism\Form\Group\GroupPublishForm',
-          '_title' => "Publish {$entity_type->getLabel()}",
+          '_entity_form' => "{$entity_type_id}.{$operation}",
+          '_title_callback' => '\Drupal\Core\Entity\Controller\EntityController::editTitle',
+        ])
+        ->setRequirement('_entity_access', "{$entity_type_id}.update")
+        ->setOption('parameters', [
+          Constant::ENTITY_ORGANIZATION => ['type' => Constant::ENTITY_ORGANIZATION],
+          $entity_type_id => ['type' => Constant::ENTITY_GROUP],
+        ]);
+      return $route;
+    }
+  }
+
+  /**
+   * Gets the events route.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
+   *   The entity type.
+   *
+   * @return \Symfony\Component\Routing\Route|null
+   *   The generated route, if available.
+   */
+  protected function getEventsRoute(EntityTypeInterface $entity_type) {
+    if ($entity_type->hasLinkTemplate('events')) {
+      $entity_type_id = $entity_type->id();
+      $route = new Route($entity_type->getLinkTemplate('events'));
+      $route
+        ->setDefaults([
+          '_entity_list' => 'event',
+          '_title' => "Events",
         ])
         ->setRequirement('_custom_access', '\Drupal\effective_activism\AccessControlHandler\AccessControl::fromRouteIsGroupStaff')
         ->setOption('parameters', [
@@ -151,7 +176,7 @@ class GroupHtmlRouteProvider extends DefaultHtmlRouteProvider {
   }
 
   /**
-   * Gets the events route.
+   * Gets the publish-form route.
    *
    * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
    *   The entity type.
@@ -159,14 +184,14 @@ class GroupHtmlRouteProvider extends DefaultHtmlRouteProvider {
    * @return \Symfony\Component\Routing\Route|null
    *   The generated route, if available.
    */
-  protected function getEventsRoute(EntityTypeInterface $entity_type) {
-    if ($entity_type->hasLinkTemplate('events')) {
+  protected function getPublishFormRoute(EntityTypeInterface $entity_type) {
+    if ($entity_type->hasLinkTemplate('publish-form')) {
       $entity_type_id = $entity_type->id();
-      $route = new Route($entity_type->getLinkTemplate('events'));
+      $route = new Route($entity_type->getLinkTemplate('publish-form'));
       $route
         ->setDefaults([
-          '_entity_list' => 'event',
-          '_title' => "Events",
+          '_form' => '\Drupal\effective_activism\Form\Group\GroupPublishForm',
+          '_title' => "Publish {$entity_type->getLabel()}",
         ])
         ->setRequirement('_custom_access', '\Drupal\effective_activism\AccessControlHandler\AccessControl::fromRouteIsGroupStaff')
         ->setOption('parameters', [

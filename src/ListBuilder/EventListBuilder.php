@@ -13,6 +13,7 @@ use Drupal\Core\Url;
 use Drupal\effective_activism\Constant;
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\Organization;
+use Drupal\effective_activism\Helper\OrganizationHelper;
 use ReflectionClass;
 
 /**
@@ -58,13 +59,15 @@ class EventListBuilder extends EntityListBuilder {
    * {@inheritdoc}
    */
   protected function getEntityIds() {
-    if (!isset($this->group)) {
-      return NULL;
-    }
     $query = $this->getStorage()->getQuery();
-    $query
-      ->sort('start_date', 'DESC')
-      ->condition('parent', $this->group->id());
+    $query->sort('start_date', 'DESC');
+    if (isset($this->group)) {
+      $query->condition('parent', $this->group->id());
+    }
+    else {
+      $groups = OrganizationHelper::getGroups($this->organization, 0, 0, FALSE);
+      $query->condition('parent', $groups, 'IN');
+    }
     // Only add the pager if a limit is specified.
     if ($this->limit) {
       $query->pager($this->limit);

@@ -44,13 +44,12 @@ use Drupal\user\UserInterface;
  *     "status" = "status",
  *   },
  *   links = {
- *     "canonical" = "/o/{organization_slug}/groups/{group_slug}",
- *     "add-form" = "/o/{organization_slug}/groups/add",
- *     "edit-form" = "/o/{organization_slug}/groups/{group_slug}/edit",
- *     "publish-form" = "/o/{organization_slug}/groups/{group_slug}/publish",
- *     "events" = "/o/{organization_slug}/groups/{group_slug}/events",
- *     "imports" = "/o/{organization_slug}/groups/{group_slug}/imports",
- *     "results" = "/o/{organization_slug}/groups/{group_slug}/results",
+ *     "canonical" = "/o/{organization}/g/{group}",
+ *     "add-form" = "/o/{organization}/g/add",
+ *     "edit-form" = "/o/{organization}/g/{group}/edit",
+ *     "events" = "/o/{organization}/g/{group}/events",
+ *     "imports" = "/o/{organization}/g/{group}/imports",
+ *     "publish-form" = "/o/{organization}/g/{group}/publish",
  *   },
  * )
  */

@@ -10,6 +10,7 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\effective_activism\Constant;
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\Organization;
+use Drupal\effective_activism\Helper\PathHelper;
 
 
 /**
@@ -30,7 +31,7 @@ class AccessControl {
    */
   public static function fromRouteIsStaff(RouteMatchInterface $route_match, AccountInterface $account) {
     $parameter_bag = $route_match->getParameters();
-    $organization = $parameter_bag->get(Constant::SLUG_ORGANIZATION);
+    $organization = $parameter_bag->get(Constant::ENTITY_ORGANIZATION);
     return self::isStaff($organization, $account);
   }
 

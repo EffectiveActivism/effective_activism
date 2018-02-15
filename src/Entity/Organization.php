@@ -45,16 +45,16 @@ use Drupal\effective_activism\Constant;
  *     "status" = "status",
  *   },
  *  links = {
- *     "canonical" = "/manage/organizations/{organization}",
- *     "add-form" = "/manage/organizations/add",
- *     "edit-form" = "/manage/organizations/{organization}/edit",
- *     "publish-form" = "/manage/organizations/{organization}/publish",
- *     "collection" = "/manage/organizations",
- *     "groups" = "/manage/organizations/{organization}/groups",
- *     "event_templates" = "/manage/organizations/{organization}/event-templates",
- *     "exports" = "/manage/organizations/{organization}/exports",
- *     "filters" = "/manage/organizations/{organization}/filters",
- *     "results" = "/manage/organizations/{organization}/results",
+ *     "canonical" = "/o/{organization}",
+ *     "add-form" = "/o/add",
+ *     "edit-form" = "/o/{organization}/edit",
+ *     "publish-form" = "/o/{organization}/publish",
+ *     "collection" = "/o",
+ *     "groups" = "/o/{organization}/g",
+ *     "event_templates" = "/o/{organization}/event-templates",
+ *     "exports" = "/o/{organization}/exports",
+ *     "filters" = "/o/{organization}/filters",
+ *     "results" = "/o/{organization}/results",
  *   },
  * )
  */
@@ -356,8 +356,8 @@ class Organization extends RevisionableContentEntityBase implements Organization
       ->setSettings([
         'allowed_values' => [
           Constant::EVENT_CREATION_ALL => t('Show all event creation links'),
-          Constant::EVENT_CREATION_EVENT => t('Show only \'Create event\' links'),
-          Constant::EVENT_CREATION_EVENT_TEMPLATE => t('Show only \'Create event from template \' links'),
+          Constant::EVENT_CREATION_EVENT => t("Show only 'Create event' links"),
+          Constant::EVENT_CREATION_EVENT_TEMPLATE => t("Show only 'Create event from template' links"),
         ],
       ])
       ->setDisplayOptions('view', [

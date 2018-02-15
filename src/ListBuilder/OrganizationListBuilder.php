@@ -8,6 +8,7 @@ use Drupal\Core\Entity\EntityListBuilder;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\effective_activism\Constant;
 use Drupal\effective_activism\Helper\AccountHelper;
+use ReflectionClass;
 
 /**
  * Defines a class to build a listing of Organization entities.
@@ -16,37 +17,12 @@ use Drupal\effective_activism\Helper\AccountHelper;
  */
 class OrganizationListBuilder extends EntityListBuilder {
 
-  const THEME_ID = 'organization_list';
-
   const CACHE_MAX_AGE = Cache::PERMANENT;
 
   const CACHE_TAGS = [
     Constant::CACHE_TAG_USER,
     Constant::CACHE_TAG_ORGANIZATION,
   ];
-
-  /**
-   * {@inheritdoc}
-   */
-  public function buildHeader() {
-    $header['title'] = $this->t('Title');
-    return $header + parent::buildHeader();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function buildRow(EntityInterface $entity) {
-    $row['title'] = $this->l(
-      $entity->label(),
-      new Url(
-        'entity.organization.canonical', [
-          'organization' => $entity->id(),
-        ]
-      )
-    );
-    return $row + parent::buildRow($entity);
-  }
 
   /**
    * {@inheritdoc}
@@ -73,11 +49,22 @@ class OrganizationListBuilder extends EntityListBuilder {
   }
 
   /**
+   * Setter to dynamically set limit. See https://www.drupal.org/node/2736377.
+   *
+   * @var int $limit
+   *   The limit to set.
+   */
+  public function setLimit($limit) {
+    $this->limit = $limit;
+    return $this;
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function render() {
+    $build['#theme'] = (new ReflectionClass($this))->getShortName();
     $build['#storage']['entities']['organizations'] = $this->load();
-    $build['#theme'] = self::THEME_ID;
     $build['#cache'] = [
       'max-age' => self::CACHE_MAX_AGE,
       'tags' => self::CACHE_TAGS,

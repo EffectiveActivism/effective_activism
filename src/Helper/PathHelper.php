@@ -3,6 +3,7 @@
 namespace Drupal\effective_activism\Helper;
 
 use Drupal;
+use Drupal\Core\Routing\RouteMatchInterface\RouteMatchInterface;
 use Drupal\effective_activism\Entity\Organization;
 use Drupal\effective_activism\Entity\Group;
 
@@ -15,12 +16,12 @@ class PathHelper {
    * Load organization by title.
    *
    * @param string $title_as_slug
-   *   The organization title in slug form to load from.
+   *   The organization title in slug form to load.
    *
    * @return \Drupal\effective_activism\Entity\Organization|NULL
    *   An organization entity or NULL if not found.
    */
-  public static function loadOrganizationByTitle($title_as_slug) {
+  public static function loadOrganizationBySlug($title_as_slug) {
     foreach (OrganizationHelper::getOrganizations() as $organization) {
       $slug = self::transliterate($organization->label());
       if ($slug === $title_as_slug) {
@@ -34,12 +35,12 @@ class PathHelper {
    * Load group by title.
    *
    * @param string $title_as_slug
-   *   The organization title in slug form to load from.
+   *   The organization title in slug form to load.
    *
    * @return \Drupal\effective_activism\Entity\Organization|NULL
    *   An organization entity or NULL if not found.
    */
-  public static function loadGroupByTitle($title_as_slug) {
+  public static function loadGroupBySlug($title_as_slug) {
     foreach (Group::loadMultiple(Drupal::entityQuery('group')->execute()) as $group) {
       $slug = self::transliterate($group->label());
       if ($slug === $title_as_slug) {
