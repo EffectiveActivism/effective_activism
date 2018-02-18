@@ -5,10 +5,12 @@ namespace Drupal\effective_activism\Form;
 use Drupal;
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 use Drupal\effective_activism\Entity\ResultType;
 use Drupal\effective_activism\Helper\AccountHelper;
 use Drupal\effective_activism\Helper\InvitationHelper;
 use Drupal\effective_activism\Helper\OrganizationHelper;
+use Drupal\effective_activism\Helper\PathHelper;
 
 /**
  * Form controller for Group edit forms.
@@ -103,7 +105,10 @@ class GroupForm extends ContentEntityForm {
           '%label' => $entity->label(),
         ]));
     }
-    $form_state->setRedirect('entity.group.canonical', ['group' => $entity->id()]);
+    $form_state->setRedirect(new Url('entity.group.canonical', [
+      'organization' => PathHelper::transliterate($entity->organization->entity->label()),
+      'group' => PathHelper::transliterate($entity->label()),
+    ]));
   }
 
 }

@@ -38,6 +38,9 @@ class OrganizationHtmlRouteProvider extends DefaultHtmlRouteProvider {
     if ($result_overview_route = $this->getResultsRoute($entity_type)) {
       $collection->add("entity.{$entity_type_id}.results", $result_overview_route);
     }
+    if ($result_overview_route = $this->getResultTypesRoute($entity_type)) {
+      $collection->add("entity.{$entity_type_id}.result_types", $result_overview_route);
+    }
     return $collection;
   }
 
@@ -172,13 +175,8 @@ class OrganizationHtmlRouteProvider extends DefaultHtmlRouteProvider {
         ])
         ->setRequirement('_entity_access', "{$entity_type_id}.view")
         ->setOption('parameters', [
-          $entity_type_id => ['type' => 'entity:' . $entity_type_id],
+          $entity_type_id => ['type' => Constant::ENTITY_ORGANIZATION],
         ]);
-      // Entity types with serial IDs can specify this in their route
-      // requirements, improving the matching process.
-      if ($this->getEntityTypeIdKeyType($entity_type) === 'integer') {
-        $route->setRequirement($entity_type_id, '\d+');
-      }
       return $route;
     }
   }
@@ -203,13 +201,8 @@ class OrganizationHtmlRouteProvider extends DefaultHtmlRouteProvider {
         ])
         ->setRequirement('_entity_access', "{$entity_type_id}.view")
         ->setOption('parameters', [
-          $entity_type_id => ['type' => 'entity:' . $entity_type_id],
+          $entity_type_id => ['type' => Constant::ENTITY_ORGANIZATION],
         ]);
-      // Entity types with serial IDs can specify this in their route
-      // requirements, improving the matching process.
-      if ($this->getEntityTypeIdKeyType($entity_type) === 'integer') {
-        $route->setRequirement($entity_type_id, '\d+');
-      }
       return $route;
     }
   }
@@ -234,13 +227,8 @@ class OrganizationHtmlRouteProvider extends DefaultHtmlRouteProvider {
         ])
         ->setRequirement('_entity_access', "{$entity_type_id}.view")
         ->setOption('parameters', [
-          $entity_type_id => ['type' => 'entity:' . $entity_type_id],
+          $entity_type_id => ['type' => Constant::ENTITY_ORGANIZATION],
         ]);
-      // Entity types with serial IDs can specify this in their route
-      // requirements, improving the matching process.
-      if ($this->getEntityTypeIdKeyType($entity_type) === 'integer') {
-        $route->setRequirement($entity_type_id, '\d+');
-      }
       return $route;
     }
   }
@@ -291,13 +279,8 @@ class OrganizationHtmlRouteProvider extends DefaultHtmlRouteProvider {
         ])
         ->setRequirement('_entity_access', "{$entity_type_id}.update")
         ->setOption('parameters', [
-          $entity_type_id => ['type' => 'entity:' . $entity_type_id],
+          $entity_type_id => ['type' => Constant::ENTITY_ORGANIZATION],
         ]);
-      // Entity types with serial IDs can specify this in their route
-      // requirements, improving the matching process.
-      if ($this->getEntityTypeIdKeyType($entity_type) === 'integer') {
-        $route->setRequirement($entity_type_id, '\d+');
-      }
       return $route;
     }
   }
@@ -322,13 +305,34 @@ class OrganizationHtmlRouteProvider extends DefaultHtmlRouteProvider {
         ])
         ->setRequirement('_entity_access', "{$entity_type_id}.update")
         ->setOption('parameters', [
-          $entity_type_id => ['type' => 'entity:' . $entity_type_id],
+          $entity_type_id => ['type' => Constant::ENTITY_ORGANIZATION],
         ]);
-      // Entity types with serial IDs can specify this in their route
-      // requirements, improving the matching process.
-      if ($this->getEntityTypeIdKeyType($entity_type) === 'integer') {
-        $route->setRequirement($entity_type_id, '\d+');
-      }
+      return $route;
+    }
+  }
+
+  /**
+   * Gets the result types route.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
+   *   The entity type.
+   *
+   * @return \Symfony\Component\Routing\Route|null
+   *   The generated route, if available.
+   */
+  protected function getResultTypesRoute(EntityTypeInterface $entity_type) {
+    if ($entity_type->hasLinkTemplate('result_types')) {
+      $entity_type_id = $entity_type->id();
+      $route = new Route($entity_type->getLinkTemplate('result_types'));
+      $route
+        ->setDefaults([
+          '_entity_list' => 'result_type',
+          '_title' => 'Result types',
+        ])
+        ->setRequirement('_entity_access', "{$entity_type_id}.update")
+        ->setOption('parameters', [
+          $entity_type_id => ['type' => Constant::ENTITY_ORGANIZATION],
+        ]);
       return $route;
     }
   }

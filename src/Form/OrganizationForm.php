@@ -10,6 +10,7 @@ use Drupal\effective_activism\Entity\Filter;
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\ResultType;
 use Drupal\effective_activism\Helper\InvitationHelper;
+use Drupal\effective_activism\Helper\PathHelper;
 use Drupal\effective_activism\Helper\ResultTypeHelper;
 use Drupal\taxonomy\Entity\Vocabulary;
 use ReflectionClass;
@@ -99,7 +100,10 @@ class OrganizationForm extends ContentEntityForm {
           '%label' => $entity->label(),
         ]));
     }
-    $form_state->setRedirect('entity.organization.canonical', ['organization' => $entity->id()]);
+    $form_state->setRedirect(
+      'entity.organization.canonical', [
+        'organization' => PathHelper::transliterate($entity->label()),
+    ]);
   }
 
 }

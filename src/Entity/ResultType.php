@@ -30,11 +30,10 @@ use Drupal\Core\Config\Entity\ConfigEntityInterface;
  *     "uuid" = "uuid"
  *   },
  *   links = {
- *     "canonical" = "/manage/result-types/{result_type}",
- *     "add-form" = "/manage/result-types/add",
- *     "edit-form" = "/manage/result-types/{result_type}/edit",
- *     "publish-form" = "/manage/result-types/{result_type}/publish",
- *     "collection" = "/manage/result-types",
+ *     "add-form" = "/o/{organization}/result-types/add",
+ *     "collection" = "/o/{organization}/result-types",
+ *     "edit-form" = "/o/{organization}/result-types/{result_type}/edit",
+ *     "publish-form" = "/o/{organization}/result-types/{result_type}/publish",
  *   },
  * )
  */

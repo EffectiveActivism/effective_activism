@@ -56,7 +56,6 @@ class GroupHtmlRouteProvider extends DefaultHtmlRouteProvider {
         ->setRequirement('_custom_access', '\Drupal\effective_activism\AccessControlHandler\AccessControl::fromRouteIsGroupStaff')
         ->setOption('parameters', [
           Constant::ENTITY_ORGANIZATION => ['type' => Constant::ENTITY_ORGANIZATION],
-          $entity_type_id => ['type' => Constant::ENTITY_GROUP],
         ]);
       return $route;
     }
@@ -141,8 +140,8 @@ class GroupHtmlRouteProvider extends DefaultHtmlRouteProvider {
         ])
         ->setRequirement('_custom_access', '\Drupal\effective_activism\AccessControlHandler\AccessControl::fromRouteIsGroupStaff')
         ->setOption('parameters', [
-          Constant::SLUG_ORGANIZATION => ['type' => Constant::ENTITY_ORGANIZATION],
-          Constant::SLUG_GROUP => ['type' => Constant::ENTITY_GROUP],
+          Constant::ENTITY_ORGANIZATION => ['type' => Constant::ENTITY_ORGANIZATION],
+          $entity_type_id => ['type' => Constant::ENTITY_GROUP],
         ]);
       return $route;
     }
@@ -168,8 +167,8 @@ class GroupHtmlRouteProvider extends DefaultHtmlRouteProvider {
         ])
         ->setRequirement('_custom_access', '\Drupal\effective_activism\AccessControlHandler\AccessControl::fromRouteIsGroupStaff')
         ->setOption('parameters', [
-          Constant::SLUG_ORGANIZATION => ['type' => Constant::ENTITY_ORGANIZATION],
-          Constant::SLUG_GROUP => ['type' => Constant::ENTITY_GROUP],
+          Constant::ENTITY_ORGANIZATION => ['type' => Constant::ENTITY_ORGANIZATION],
+          $entity_type_id => ['type' => Constant::ENTITY_GROUP],
         ]);
       return $route;
     }
@@ -195,8 +194,8 @@ class GroupHtmlRouteProvider extends DefaultHtmlRouteProvider {
         ])
         ->setRequirement('_custom_access', '\Drupal\effective_activism\AccessControlHandler\AccessControl::fromRouteIsGroupStaff')
         ->setOption('parameters', [
-          Constant::SLUG_ORGANIZATION => ['type' => Constant::ENTITY_ORGANIZATION],
-          Constant::SLUG_GROUP => ['type' => Constant::ENTITY_GROUP],
+          Constant::ENTITY_ORGANIZATION => ['type' => Constant::ENTITY_ORGANIZATION],
+          $entity_type_id => ['type' => Constant::ENTITY_GROUP],
         ]);
       return $route;
     }

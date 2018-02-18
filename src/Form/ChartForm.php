@@ -16,6 +16,7 @@ use Drupal\effective_activism\Entity\Filter;
 use Drupal\effective_activism\Entity\Organization;
 use Drupal\effective_activism\Helper\FilterHelper;
 use Drupal\effective_activism\Helper\OrganizationHelper;
+use ReflectionClass;
 
 /**
  * Form controller for Chart forms.
@@ -25,8 +26,6 @@ use Drupal\effective_activism\Helper\OrganizationHelper;
 class ChartForm extends FormBase {
 
   const FORM_ID = 'effective_activism_chart';
-
-  const THEME_ID = self::FORM_ID . '-form';
 
   const AJAX_WRAPPER = 'ajax-chart';
 
@@ -76,7 +75,7 @@ class ChartForm extends FormBase {
     }
     // Get filter default value.
     $selected_filter = !empty($form_state->getValue('filter')) ? Filter::load($form_state->getValue('filter')) : NULL;
-    $form['#theme'] = self::THEME_ID;
+    $form['#theme'] = (new ReflectionClass($this))->getShortName();
     $form['filter'] = [
       '#type' => 'select',
       '#title' => $this->t('Filter'),

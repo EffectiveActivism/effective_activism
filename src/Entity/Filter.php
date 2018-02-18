@@ -44,15 +44,10 @@ use Drupal\user\UserInterface;
  *     "status" = "status",
  *   },
  *   links = {
- *     "canonical" = "/manage/filters/{filter}",
- *     "add-form" = "/manage/filters/add",
- *     "edit-form" = "/manage/filters/{filter}/edit",
- *     "publish-form" = "/manage/filters/{filter}/publish",
- *     "version-history" = "/manage/filters/{filter}/revisions",
- *     "revision" = "/manage/filters/{filter}/revisions/{filter_revision}/view",
- *     "revision_revert" = "/manage/filters/{filter}/revisions/{filter_revision}/revert",
- *     "revision_delete" = "/manage/filters/{filter}/revisions/{filter_revision}/delete",
- *     "collection" = "/manage/filters",
+ *     "canonical" = "/o/{organization}/filters/{filter}",
+ *     "add-form" = "/o/{organization}/filters/add",
+ *     "edit-form" = "/o/{organization}/filters/{filter}/edit",
+ *     "publish-form" = "/o/{organization}/filters/{filter}/publish",
  *   },
  * )
  */

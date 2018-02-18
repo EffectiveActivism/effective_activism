@@ -51,8 +51,8 @@ class EventListBuilder extends EntityListBuilder {
    */
   public function __construct(EntityTypeInterface $entity_type, EntityStorageInterface $storage, Organization $organization = NULL, Group $group = NULL) {
     parent::__construct($entity_type, $storage);
-    $this->group = $group;
-    $this->organization = $organization;
+    $this->organization = empty($organization) ? Drupal::request()->get('organization') : $organization;
+    $this->group = empty($group) ? Drupal::request()->get('group') : $group;
   }
 
   /**
@@ -92,6 +92,8 @@ class EventListBuilder extends EntityListBuilder {
    */
   public function render() {
     $build['#theme'] = (new ReflectionClass($this))->getShortName();
+    $build['#storage']['entities']['organization'] = $this->organization;
+    $build['#storage']['entities']['group'] = $this->group;
     $build['#storage']['entities']['events'] = $this->load();
     $build['#cache'] = [
       'max-age' => self::CACHE_MAX_AGE,

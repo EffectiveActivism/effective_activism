@@ -74,6 +74,7 @@ class GroupListBuilder extends EntityListBuilder {
    */
   public function render() {
     $build['#theme'] = (new ReflectionClass($this))->getShortName();
+    $build['#storage']['entities']['organization'] = $this->organization;
     $build['#storage']['entities']['groups'] = $this->load();
     $build['#cache'] = [
       'max-age' => self::CACHE_MAX_AGE,

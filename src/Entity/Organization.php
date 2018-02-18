@@ -25,6 +25,7 @@ use Drupal\effective_activism\Constant;
  *     "form" = {
  *       "default" = "Drupal\effective_activism\Form\OrganizationForm",
  *       "add" = "Drupal\effective_activism\Form\OrganizationForm",
+ *       "results" = "Drupal\effective_activism\Form\ChartForm",
  *       "edit" = "Drupal\effective_activism\Form\OrganizationForm",
  *       "publish" = "Drupal\effective_activism\Form\OrganizationPublishForm",
  *     },
@@ -47,14 +48,15 @@ use Drupal\effective_activism\Constant;
  *  links = {
  *     "canonical" = "/o/{organization}",
  *     "add-form" = "/o/add",
- *     "edit-form" = "/o/{organization}/edit",
- *     "publish-form" = "/o/{organization}/publish",
  *     "collection" = "/o",
- *     "groups" = "/o/{organization}/g",
+ *     "edit-form" = "/o/{organization}/edit",
  *     "event_templates" = "/o/{organization}/event-templates",
  *     "exports" = "/o/{organization}/exports",
  *     "filters" = "/o/{organization}/filters",
+ *     "groups" = "/o/{organization}/g",
+ *     "publish-form" = "/o/{organization}/publish",
  *     "results" = "/o/{organization}/results",
+ *     "result_types" = "/o/{organization}/result-types",
  *   },
  * )
  */

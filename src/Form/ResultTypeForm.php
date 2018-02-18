@@ -4,11 +4,14 @@ namespace Drupal\effective_activism\Form;
 
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 use Drupal\effective_activism\Entity\DataType;
 use Drupal\effective_activism\Entity\Organization;
 use Drupal\effective_activism\Helper\AccountHelper;
 use Drupal\effective_activism\Helper\OrganizationHelper;
 use Drupal\effective_activism\Helper\ResultTypeHelper;
+use Drupal\effective_activism\Helper\PathHelper;
+use ReflectionClass;
 
 /**
  * Class ResultTypeForm.
@@ -47,6 +50,7 @@ class ResultTypeForm extends EntityForm {
     // Build form.
     $form['#prefix'] = '<div id="ajax">';
     $form['#suffix'] = '</div>';
+    $form['#theme'] = (new ReflectionClass($this))->getShortName();
     $form['label'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Label'),
@@ -158,7 +162,9 @@ class ResultTypeForm extends EntityForm {
     ResultTypeHelper::updateBundleSettings($this->entity);
     // Add a tagging field to the result type.
     ResultTypeHelper::addTaxonomyField($this->entity);
-    $form_state->setRedirectUrl($this->entity->urlInfo('collection'));
+    $form_state->setRedirectUrl(new Url('entity.organization.result_types', [
+      'organization' => PathHelper::transliterate(Organization::load($this->entity->get('organization'))->label()),
+    ]));
   }
 
   /**

@@ -37,6 +37,11 @@ class ParamConverter implements ParamConverterInterface {
         }
         break;
 
+      case Constant::ENTITY_RESULT_TYPE:
+        if (!empty($value) && is_string($value)) {
+          return PathHelper::loadResultTypeBySlug($value);
+        }
+        break;
      }
      return NULL;
   }
@@ -49,6 +54,7 @@ class ParamConverter implements ParamConverterInterface {
       'invitation',
       Constant::ENTITY_ORGANIZATION,
       Constant::ENTITY_GROUP,
+      Constant::ENTITY_RESULT_TYPE,
     ]));
   }
 
