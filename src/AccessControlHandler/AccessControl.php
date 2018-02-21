@@ -48,7 +48,7 @@ class AccessControl {
    */
   public static function fromRouteIsManager(RouteMatchInterface $route_match, AccountInterface $account) {
     $parameter_bag = $route_match->getParameters();
-    $organization = $parameter_bag->get(Constant::SLUG_ORGANIZATION);
+    $organization = $parameter_bag->get(Constant::ENTITY_ORGANIZATION);
     return self::isManager($organization, $account);
   }
 

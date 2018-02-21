@@ -25,6 +25,7 @@ use Drupal\user\UserInterface;
  *     "form" = {
  *       "default" = "Drupal\effective_activism\Form\EventForm",
  *       "add" = "Drupal\effective_activism\Form\EventForm",
+ *       "add-from-template" = "Drupal\effective_activism\Form\EventTemplateSelectionForm",
  *       "edit" = "Drupal\effective_activism\Form\EventForm",
  *       "publish" = "Drupal\effective_activism\Form\EventPublishForm",
  *     },
@@ -44,12 +45,12 @@ use Drupal\user\UserInterface;
  *     "status" = "status",
  *   },
  *   links = {
- *     "canonical" = "/manage/events/{event}",
- *     "add-form" = "/manage/events/add",
- *     "add-from-template-form" = "/manage/events/add/{event_template}",
- *     "edit-form" = "/manage/events/{event}/edit",
- *     "publish-form" = "/manage/events/{event}/publish",
- *     "collection" = "/manage/events",
+ *     "canonical" = "/o/{organization}/g/{group}/e/{event}",
+ *     "add-form" = "/o/{organization}/g/{group}/e/add",
+ *     "add-from-template" = "/o/{organization}/g/{group}/e/add-from-template",
+ *     "add-from-template-form" = "/o/{organization}/g/{group}/e/add/{event_template}",
+ *     "edit-form" = "/o/{organization}/g/{group}/e/{event}/edit",
+ *     "publish-form" = "/o/{organization}/g/{group}/e/{event}/publish",
  *   },
  * )
  */

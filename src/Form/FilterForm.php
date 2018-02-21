@@ -4,6 +4,7 @@ namespace Drupal\effective_activism\Form;
 
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
+use ReflectionClass;
 
 /**
  * Form controller for Filter edit forms.
@@ -18,6 +19,7 @@ class FilterForm extends ContentEntityForm {
   public function buildForm(array $form, FormStateInterface $form_state) {
     /* @var $entity \Drupal\effective_activism\Entity\Filter */
     $form = parent::buildForm($form, $form_state);
+    $form['#theme'] = (new ReflectionClass($this))->getShortName();
     if (!$this->entity->isNew()) {
       $form['new_revision'] = [
         '#type' => 'checkbox',

@@ -47,7 +47,7 @@ use Drupal\user\UserInterface;
  *     "canonical" = "/o/{organization}/g/{group}",
  *     "add-form" = "/o/{organization}/g/add",
  *     "edit-form" = "/o/{organization}/g/{group}/edit",
- *     "events" = "/o/{organization}/g/{group}/events",
+ *     "events" = "/o/{organization}/g/{group}/e",
  *     "imports" = "/o/{organization}/g/{group}/imports",
  *     "publish-form" = "/o/{organization}/g/{group}/publish",
  *   },

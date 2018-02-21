@@ -23,9 +23,8 @@ class EventForm extends ContentEntityForm {
   public function buildForm(array $form, FormStateInterface $form_state, $event_template = NULL) {
     /* @var $entity \Drupal\effective_activism\Entity */
     $form = parent::buildForm($form, $form_state);
-    $entity = $this->entity;
-    // Set form theme id.
     $form['#theme'] = (new ReflectionClass($this))->getShortName();
+    $entity = $this->entity;
     // Retrieve group id.
     $gid = $form_state->getTemporaryValue('gid');
     // If the form is fresh, it has no parent group id.
