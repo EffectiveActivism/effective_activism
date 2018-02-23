@@ -2,10 +2,15 @@
 
 namespace Drupal\effective_activism\Form;
 
+use Drupal;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
+use Drupal\effective_activism\Entity\Organization;
+use Drupal\effective_activism\Entity\Group;
+use Drupal\effective_activism\Helper\PathHelper;
 use Drupal\effective_activism\Helper\Publish\Publisher;
+use ReflectionClass;
 
 /**
  * Form controller for Event publish forms.
@@ -15,7 +20,6 @@ use Drupal\effective_activism\Helper\Publish\Publisher;
 class EventPublishForm extends ConfirmFormBase {
 
   const FORM_ID = 'publish_event';
-  const THEME_ID = self::class;
 
   private $isPublished;
 
@@ -26,9 +30,9 @@ class EventPublishForm extends ConfirmFormBase {
     return self::FORM_ID;
   }
 
-  public function buildForm(array $form, FormStateInterface $form_state) {
+  public function buildForm(array $form, FormStateInterface $form_state, Organization $organization = NULL, Group $group = NULL) {
     $form = parent::buildForm($form, $form_state);
-    $form['#theme'] = self::THEME_ID;
+    $form['#theme'] = (new ReflectionClass($this))->getShortName();
     return $form;
   }
 
@@ -37,19 +41,19 @@ class EventPublishForm extends ConfirmFormBase {
    */
   public function getQuestion() {
     $question = NULL;
-    $entity = \Drupal::request()->get('event');
+    $entity = Drupal::request()->get('event');
     if (empty($entity)) {
       $question = $this->t('Event not found');
     }
     else {
       $this->isPublished = $entity->isPublished();
       if ($this->isPublished === TRUE) {
-        $question = empty($entity->get('title')->value) ? $this->t('Are you sure you want to unpublish the event') : $this->t('Are you sure you want to unpublish <em>@title</em>?', [
+        $question = $entity->get('title')->isEmpty() ? $this->t('Are you sure you want to unpublish the event') : $this->t('Are you sure you want to unpublish <em>@title</em>?', [
           '@title' => $entity->get('title')->value,
         ]);
       }
       else {
-        $question = empty($entity->get('title')->value) ? $this->t('Are you sure you want to publish the event') : $this->t('Are you sure you want to publish <em>@title</em>?', [
+        $question = $entity->get('title')->isEmpty() ? $this->t('Are you sure you want to publish the event') : $this->t('Are you sure you want to publish <em>@title</em>?', [
           '@title' => $entity->get('title')->value,
         ]);
       }
@@ -89,10 +93,11 @@ class EventPublishForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getCancelUrl() {
-    $entity = \Drupal::request()->get('event');
     return new Url(
       'entity.event.canonical', [
-        'event' => $entity->id(),
+        'organization' => PathHelper::transliterate(Drupal::request()->get('organization')->label()),
+        'group' => PathHelper::transliterate(Drupal::request()->get('group')->label()),
+        'event' => Drupal::request()->get('event')->id(),
       ]
     );
   }
@@ -101,7 +106,7 @@ class EventPublishForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $entity = \Drupal::request()->get('event');
+    $entity = Drupal::request()->get('event');
     if ($this->isPublished === TRUE) {
       $publisher = new Publisher($entity);
       $batch = [

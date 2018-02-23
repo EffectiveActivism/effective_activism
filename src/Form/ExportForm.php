@@ -2,11 +2,15 @@
 
 namespace Drupal\effective_activism\Form;
 
+use Drupal;
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\effective_activism\Entity\Export;
 use Drupal\effective_activism\Entity\Filter;
 use Drupal\effective_activism\Entity\Organization;
 use Drupal\effective_activism\Helper\OrganizationHelper;
+use Drupal\effective_activism\Helper\PathHelper;
+use ReflectionClass;
 
 /**
  * Form controller for Export edit forms.
@@ -18,24 +22,15 @@ class ExportForm extends ContentEntityForm {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state) {
+  public function buildForm(array $form, FormStateInterface $form_state, Organization $organization = NULL, Export $export = NULL) {
     $form = parent::buildForm($form, $form_state);
+    $form['#theme'] = (new ReflectionClass($this))->getShortName();
     $entity = $this->entity;
-    // Ajaxify form.
-    $form['#prefix'] = '<div id="ajax">';
-    $form['#suffix'] = '</div>';
-    $form['organization']['widget'][0]['target_id']['#ajax'] = [
-      'callback' => [$this, 'ajaxCallback'],
-      'wrapper' => 'ajax',
-    ];
-    // Get organization id.
-    $organization_id = $form_state->getValue('organization')[0]['target_id'];
-    if (!isset($organization_id)) {
-      $organization_id = $form['organization']['widget'][0]['target_id']['#default_value'];
-    }
+    // Set values from path.
+    $form['organization']['widget'][0]['target_id']['#default_value'] = Drupal::request()->get('organization');
     // Remove filter options that do not belong to selected organization.
     if (!empty($form['organization']['widget'][0]['target_id']['#default_value'])) {
-      $allowed_filter_ids = OrganizationHelper::getFilters(Organization::load($organization_id), 0, 0, FALSE);
+      $allowed_filter_ids = OrganizationHelper::getFilters($organization, 0, 0, FALSE);
       if (!empty($form['filter']['widget'][0]['target_id']['#options'])) {
         foreach ($form['filter']['widget'][0]['target_id']['#options'] as $filter_id => $filter_name) {
           if (!in_array($filter_id, $allowed_filter_ids)) {
@@ -43,10 +38,6 @@ class ExportForm extends ContentEntityForm {
           }
         }
       }
-    }
-    // Hide filter options if no organization has been selected.
-    else {
-      $form['filter']['#attributes']['class'][] = 'hidden';
     }
     // Hide fields.
     $form['user_id']['#attributes']['class'][] = 'hidden';
@@ -77,12 +68,11 @@ class ExportForm extends ContentEntityForm {
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
     parent::validateForm($form, $form_state);
-    $organization_id = $form_state->getValue('organization')[0]['target_id'];
     $filter_id = $form_state->getValue('filter')[0]['target_id'];
-    $allowed_filter_ids = OrganizationHelper::getFilters(Organization::load($organization_id), 0, 0, FALSE);
+    $allowed_filter_ids = OrganizationHelper::getFilters(Drupal::request()->get('organization'), 0, 0, FALSE);
     if (!in_array($filter_id, $allowed_filter_ids)) {
       $form_state->setErrorByName('filter', $this->t('<em>@organization</em> does not allow the filter <em>@filter</em>. Please select another organization or filter.', [
-        '@organization' => Organization::load($organization_id)->label(),
+        '@organization' => Drupal::request()->get('organization')->label(),
         '@filter' => Filter::load($filter_id)->label(),
       ]));
     }
@@ -107,7 +97,10 @@ class ExportForm extends ContentEntityForm {
           '%label' => $entity->label(),
         ]));
     }
-    $form_state->setRedirect('entity.export.canonical', ['export' => $entity->id()]);
+    $form_state->setRedirect('entity.export.canonical', [
+      'organization' => PathHelper::transliterate(Drupal::request()->get('organization')->label()),
+      'export' => $entity->id()
+    ]);
   }
 
   /**

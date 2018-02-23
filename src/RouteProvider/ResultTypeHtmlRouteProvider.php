@@ -85,31 +85,4 @@ class ResultTypeHtmlRouteProvider extends DefaultHtmlRouteProvider {
     }
   }
 
-  /**
-   * Gets the publish-form route.
-   *
-   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
-   *   The entity type.
-   *
-   * @return \Symfony\Component\Routing\Route|null
-   *   The generated route, if available.
-   */
-  protected function getPublishFormRoute(EntityTypeInterface $entity_type) {
-    if ($entity_type->hasLinkTemplate('publish-form')) {
-      $entity_type_id = $entity_type->id();
-      $route = new Route($entity_type->getLinkTemplate('publish-form'));
-      $route
-        ->setDefaults([
-          '_form' => '\Drupal\effective_activism\Form\Group\GroupPublishForm',
-          '_title' => "Publish {$entity_type->getLabel()}",
-        ])
-        ->setRequirement('_entity_access', "{$entity_type_id}.update")
-        ->setOption('parameters', [
-          Constant::ENTITY_ORGANIZATION => ['type' => Constant::ENTITY_ORGANIZATION],
-          $entity_type_id => ['type' => Constant::ENTITY_RESULT_TYPE],
-        ]);
-      return $route;
-    }
-  }
-
 }

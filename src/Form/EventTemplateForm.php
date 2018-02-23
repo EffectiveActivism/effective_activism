@@ -4,6 +4,12 @@ namespace Drupal\effective_activism\Form;
 
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\effective_activism\Entity\Filter;
+use Drupal\effective_activism\Entity\Group;
+use Drupal\effective_activism\Entity\Organization;
+use Drupal\effective_activism\Helper\OrganizationHelper;
+use Drupal\effective_activism\Helper\PathHelper;
+use ReflectionClass;
 
 /**
  * Form controller for event template edit forms.
@@ -15,9 +21,10 @@ class EventTemplateForm extends ContentEntityForm {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state) {
+  public function buildForm(array $form, FormStateInterface $form_state, Organization $organization = NULL, Group $group = NULL) {
     /* @var $entity \Drupal\effective_activism\Entity\EventTemplate */
     $form = parent::buildForm($form, $form_state);
+    $form['#theme'] = (new ReflectionClass($this))->getShortName();
     if (!$this->entity->isNew()) {
       $form['new_revision'] = [
         '#type' => 'checkbox',
@@ -58,7 +65,10 @@ class EventTemplateForm extends ContentEntityForm {
           '%label' => $entity->label(),
         ]));
     }
-    $form_state->setRedirect('entity.event_template.canonical', ['event_template' => $entity->id()]);
+    $form_state->setRedirect('entity.event_template.canonical', [
+      'organization' => PathHelper::transliterate($entity->organization->entity->label()),
+      'event_template' => $entity->id()
+    ]);
   }
 
 }

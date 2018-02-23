@@ -2,12 +2,16 @@
 
 namespace Drupal\effective_activism\Form;
 
+use Drupal;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\effective_activism\Entity\EventTemplate;
 use Drupal\effective_activism\Entity\Group;
+use Drupal\effective_activism\Entity\Organization;
 use Drupal\effective_activism\Entity\ResultType;
 use Drupal\effective_activism\Helper\EventTemplateHelper;
+use Drupal\effective_activism\Helper\PathHelper;
 use ReflectionClass;
 
 /**
@@ -20,18 +24,14 @@ class EventForm extends ContentEntityForm {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, $event_template = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, Organization $organization = NULL, Group $group = NULL, EventTemplate $event_template = NULL) {
     /* @var $entity \Drupal\effective_activism\Entity */
     $form = parent::buildForm($form, $form_state);
     $form['#theme'] = (new ReflectionClass($this))->getShortName();
     $entity = $this->entity;
-    // Retrieve group id.
-    $gid = $form_state->getTemporaryValue('gid');
-    // If the form is fresh, it has no parent group id.
-    // Use default value instead.
-    if (empty($gid) && !empty($form['parent']['widget'][0]['target_id']['#default_value'])) {
-      $gid = $form['parent']['widget'][0]['target_id']['#default_value'];
-    }
+    // Set values from path.
+    $form['parent']['widget'][0]['target_id']['#default_value'] = Drupal::request()->get('group');
+    $form['event_template']['widget'][0]['target_id']['#default_value'] = empty($event_template) ? NULL : $event_template;
     // Use event template if valid.
     if (
       $entity->isNew() &&
@@ -39,14 +39,7 @@ class EventForm extends ContentEntityForm {
       $event_template->access('view')
     ) {
       $form = EventTemplateHelper::applyEventTemplate($event_template, $form);
-      $form_state->setTemporaryValue('event_template_id', $event_template->id());
     }
-    $form['#prefix'] = '<div id="ajax">';
-    $form['#suffix'] = '</div>';
-    $form['parent']['widget'][0]['target_id']['#ajax'] = [
-      'callback' => [$this, 'ajaxCallback'],
-      'wrapper' => 'ajax',
-    ];
     // Never allow adding existing results. However, we have to enable the
     // 'allow_existing' setting to force inline entity form to display
     // the 'Remove' button.
@@ -56,7 +49,7 @@ class EventForm extends ContentEntityForm {
       foreach ($form['results']['widget']['actions']['bundle']['#options'] as $machine_name => $human_name) {
         $result_type = ResultType::load($machine_name);
         if (!empty($result_type)) {
-          if (!in_array($gid, $result_type->get('groups'))) {
+          if (!in_array(Drupal::request()->get('group')->id(), $result_type->get('groups'))) {
             unset($form['results']['widget']['actions']['bundle']['#options'][$machine_name]);
           }
         }
@@ -71,7 +64,7 @@ class EventForm extends ContentEntityForm {
     elseif (!empty($form['results']['widget']['actions']['bundle']['#value'])) {
       $result_type = ResultType::load($form['results']['widget']['actions']['bundle']['#value']);
       if (!empty($result_type)) {
-        if (!in_array($gid, $result_type->get('groups'))) {
+        if (!in_array(Drupal::request()->get('group')->id(), $result_type->get('groups'))) {
           unset($form['results']['widget']['actions']['ief_add']);
         }
       }
@@ -87,11 +80,6 @@ class EventForm extends ContentEntityForm {
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
     parent::validateForm($form, $form_state);
-    // Make the selected group id persistent across form states.
-    // We cannot rely on the form_state values, because inline entity forms
-    // only submit a subset of values.
-    $gid = $form_state->getValue('parent')[0]['target_id'];
-    $form_state->setTemporaryValue('gid', $gid);
     // Only allow user to change group if existing results are allowed
     // in new group.
     if (!empty($form_state->getValue('results')['entities'])) {
@@ -105,9 +93,9 @@ class EventForm extends ContentEntityForm {
                 $result_type = ResultType::load($result->getType());
                 if (!empty($result_type)) {
                   $allowed_gids = $result_type->get('groups');
-                  if (!in_array($gid, $allowed_gids)) {
+                  if (!in_array(Drupal::request()->get('group')->id(), $allowed_gids)) {
                     $form_state->setErrorByName('parent', $this->t('<em>@group</em> does not allow the result type <em>@result_type</em>. Please select another group or remove the result.', [
-                      '@group' => Group::load($gid)->label(),
+                      '@group' => Drupal::request()->get('group')->label(),
                       '@result_type' => $result_type->get('label'),
                     ]));
                     break 2;
@@ -137,11 +125,6 @@ class EventForm extends ContentEntityForm {
   public function save(array $form, FormStateInterface $form_state) {
     $entity = $this->entity;
     $entity->setNewRevision();
-    // Store event template if any is used.
-    $event_template_id = $form_state->getTemporaryValue('event_template_id');
-    if (!empty($event_template_id)) {
-      $entity->event_template->target_id = $event_template_id;
-    }
     $status = parent::save($form, $form_state);
     switch ($status) {
       case SAVED_NEW:
@@ -151,7 +134,11 @@ class EventForm extends ContentEntityForm {
       default:
         drupal_set_message($this->t('Saved the event.'));
     }
-    $form_state->setRedirect('entity.event.canonical', ['event' => $entity->id()]);
+    $form_state->setRedirect('entity.event.canonical', [
+      'organization' => PathHelper::transliterate(Drupal::request()->get('organization')->label()),
+      'group' => PathHelper::transliterate(Drupal::request()->get('group')->label()),
+      'event' => $entity->id(),
+    ]);
   }
 
   /**

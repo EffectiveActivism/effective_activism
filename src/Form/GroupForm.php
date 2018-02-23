@@ -6,8 +6,10 @@ use Drupal;
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
+use Drupal\effective_activism\AccessControlHandler\AccessControl;
+use Drupal\effective_activism\Entity\Group;
+use Drupal\effective_activism\Entity\Organization;
 use Drupal\effective_activism\Entity\ResultType;
-use Drupal\effective_activism\Helper\AccountHelper;
 use Drupal\effective_activism\Helper\InvitationHelper;
 use Drupal\effective_activism\Helper\OrganizationHelper;
 use Drupal\effective_activism\Helper\PathHelper;
@@ -23,7 +25,7 @@ class GroupForm extends ContentEntityForm {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state) {
+  public function buildForm(array $form, FormStateInterface $form_state, Organization $organization = NULL, Group $group = NULL) {
     /* @var $entity \Drupal\effective_activism\Entity\Group */
     $form = parent::buildForm($form, $form_state);
     $form['#theme'] = (new ReflectionClass($this))->getShortName();
@@ -31,22 +33,21 @@ class GroupForm extends ContentEntityForm {
     // Hide fields.
     $form['user_id']['#attributes']['class'][] = 'hidden';
     $form['revision_log_message']['#attributes']['class'][] = 'hidden';
-    // Set group entity id.
-    $form_state->setTemporaryValue('entity_id', $entity->id());
     // Add result type selection for this group.
     $form['result_types'] = [
       '#type' => 'checkboxes',
       '#title' => $this->t('Result types'),
-      '#description' => $this->t('Result types will be available once this group is created.'),
       '#default_value' => [],
       '#options' => [],
     ];
-    // If the group has an organization, populate available result types.
-    if (isset($this->entity->organization->entity)) {
+    if ($entity->isNew()) {
+      $form['result_types']['#description'] = $this->t('Result types will be available once this group is created.');
+    }
+    else {
       $form['result_types']['#description'] = $this->t('Result types available for this group.');
       $selected_result_types = [];
       $form['result_types']['#default_value'] = empty($selected_result_types) ? [] : $selected_result_types;
-      foreach (OrganizationHelper::getResultTypes($this->entity->organization->entity) as $result_type) {
+      foreach (OrganizationHelper::getResultTypes($organization) as $result_type) {
         $form['result_types']['#options'][$result_type->id()] = sprintf('%s<br><small><em>%s</em></small>', $result_type->label(), $result_type->description);
         if (in_array($entity->id(), $result_type->groups)) {
           $selected_result_types[$result_type->id()] = $result_type->id();
@@ -58,13 +59,12 @@ class GroupForm extends ContentEntityForm {
     // If the group is saved, populate active invitations.
     if (!$entity->isNew()) {
       $form['#invitation_list'] = InvitationHelper::getInvitationsByEntity($entity);
-      // Only allow managers to see some elements.
-      if (!AccountHelper::isManagerOfGroup($entity, Drupal::currentUser())) {
-        $form['organization']['#access'] = FALSE;
-        $form['result_types']['#access'] = FALSE;
-        $form['organizers']['#access'] = FALSE;
-        $form['invitations']['#access'] = FALSE;
-      }
+    }
+    // Only allow managers to see some elements and only for existing groups.
+    if ($entity->isNew() || !AccessControl::isManager($entity->organization->entity, Drupal::currentUser())) {
+      $form['result_types']['#access'] = FALSE;
+      $form['organizers']['#access'] = FALSE;
+      $form['invitations']['#access'] = FALSE;
     }
     return $form;
   }
@@ -107,10 +107,10 @@ class GroupForm extends ContentEntityForm {
           '%label' => $entity->label(),
         ]));
     }
-    $form_state->setRedirect(new Url('entity.group.canonical', [
-      'organization' => PathHelper::transliterate($entity->organization->entity->label()),
+    $form_state->setRedirect('entity.group.canonical', [
+      'organization' => PathHelper::transliterate(Drupal::request()->get('organization')->label()),
       'group' => PathHelper::transliterate($entity->label()),
-    ]));
+    ]);
   }
 
 }

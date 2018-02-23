@@ -2,10 +2,16 @@
 
 namespace Drupal\effective_activism\Form;
 
+use Drupal;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
+use Drupal\effective_activism\Entity\Group;
+use Drupal\effective_activism\Entity\Import;
+use Drupal\effective_activism\Entity\Organization;
+use Drupal\effective_activism\Helper\PathHelper;
 use Drupal\effective_activism\Helper\Publish\Publisher;
+use ReflectionClass;
 
 /**
  * Form controller for Import publish forms.
@@ -28,9 +34,18 @@ class ImportPublishForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
+  public function buildForm(array $form, FormStateInterface $form_state, Organization $organization = NULL, Group $group = NULL, Import $import = NULL) {
+    $form = parent::buildForm($form, $form_state);
+    $form['#theme'] = (new ReflectionClass($this))->getShortName();
+    return $form;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getQuestion() {
     $question = NULL;
-    $entity = \Drupal::request()->get('import');
+    $entity = Drupal::request()->get('import');
     if (empty($entity)) {
       $question = $this->t('Import not found');
     }
@@ -78,9 +93,11 @@ class ImportPublishForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getCancelUrl() {
-    $entity = \Drupal::request()->get('import');
+    $entity = Drupal::request()->get('import');
     return new Url(
       'entity.import.canonical', [
+        'organization' => PathHelper::transliterate(Drupal::request()->get('organization')->label()),
+        'group' => PathHelper::transliterate(Drupal::request()->get('group')->label()),
         'import' => $entity->id(),
       ]
     );
@@ -89,15 +106,8 @@ class ImportPublishForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, $import = NULL) {
-    return parent::buildForm($form, $form_state);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $entity = \Drupal::request()->get('import');
+    $entity = Drupal::request()->get('import');
     if ($this->isPublished === TRUE) {
       $publisher = new Publisher($entity);
       $batch = [

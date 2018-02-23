@@ -43,14 +43,10 @@ use Drupal\user\UserInterface;
  *     "status" = "status",
  *   },
  *   links = {
- *     "canonical" = "/manage/event_template/{event_template}",
- *     "add-form" = "/manage/event_template/add",
- *     "edit-form" = "/manage/event_template/{event_template}/edit",
- *     "publish-form" = "/manage/event_template/{event_template}/publish",
- *     "version-history" = "/manage/event_template/{event_template}/revisions",
- *     "revision" = "/manage/event_template/{event_template}/revisions/{event_template_revision}/view",
- *     "revision_revert" = "/manage/event_template/{event_template}/revisions/{event_template_revision}/revert",
- *     "collection" = "/manage/event_template",
+ *     "add-form" = "/o/{organization}/event-templates/add",
+ *     "canonical" = "/o/{organization}/event-templates/{event_template}",
+ *     "edit-form" = "/o/{organization}/event-templates/{event_template}/edit",
+ *     "publish-form" = "/o/{organization}/event-templates/{event_template}/publish",
  *   },
  * )
  */
@@ -237,8 +233,14 @@ class EventTemplate extends RevisionableContentEntityBase implements EventTempla
         'weight' => array_search('organization', self::WEIGHTS),
       ])
       ->setDisplayOptions('form', [
-        'type' => 'organization_selector',
+        'type' => 'entity_reference_autocomplete',
         'weight' => array_search('organization', self::WEIGHTS),
+        'settings' => [
+          'match_operator' => 'CONTAINS',
+          'size' => '60',
+          'autocomplete_type' => 'tags',
+          'placeholder' => '',
+        ],
       ]);
     $fields['event_title'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Event title'))

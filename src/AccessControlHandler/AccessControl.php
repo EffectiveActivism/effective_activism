@@ -12,7 +12,6 @@ use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\Organization;
 use Drupal\effective_activism\Helper\PathHelper;
 
-
 /**
  * Provides functions to manage access control.
  */

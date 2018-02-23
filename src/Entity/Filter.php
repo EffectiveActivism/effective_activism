@@ -211,8 +211,14 @@ class Filter extends RevisionableContentEntityBase implements FilterInterface {
         'weight' => array_search('organization', self::WEIGHTS),
       ])
       ->setDisplayOptions('form', [
-        'type' => 'organization_selector',
+        'type' => 'entity_reference_autocomplete',
         'weight' => array_search('organization', self::WEIGHTS),
+        'settings' => [
+          'match_operator' => 'CONTAINS',
+          'size' => '60',
+          'autocomplete_type' => 'tags',
+          'placeholder' => '',
+        ],
       ]);
     $fields['start_date'] = BaseFieldDefinition::create('datetime')
       ->setLabel(t('Start date'))

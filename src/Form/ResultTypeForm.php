@@ -2,12 +2,12 @@
 
 namespace Drupal\effective_activism\Form;
 
+use Drupal;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\effective_activism\Entity\DataType;
 use Drupal\effective_activism\Entity\Organization;
-use Drupal\effective_activism\Helper\AccountHelper;
 use Drupal\effective_activism\Helper\OrganizationHelper;
 use Drupal\effective_activism\Helper\ResultTypeHelper;
 use Drupal\effective_activism\Helper\PathHelper;
@@ -25,23 +25,8 @@ class ResultTypeForm extends EntityForm {
    */
   public function form(array $form, FormStateInterface $form_state) {
     $form = parent::form($form, $form_state);
-    $selected_organization = $this->entity->organization;
-    $selected_groups = $this->entity->groups;
-    $selected_datatypes = !empty($this->entity->datatypes) ? array_filter(array_values($this->entity->datatypes), function ($value) {
-      return $value !== 0;
-    }) : [];
-    // Get available organizations.
-    $available_organizations = array_reduce(AccountHelper::getManagedOrganizations(), function ($result, $organization) {
-      $result[$organization->id()] = $organization->label();
-      return $result;
-    }, []);
-    // Get available groups.
-    $available_groups = !empty($selected_organization) ? array_reduce(OrganizationHelper::getGroups(Organization::load($selected_organization)), function ($result, $group) {
-      $result[$group->id()] = $group->label();
-      return $result;
-    }, []) : [];
     // Get available data types.
-    $data_bundles = \Drupal::entityManager()->getBundleInfo('data');
+    $data_bundles = Drupal::entityManager()->getBundleInfo('data');
     $available_datatypes = [];
     foreach ($data_bundles as $bundle_name => $bundle_info) {
       $data_type = DataType::load($bundle_name);
@@ -92,31 +77,23 @@ class ResultTypeForm extends EntityForm {
     $form['datatypes'] = [
       '#type' => 'checkboxes',
       '#title' => $this->t('Data types'),
-      '#default_value' => empty($selected_datatypes) ? [] : $selected_datatypes,
+      '#default_value' => !empty($this->entity->datatypes) ? array_filter(
+        array_values($this->entity->datatypes), function ($value) {
+          return $value !== 0;
+        }) : [],
       '#options' => $available_datatypes,
       '#description' => $this->t('Data types available for the Result type.'),
       '#required' => TRUE,
     ];
-    $form['organization'] = [
-      '#type' => 'select',
-      '#title' => $this->t('Organization'),
-      '#default_value' => $selected_organization,
-      '#tags' => TRUE,
-      '#description' => $this->t('The organization that the Result type is available for. Once this option is saved, it cannot be changed.'),
-      '#options' => $available_organizations,
-      '#required' => TRUE,
-      '#disabled' => $this->entity->isNew() ? FALSE : TRUE,
-      '#ajax' => [
-        'callback' => [$this, 'updateAvailableGroups'],
-        'wrapper' => 'ajax',
-      ],
-    ];
     $form['groups'] = [
       '#type' => 'select',
       '#title' => $this->t('Groups'),
-      '#default_value' => $selected_groups,
+      '#default_value' => $this->entity->groups,
       '#description' => $this->t('The groups the Result type is available for.'),
-      '#options' => $available_groups,
+      '#options' => array_reduce(OrganizationHelper::getGroups(Drupal::request()->get('organization')), function ($result, $group) {
+          $result[$group->id()] = $group->label();
+          return $result;
+        }, []),
       '#multiple' => TRUE,
       '#required' => FALSE,
     ];
@@ -129,10 +106,13 @@ class ResultTypeForm extends EntityForm {
   public function validateForm(array &$form, FormStateInterface $form_state) {
     parent::validateForm($form, $form_state);
     $import_name = $form_state->getValue('importname');
-    $organization_id = $form_state->getValue('organization');
     // Verify that import name is unique within organization.
     // Only perform this check for new result types.
-    if (!empty($import_name) && !empty($organization_id) && empty($this->entity->id()) && !ResultTypeHelper::isUniqueImportName($import_name, $organization_id)) {
+    if (
+      !empty($import_name) &&
+      empty($this->entity->id()) &&
+      !ResultTypeHelper::isUniqueImportName($import_name, Drupal::request()->get('organization')->id())
+    ) {
       $form_state->setErrorByName('import_name', $this->t('This import name is already in use for your organization. Please type in another one.'));
     }
     // Derive entity id from import name.
@@ -165,21 +145,6 @@ class ResultTypeForm extends EntityForm {
     $form_state->setRedirectUrl(new Url('entity.organization.result_types', [
       'organization' => PathHelper::transliterate(Organization::load($this->entity->get('organization'))->label()),
     ]));
-  }
-
-  /**
-   * Populates the groups #options element.
-   *
-   * @param array $form
-   *   The form array.
-   * @param \Drupal\Core\Form\FormStateInterface $form_state
-   *   The form state.
-   *
-   * @return array
-   *   The form array.
-   */
-  public function updateAvailableGroups(array &$form, FormStateInterface $form_state) {
-    return $form;
   }
 
 }

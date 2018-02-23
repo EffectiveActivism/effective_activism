@@ -283,8 +283,14 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
         'weight' => array_search('parent', self::WEIGHTS),
       ])
       ->setDisplayOptions('form', [
-        'type' => 'group_selector',
+        'type' => 'entity_reference_autocomplete',
         'weight' => array_search('parent', self::WEIGHTS),
+        'settings' => [
+          'match_operator' => 'CONTAINS',
+          'size' => '60',
+          'autocomplete_type' => 'tags',
+          'placeholder' => '',
+        ],
       ]);
     $fields['external_uid'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Name'))

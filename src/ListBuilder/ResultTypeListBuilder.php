@@ -8,7 +8,6 @@ use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\effective_activism\Constant;
-use Drupal\effective_activism\Helper\AccountHelper;
 use ReflectionClass;
 
 /**

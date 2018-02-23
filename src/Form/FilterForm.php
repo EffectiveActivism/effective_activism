@@ -2,8 +2,12 @@
 
 namespace Drupal\effective_activism\Form;
 
+use Drupal;
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\effective_activism\Entity\Filter;
+use Drupal\effective_activism\Entity\Organization;
+use Drupal\effective_activism\Helper\PathHelper;
 use ReflectionClass;
 
 /**
@@ -16,7 +20,7 @@ class FilterForm extends ContentEntityForm {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state) {
+  public function buildForm(array $form, FormStateInterface $form_state, Organization $organization = NULL, Filter $filter = NULL) {
     /* @var $entity \Drupal\effective_activism\Entity\Filter */
     $form = parent::buildForm($form, $form_state);
     $form['#theme'] = (new ReflectionClass($this))->getShortName();
@@ -29,6 +33,8 @@ class FilterForm extends ContentEntityForm {
       ];
     }
     $entity = $this->entity;
+    // Set values from path.
+    $form['organization']['widget'][0]['target_id']['#default_value'] = Drupal::request()->get('organization');
     return $form;
   }
 
@@ -77,7 +83,11 @@ class FilterForm extends ContentEntityForm {
           '%label' => $entity->label(),
         ]));
     }
-    $form_state->setRedirect('entity.filter.canonical', ['filter' => $entity->id()]);
+    $form_state->setRedirect(
+      'entity.filter.canonical', [
+        'organization' => PathHelper::transliterate(Drupal::request()->get('organization')->label()),
+        'filter' => $entity->id(),
+    ]);
   }
 
 }

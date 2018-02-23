@@ -36,12 +36,16 @@ class PathHelper {
    *
    * @param string $title_as_slug
    *   The group title in slug form to load.
+   * @param \Drupal\effective_activism\Entity\Organization $organization
+   *   The organization to search within.
    *
    * @return \Drupal\effective_activism\Entity\Group|NULL
    *   A group entity or NULL if not found.
    */
-  public static function loadGroupBySlug($title_as_slug) {
-    foreach (Group::loadMultiple(Drupal::entityQuery('group')->execute()) as $group) {
+  public static function loadGroupBySlug($title_as_slug, Organization $organization) {
+    foreach (Group::loadMultiple(Drupal::entityQuery('group')
+      ->condition('organization', $organization->id())
+      ->execute()) as $group) {
       if (self::transliterate($group->label()) === $title_as_slug) {
         return $group;
       }
@@ -59,8 +63,10 @@ class PathHelper {
    * @return \Drupal\effective_activism\Entity\ResultType|NULL
    *   A result type configuration entity or NULL if not found.
    */
-  public static function loadResultTypeBySlug($import_name_as_slug) {
-    foreach (ResultType::loadMultiple(Drupal::entityQuery('result_type')->execute()) as $result_type) {
+  public static function loadResultTypeBySlug($import_name_as_slug, Organization $organization) {
+    foreach (ResultType::loadMultiple(Drupal::entityQuery('result_type')
+      ->condition('organization', $organization->id())
+      ->execute()) as $result_type) {
       if (self::transliterate($result_type->get('importname')) === $import_name_as_slug) {
         return $result_type;
       }

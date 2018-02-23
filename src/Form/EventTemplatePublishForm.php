@@ -2,10 +2,15 @@
 
 namespace Drupal\effective_activism\Form;
 
+use Drupal;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
+use Drupal\effective_activism\Entity\EventTemplate;
+use Drupal\effective_activism\Entity\Organization;
+use Drupal\effective_activism\Helper\PathHelper;
 use Drupal\effective_activism\Helper\Publish\Publisher;
+use ReflectionClass;
 
 /**
  * Form controller for event template publish forms.
@@ -28,9 +33,18 @@ class EventTemplatePublishForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
+  public function buildForm(array $form, FormStateInterface $form_state, Organization $organization = NULL, EventTemplate $event_template = NULL) {
+    $form = parent::buildForm($form, $form_state);
+    $form['#theme'] = (new ReflectionClass($this))->getShortName();
+    return $form;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getQuestion() {
     $question = NULL;
-    $entity = \Drupal::request()->get('event_template');
+    $entity = Drupal::request()->get('event_template');
     if (empty($entity)) {
       $question = $this->t('Event template not found');
     }
@@ -82,9 +96,10 @@ class EventTemplatePublishForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getCancelUrl() {
-    $entity = \Drupal::request()->get('event_template');
+    $entity = Drupal::request()->get('event_template');
     return new Url(
       'entity.event_template.canonical', [
+        'organization' => PathHelper::transliterate(Drupal::request()->get('organization')->label()),
         'event_template' => $entity->id(),
       ]
     );
@@ -94,7 +109,7 @@ class EventTemplatePublishForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $entity = \Drupal::request()->get('event_template');
+    $entity = Drupal::request()->get('event_template');
     if ($this->isPublished === TRUE) {
       $publisher = new Publisher($entity);
       $batch = [

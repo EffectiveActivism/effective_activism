@@ -274,7 +274,7 @@ class OrganizationHtmlRouteProvider extends DefaultHtmlRouteProvider {
       $route = new Route($entity_type->getLinkTemplate('publish-form'));
       $route
         ->setDefaults([
-          '_form' => '\Drupal\effective_activism\Form\Organization\OrganizationPublishForm',
+          '_form' => '\Drupal\effective_activism\Form\OrganizationPublishForm',
           '_title' => "Publish {$entity_type->getLabel()}",
         ])
         ->setRequirement('_entity_access', "{$entity_type_id}.update")

@@ -46,11 +46,10 @@ use Drupal\user\UserInterface;
  *   },
  *   bundle_entity_type = "export_type",
  *   links = {
- *     "canonical" = "/manage/exports/{export}",
- *     "add-form" = "/manage/exports/add/{export_type}",
- *     "edit-form" = "/manage/exports/{export}/edit",
- *     "publish-form" = "/manage/exports/{export}/publish",
- *     "collection" = "/manage/exports",
+ *     "canonical" = "/o/{organization}/exports/{export}",
+ *     "add-form" = "/o/{organization}/exports/add/{export_type}",
+ *     "edit-form" = "/o/{organization}/exports/{export}/edit",
+ *     "publish-form" = "/o/{organization}/exports/{export}/publish",
  *   },
  * )
  */
@@ -164,8 +163,14 @@ class Export extends RevisionableContentEntityBase implements ExportInterface {
         'weight' => array_search('organization', self::WEIGHTS),
       ])
       ->setDisplayOptions('form', [
-        'type' => 'organization_selector',
+        'type' => 'entity_reference_autocomplete',
         'weight' => array_search('organization', self::WEIGHTS),
+        'settings' => [
+          'match_operator' => 'CONTAINS',
+          'size' => '60',
+          'autocomplete_type' => 'tags',
+          'placeholder' => '',
+        ],
       ]);
     $fields['filter'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Filter'))

@@ -12,7 +12,6 @@ use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Routing\LinkGeneratorTrait;
 use Drupal\Core\Url;
 use Drupal\effective_activism\Constant;
-use Drupal\effective_activism\Helper\AccountHelper;
 use ReflectionClass;
 
 /**
@@ -30,7 +29,7 @@ class FilterListBuilder extends EntityListBuilder {
   ];
 
   /**
-   * The organization that the groups belongs to.
+   * The organization that the filters belongs to.
    *
    * @var \Drupal\effective_activism\Entity\Organization
    */

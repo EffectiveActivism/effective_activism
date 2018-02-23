@@ -67,7 +67,7 @@ class ImportHtmlRouteProvider extends DefaultHtmlRouteProvider {
       $operation = 'publish';
       $route
         ->setDefaults([
-          '_form' => '\Drupal\effective_activism\Form\Import\ImportPublishForm',
+          '_form' => '\Drupal\effective_activism\Form\ImportPublishForm',
           '_title' => "Publish {$entity_type->getLabel()}",
         ])
         ->setRequirement('_entity_access', "{$entity_type_id}.update")

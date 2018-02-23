@@ -8,6 +8,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\effective_activism\Constant;
 use Drupal\effective_activism\Entity\Filter;
 use Drupal\effective_activism\Entity\Group;
+use Drupal\effective_activism\Entity\Organization;
 use Drupal\effective_activism\Entity\ResultType;
 use Drupal\effective_activism\Helper\InvitationHelper;
 use Drupal\effective_activism\Helper\PathHelper;
@@ -25,7 +26,7 @@ class OrganizationForm extends ContentEntityForm {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state) {
+  public function buildForm(array $form, FormStateInterface $form_state, Organization $organization = NULL) {
     /* @var $entity \Drupal\effective_activism\Entity\Organization */
     $form = parent::buildForm($form, $form_state);
     $form['#theme'] = (new ReflectionClass($this))->getShortName();

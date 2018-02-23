@@ -5,11 +5,15 @@ namespace Drupal\effective_activism\ListBuilder;
 use DateTime;
 use Drupal;
 use Drupal\Core\Cache\Cache;
+use Drupal\Core\Entity\ContentEntityType;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Routing\LinkGeneratorTrait;
+use Drupal\Core\Url;
 use Drupal\effective_activism\Constant;
-use Drupal\effective_activism\Helper\AccountHelper;
+use ReflectionClass;
 
 /**
  * Defines a class to build a listing of Export entities.
@@ -17,10 +21,6 @@ use Drupal\effective_activism\Helper\AccountHelper;
  * @ingroup effective_activism
  */
 class ExportListBuilder extends EntityListBuilder {
-
-  use LinkGeneratorTrait;
-
-  const THEME_ID = 'export_list';
 
   const CACHE_MAX_AGE = Cache::PERMANENT;
 
@@ -30,32 +30,28 @@ class ExportListBuilder extends EntityListBuilder {
   ];
 
   /**
-   * {@inheritdoc}
+   * The organization that the exports belongs to.
+   *
+   * @var \Drupal\effective_activism\Entity\Organization
    */
-  public function buildHeader() {
-    $header['created'] = $this->t('Created');
-    return $header + parent::buildHeader();
-  }
+  protected $organization;
 
   /**
    * {@inheritdoc}
    */
-  public function buildRow(EntityInterface $entity) {
-    $row['created'] = DateTime::createFromFormat('U', $entity->getCreatedTime())->format('d/m Y H:i');
-    return $row + parent::buildRow($entity);
+  public function __construct(EntityTypeInterface $entity_type, EntityStorageInterface $storage, Organization $organization = NULL) {
+    parent::__construct($entity_type, $storage);
+    $this->organization = empty($organization) ? Drupal::request()->get('organization') : $organization;
   }
 
   /**
    * {@inheritdoc}
    */
   protected function getEntityIds() {
-    $query = $this->getStorage()->getQuery()
-      ->sort($this->entityType->getKey('id'));
-    // Filter entities for non-admin users.
-    if (Drupal::currentUser()->id() !== '1') {
-      $organization_ids = AccountHelper::getOrganizations(Drupal::currentUser(), FALSE);
-      $query->condition('organization', $organization_ids, 'IN');
-    }
+    $query = $this->getStorage()->getQuery();
+    $query
+      ->sort('created')
+      ->condition('organization', $this->organization->id());
     // Only add the pager if a limit is specified.
     if ($this->limit) {
       $query->pager($this->limit);
@@ -65,11 +61,23 @@ class ExportListBuilder extends EntityListBuilder {
   }
 
   /**
+   * Setter to dynamically set limit. See https://www.drupal.org/node/2736377.
+   *
+   * @var int $limit
+   *   The limit to set.
+   */
+  public function setLimit($limit) {
+    $this->limit = $limit;
+    return $this;
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function render() {
+    $build['#theme'] = (new ReflectionClass($this))->getShortName();
+    $build['#storage']['entities']['organization'] = $this->organization;
     $build['#storage']['entities']['exports'] = $this->load();
-    $build['#theme'] = self::THEME_ID;
     $build['#cache'] = [
       'max-age' => self::CACHE_MAX_AGE,
       'tags' => self::CACHE_TAGS,

@@ -189,7 +189,7 @@ class GroupHtmlRouteProvider extends DefaultHtmlRouteProvider {
       $route = new Route($entity_type->getLinkTemplate('publish-form'));
       $route
         ->setDefaults([
-          '_form' => '\Drupal\effective_activism\Form\Group\GroupPublishForm',
+          '_form' => '\Drupal\effective_activism\Form\GroupPublishForm',
           '_title' => "Publish {$entity_type->getLabel()}",
         ])
         ->setRequirement('_custom_access', '\Drupal\effective_activism\AccessControlHandler\AccessControl::fromRouteIsGroupStaff')

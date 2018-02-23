@@ -2,10 +2,15 @@
 
 namespace Drupal\effective_activism\Form;
 
+use Drupal;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
+use Drupal\effective_activism\Entity\Group;
+use Drupal\effective_activism\Entity\Organization;
+use Drupal\effective_activism\Helper\PathHelper;
 use Drupal\effective_activism\Helper\Publish\Publisher;
+use ReflectionClass;
 
 /**
  * Form controller for Group publish forms.
@@ -28,9 +33,18 @@ class GroupPublishForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
+  public function buildForm(array $form, FormStateInterface $form_state, Organization $organization = NULL, Group $group = NULL) {
+    $form = parent::buildForm($form, $form_state);
+    $form['#theme'] = (new ReflectionClass($this))->getShortName();
+    return $form;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getQuestion() {
     $question = NULL;
-    $entity = \Drupal::request()->get('group');
+    $entity = Drupal::request()->get('group');
     if (empty($entity)) {
       $question = $this->t('Group not found');
     }
@@ -82,10 +96,11 @@ class GroupPublishForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getCancelUrl() {
-    $entity = \Drupal::request()->get('group');
+    $entity = Drupal::request()->get('group');
     return new Url(
       'entity.group.canonical', [
-        'group' => $entity->id(),
+        'organization' => PathHelper::transliterate(Drupal::request()->get('organization')->label()),
+        'group' => PathHelper::transliterate(Drupal::request()->get('group')->label()),
       ]
     );
   }
@@ -94,7 +109,7 @@ class GroupPublishForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $entity = \Drupal::request()->get('group');
+    $entity = Drupal::request()->get('group');
     if ($this->isPublished === TRUE) {
       $publisher = new Publisher($entity);
       $batch = [

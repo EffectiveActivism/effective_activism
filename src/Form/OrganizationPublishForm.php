@@ -2,10 +2,14 @@
 
 namespace Drupal\effective_activism\Form;
 
+use Drupal;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
+use Drupal\effective_activism\Entity\Organization;
 use Drupal\effective_activism\Helper\Publish\Publisher;
+use Drupal\effective_activism\Helper\PathHelper;
+use ReflectionClass;
 
 /**
  * Form controller for Organization publish forms.
@@ -28,9 +32,18 @@ class OrganizationPublishForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
+  public function buildForm(array $form, FormStateInterface $form_state, Organization $organization = NULL) {
+    $form = parent::buildForm($form, $form_state);
+    $form['#theme'] = (new ReflectionClass($this))->getShortName();
+    return $form;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getQuestion() {
     $question = NULL;
-    $entity = \Drupal::request()->get('organization');
+    $entity = Drupal::request()->get('organization');
     if (empty($entity)) {
       $question = $this->t('Organization not found');
     }
@@ -82,10 +95,10 @@ class OrganizationPublishForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getCancelUrl() {
-    $entity = \Drupal::request()->get('organization');
+    $entity = Drupal::request()->get('organization');
     return new Url(
       'entity.organization.canonical', [
-        'organization' => $entity->id(),
+        'organization' => PathHelper::transliterate($entity->label()),
       ]
     );
   }
@@ -93,15 +106,8 @@ class OrganizationPublishForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, $organization = NULL) {
-    return parent::buildForm($form, $form_state);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $entity = \Drupal::request()->get('organization');
+    $entity = Drupal::request()->get('organization');
     if ($this->isPublished === TRUE) {
       $publisher = new Publisher($entity);
       $batch = [
