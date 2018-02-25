@@ -19,17 +19,15 @@ use Drupal\user\UserInterface;
  *   label = @Translation("Event template"),
  *   handlers = {
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
- *     "list_builder" = "Drupal\effective_activism\Helper\ListBuilder\EventTemplateListBuilder",
- *     "views_data" = "Drupal\effective_activism\Helper\ViewsData\EventTemplateViewsData",
- *
+ *     "list_builder" = "Drupal\effective_activism\ListBuilder\EventTemplateListBuilder",
  *     "form" = {
- *       "default" = "Drupal\effective_activism\Form\EventTemplate\EventTemplateForm",
- *       "add" = "Drupal\effective_activism\Form\EventTemplate\EventTemplateForm",
- *       "edit" = "Drupal\effective_activism\Form\EventTemplate\EventTemplateForm",
+ *       "default" = "Drupal\effective_activism\Form\EventTemplateForm",
+ *       "add" = "Drupal\effective_activism\Form\EventTemplateForm",
+ *       "edit" = "Drupal\effective_activism\Form\EventTemplateForm",
  *     },
- *     "access" = "Drupal\effective_activism\Helper\AccessControlHandler\EventTemplateAccessControlHandler",
+ *     "access" = "Drupal\effective_activism\AccessControlHandler\EventTemplateAccessControlHandler",
  *     "route_provider" = {
- *       "html" = "Drupal\effective_activism\Helper\RouteProvider\EventTemplateHtmlRouteProvider",
+ *       "html" = "Drupal\effective_activism\RouteProvider\EventTemplateHtmlRouteProvider",
  *     },
  *   },
  *   base_table = "event_template",
@@ -45,14 +43,10 @@ use Drupal\user\UserInterface;
  *     "status" = "status",
  *   },
  *   links = {
- *     "canonical" = "/manage/event_template/{event_template}",
- *     "add-form" = "/manage/event_template/add",
- *     "edit-form" = "/manage/event_template/{event_template}/edit",
- *     "publish-form" = "/manage/event_template/{event_template}/publish",
- *     "version-history" = "/manage/event_template/{event_template}/revisions",
- *     "revision" = "/manage/event_template/{event_template}/revisions/{event_template_revision}/view",
- *     "revision_revert" = "/manage/event_template/{event_template}/revisions/{event_template_revision}/revert",
- *     "collection" = "/manage/event_template",
+ *     "add-form" = "/o/{organization}/event-templates/add",
+ *     "canonical" = "/o/{organization}/event-templates/{event_template}",
+ *     "edit-form" = "/o/{organization}/event-templates/{event_template}/edit",
+ *     "publish-form" = "/o/{organization}/event-templates/{event_template}/publish",
  *   },
  * )
  */
@@ -239,8 +233,14 @@ class EventTemplate extends RevisionableContentEntityBase implements EventTempla
         'weight' => array_search('organization', self::WEIGHTS),
       ])
       ->setDisplayOptions('form', [
-        'type' => 'organization_selector',
+        'type' => 'entity_reference_autocomplete',
         'weight' => array_search('organization', self::WEIGHTS),
+        'settings' => [
+          'match_operator' => 'CONTAINS',
+          'size' => '60',
+          'autocomplete_type' => 'tags',
+          'placeholder' => '',
+        ],
       ]);
     $fields['event_title'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Event title'))

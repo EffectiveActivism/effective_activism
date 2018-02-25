@@ -19,17 +19,16 @@ use Drupal\user\UserInterface;
  *   label = @Translation("Filter"),
  *   handlers = {
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
- *     "list_builder" = "Drupal\effective_activism\Helper\ListBuilder\FilterListBuilder",
- *     "views_data" = "Drupal\effective_activism\Helper\ViewsData\FilterViewsData",
+ *     "list_builder" = "Drupal\effective_activism\ListBuilder\FilterListBuilder",
  *     "form" = {
- *       "default" = "Drupal\effective_activism\Form\Filter\FilterForm",
- *       "add" = "Drupal\effective_activism\Form\Filter\FilterForm",
- *       "edit" = "Drupal\effective_activism\Form\Filter\FilterForm",
- *       "publish" = "Drupal\effective_activism\Form\Filter\FilterPublishForm",
+ *       "default" = "Drupal\effective_activism\Form\FilterForm",
+ *       "add" = "Drupal\effective_activism\Form\FilterForm",
+ *       "edit" = "Drupal\effective_activism\Form\FilterForm",
+ *       "publish" = "Drupal\effective_activism\Form\FilterPublishForm",
  *     },
- *     "access" = "Drupal\effective_activism\Helper\AccessControlHandler\FilterAccessControlHandler",
+ *     "access" = "Drupal\effective_activism\AccessControlHandler\FilterAccessControlHandler",
  *     "route_provider" = {
- *       "html" = "Drupal\effective_activism\Helper\RouteProvider\FilterHtmlRouteProvider",
+ *       "html" = "Drupal\effective_activism\RouteProvider\FilterHtmlRouteProvider",
  *     },
  *   },
  *   base_table = "filter",
@@ -45,15 +44,10 @@ use Drupal\user\UserInterface;
  *     "status" = "status",
  *   },
  *   links = {
- *     "canonical" = "/manage/filters/{filter}",
- *     "add-form" = "/manage/filters/add",
- *     "edit-form" = "/manage/filters/{filter}/edit",
- *     "publish-form" = "/manage/filters/{filter}/publish",
- *     "version-history" = "/manage/filters/{filter}/revisions",
- *     "revision" = "/manage/filters/{filter}/revisions/{filter_revision}/view",
- *     "revision_revert" = "/manage/filters/{filter}/revisions/{filter_revision}/revert",
- *     "revision_delete" = "/manage/filters/{filter}/revisions/{filter_revision}/delete",
- *     "collection" = "/manage/filters",
+ *     "canonical" = "/o/{organization}/filters/{filter}",
+ *     "add-form" = "/o/{organization}/filters/add",
+ *     "edit-form" = "/o/{organization}/filters/{filter}/edit",
+ *     "publish-form" = "/o/{organization}/filters/{filter}/publish",
  *   },
  * )
  */
@@ -217,8 +211,14 @@ class Filter extends RevisionableContentEntityBase implements FilterInterface {
         'weight' => array_search('organization', self::WEIGHTS),
       ])
       ->setDisplayOptions('form', [
-        'type' => 'organization_selector',
+        'type' => 'entity_reference_autocomplete',
         'weight' => array_search('organization', self::WEIGHTS),
+        'settings' => [
+          'match_operator' => 'CONTAINS',
+          'size' => '60',
+          'autocomplete_type' => 'tags',
+          'placeholder' => '',
+        ],
       ]);
     $fields['start_date'] = BaseFieldDefinition::create('datetime')
       ->setLabel(t('Start date'))

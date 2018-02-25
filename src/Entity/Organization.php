@@ -21,17 +21,17 @@ use Drupal\effective_activism\Constant;
  *   label = @Translation("Organization"),
  *   handlers = {
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
- *     "list_builder" = "Drupal\effective_activism\Helper\ListBuilder\OrganizationListBuilder",
- *     "views_data" = "Drupal\effective_activism\Helper\ViewsData\OrganizationViewsData",
+ *     "list_builder" = "Drupal\effective_activism\ListBuilder\OrganizationListBuilder",
  *     "form" = {
- *       "default" = "Drupal\effective_activism\Form\Organization\OrganizationForm",
- *       "add" = "Drupal\effective_activism\Form\Organization\OrganizationForm",
- *       "edit" = "Drupal\effective_activism\Form\Organization\OrganizationForm",
- *       "publish" = "Drupal\effective_activism\Form\Organization\OrganizationPublishForm",
+ *       "default" = "Drupal\effective_activism\Form\OrganizationForm",
+ *       "add" = "Drupal\effective_activism\Form\OrganizationForm",
+ *       "results" = "Drupal\effective_activism\Form\ChartForm",
+ *       "edit" = "Drupal\effective_activism\Form\OrganizationForm",
+ *       "publish" = "Drupal\effective_activism\Form\OrganizationPublishForm",
  *     },
- *     "access" = "Drupal\effective_activism\Helper\AccessControlHandler\OrganizationAccessControlHandler",
+ *     "access" = "Drupal\effective_activism\AccessControlHandler\OrganizationAccessControlHandler",
  *     "route_provider" = {
- *       "html" = "Drupal\effective_activism\Helper\RouteProvider\OrganizationHtmlRouteProvider",
+ *       "html" = "Drupal\effective_activism\RouteProvider\OrganizationHtmlRouteProvider",
  *     },
  *   },
  *   base_table = "organizations",
@@ -46,16 +46,17 @@ use Drupal\effective_activism\Constant;
  *     "status" = "status",
  *   },
  *  links = {
- *     "canonical" = "/manage/organizations/{organization}",
- *     "add-form" = "/manage/organizations/add",
- *     "edit-form" = "/manage/organizations/{organization}/edit",
- *     "publish-form" = "/manage/organizations/{organization}/publish",
- *     "collection" = "/manage/organizations",
- *     "groups" = "/manage/organizations/{organization}/groups",
- *     "event_templates" = "/manage/organizations/{organization}/event-templates",
- *     "exports" = "/manage/organizations/{organization}/exports",
- *     "filters" = "/manage/organizations/{organization}/filters",
- *     "results" = "/manage/organizations/{organization}/results",
+ *     "canonical" = "/o/{organization}",
+ *     "add-form" = "/o/add",
+ *     "collection" = "/o",
+ *     "edit-form" = "/o/{organization}/edit",
+ *     "event_templates" = "/o/{organization}/event-templates",
+ *     "exports" = "/o/{organization}/exports",
+ *     "filters" = "/o/{organization}/filters",
+ *     "groups" = "/o/{organization}/g",
+ *     "publish-form" = "/o/{organization}/publish",
+ *     "results" = "/o/{organization}/results",
+ *     "result_types" = "/o/{organization}/result-types",
  *   },
  * )
  */
@@ -357,8 +358,8 @@ class Organization extends RevisionableContentEntityBase implements Organization
       ->setSettings([
         'allowed_values' => [
           Constant::EVENT_CREATION_ALL => t('Show all event creation links'),
-          Constant::EVENT_CREATION_EVENT => t('Show only \'Create event\' links'),
-          Constant::EVENT_CREATION_EVENT_TEMPLATE => t('Show only \'Create event from template \' links'),
+          Constant::EVENT_CREATION_EVENT => t("Show only 'Create event' links"),
+          Constant::EVENT_CREATION_EVENT_TEMPLATE => t("Show only 'Create event from template' links"),
         ],
       ])
       ->setDisplayOptions('view', [

@@ -20,17 +20,16 @@ use Drupal\user\UserInterface;
  *   label = @Translation("Group"),
  *   handlers = {
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
- *     "list_builder" = "Drupal\effective_activism\Helper\ListBuilder\GroupListBuilder",
- *     "views_data" = "Drupal\effective_activism\Helper\ViewsData\GroupViewsData",
+ *     "list_builder" = "Drupal\effective_activism\ListBuilder\GroupListBuilder",
  *     "form" = {
- *       "default" = "Drupal\effective_activism\Form\Group\GroupForm",
- *       "add" = "Drupal\effective_activism\Form\Group\GroupForm",
- *       "edit" = "Drupal\effective_activism\Form\Group\GroupForm",
- *       "publish" = "Drupal\effective_activism\Form\Group\GroupPublishForm",
+ *       "default" = "Drupal\effective_activism\Form\GroupForm",
+ *       "add" = "Drupal\effective_activism\Form\GroupForm",
+ *       "edit" = "Drupal\effective_activism\Form\GroupForm",
+ *       "publish" = "Drupal\effective_activism\Form\GroupPublishForm",
  *     },
- *     "access" = "Drupal\effective_activism\Helper\AccessControlHandler\GroupAccessControlHandler",
+ *     "access" = "Drupal\effective_activism\AccessControlHandler\GroupAccessControlHandler",
  *     "route_provider" = {
- *       "html" = "Drupal\effective_activism\Helper\RouteProvider\GroupHtmlRouteProvider",
+ *       "html" = "Drupal\effective_activism\RouteProvider\GroupHtmlRouteProvider",
  *     },
  *   },
  *   base_table = "groups",
@@ -45,19 +44,20 @@ use Drupal\user\UserInterface;
  *     "status" = "status",
  *   },
  *   links = {
- *     "canonical" = "/manage/groups/{group}",
- *     "add-form" = "/manage/groups/add",
- *     "edit-form" = "/manage/groups/{group}/edit",
- *     "publish-form" = "/manage/groups/{group}/publish",
- *     "collection" = "/manage/groups",
- *     "events" = "/manage/groups/{group}/events",
- *     "imports" = "/manage/groups/{group}/imports",
+ *     "canonical" = "/o/{organization}/g/{group}",
+ *     "add-form" = "/o/{organization}/g/add",
+ *     "edit-form" = "/o/{organization}/g/{group}/edit",
+ *     "events" = "/o/{organization}/g/{group}/e",
+ *     "imports" = "/o/{organization}/g/{group}/imports",
+ *     "publish-form" = "/o/{organization}/g/{group}/publish",
  *   },
  * )
  */
 class Group extends RevisionableContentEntityBase implements GroupInterface {
 
   use EntityChangedTrait;
+
+  const THEME_ID = self::class;
 
   const WEIGHTS = [
     'user_id',
@@ -192,8 +192,14 @@ class Group extends RevisionableContentEntityBase implements GroupInterface {
         'weight' => array_search('organization', self::WEIGHTS),
       ])
       ->setDisplayOptions('form', [
-        'type' => 'organization_selector',
+        'type' => 'entity_reference_autocomplete',
         'weight' => array_search('organization', self::WEIGHTS),
+        'settings' => [
+          'match_operator' => 'CONTAINS',
+          'size' => '60',
+          'autocomplete_type' => 'tags',
+          'placeholder' => '',
+        ],
       ]);
     $fields['title'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Title'))

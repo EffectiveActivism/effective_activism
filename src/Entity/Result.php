@@ -20,8 +20,7 @@ use Drupal\user\UserInterface;
  *   bundle_label = @Translation("Result type"),
  *   handlers = {
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
- *     "views_data" = "Drupal\effective_activism\Helper\ViewsData\ResultViewsData",
- *     "access" = "Drupal\effective_activism\Helper\AccessControlHandler\ResultAccessControlHandler",
+ *     "access" = "Drupal\effective_activism\AccessControlHandler\ResultAccessControlHandler",
  *   },
  *   base_table = "results",
  *   revision_table = "results_revision",

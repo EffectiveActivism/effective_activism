@@ -19,13 +19,7 @@ use Drupal\user\UserInterface;
  *   label = @Translation("Third-party content"),
  *   bundle_label = @Translation("Third-party content type"),
  *   handlers = {
- *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
- *     "list_builder" = "Drupal\effective_activism\Helper\ListBuilder\ThirdPartyContentListBuilder",
- *     "views_data" = "Drupal\effective_activism\Helper\ViewsData\ThirdPartyContentViewsData",
- *     "access" = "Drupal\effective_activism\Helper\AccessControlHandler\ThirdPartyContentAccessControlHandler",
- *     "route_provider" = {
- *       "html" = "Drupal\effective_activism\Helper\RouteProvider\ThirdPartyContentHtmlRouteProvider",
- *     },
+ *     "access" = "Drupal\effective_activism\AccessControlHandler\ThirdPartyContentAccessControlHandler",
  *   },
  *   base_table = "third_party_content",
  *   revision_table = "third_party_content_revision",

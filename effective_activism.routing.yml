@@ -13,7 +13,7 @@ effective_activism.invitation.remove:
   defaults:
     _controller: '\Drupal\effective_activism\Controller\InvitationController::remove'
   requirements:
-    _custom_access: '\Drupal\effective_activism\Permission\Permission::isAnyStaff'
+    _custom_access: '\Drupal\effective_activism\AccessControlHandler\AccessControl::isAnyStaff'
   options:
     parameters:
       invitation:

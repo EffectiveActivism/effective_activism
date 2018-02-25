@@ -113,9 +113,8 @@ class InlineManagerInvitationWidget extends InlineEntityFormComplex {
    *   The form state of the form.
    */
   public static function invite(array $form, FormStateInterface $form_state) {
-    $entity_id = $form_state->getTemporaryValue('entity_id');
-    if (!empty($entity_id)) {
-      $entity = Organization::load($entity_id);
+    $entity = Drupal::request()->get('organization');
+    if (!empty($entity)) {
       $email = $form_state->getValue([
         'managers',
         'form',

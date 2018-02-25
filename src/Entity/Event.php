@@ -21,17 +21,17 @@ use Drupal\user\UserInterface;
  *   label = @Translation("Event"),
  *   handlers = {
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
- *     "list_builder" = "Drupal\effective_activism\Helper\ListBuilder\EventListBuilder",
- *     "views_data" = "Drupal\effective_activism\Helper\ViewsData\EventViewsData",
+ *     "list_builder" = "Drupal\effective_activism\ListBuilder\EventListBuilder",
  *     "form" = {
- *       "default" = "Drupal\effective_activism\Form\Event\EventForm",
- *       "add" = "Drupal\effective_activism\Form\Event\EventForm",
- *       "edit" = "Drupal\effective_activism\Form\Event\EventForm",
- *       "publish" = "Drupal\effective_activism\Form\Event\EventPublishForm",
+ *       "default" = "Drupal\effective_activism\Form\EventForm",
+ *       "add" = "Drupal\effective_activism\Form\EventForm",
+ *       "add-from-template" = "Drupal\effective_activism\Form\EventTemplateSelectionForm",
+ *       "edit" = "Drupal\effective_activism\Form\EventForm",
+ *       "publish" = "Drupal\effective_activism\Form\EventPublishForm",
  *     },
- *     "access" = "Drupal\effective_activism\Helper\AccessControlHandler\EventAccessControlHandler",
+ *     "access" = "Drupal\effective_activism\AccessControlHandler\EventAccessControlHandler",
  *     "route_provider" = {
- *       "html" = "Drupal\effective_activism\Helper\RouteProvider\EventHtmlRouteProvider",
+ *       "html" = "Drupal\effective_activism\RouteProvider\EventHtmlRouteProvider",
  *     },
  *   },
  *   base_table = "events",
@@ -45,18 +45,20 @@ use Drupal\user\UserInterface;
  *     "status" = "status",
  *   },
  *   links = {
- *     "canonical" = "/manage/events/{event}",
- *     "add-form" = "/manage/events/add",
- *     "add-from-template-form" = "/manage/events/add/{event_template}",
- *     "edit-form" = "/manage/events/{event}/edit",
- *     "publish-form" = "/manage/events/{event}/publish",
- *     "collection" = "/manage/events",
+ *     "canonical" = "/o/{organization}/g/{group}/e/{event}",
+ *     "add-form" = "/o/{organization}/g/{group}/e/add",
+ *     "add-from-template" = "/o/{organization}/g/{group}/e/add-from-template",
+ *     "add-from-template-form" = "/o/{organization}/g/{group}/e/add/{event_template}",
+ *     "edit-form" = "/o/{organization}/g/{group}/e/{event}/edit",
+ *     "publish-form" = "/o/{organization}/g/{group}/e/{event}/publish",
  *   },
  * )
  */
 class Event extends RevisionableContentEntityBase implements EventInterface {
 
   use EntityChangedTrait;
+
+  const THEME_ID = self::class;
 
   const WEIGHTS = [
     'title',
@@ -281,8 +283,14 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
         'weight' => array_search('parent', self::WEIGHTS),
       ])
       ->setDisplayOptions('form', [
-        'type' => 'group_selector',
+        'type' => 'entity_reference_autocomplete',
         'weight' => array_search('parent', self::WEIGHTS),
+        'settings' => [
+          'match_operator' => 'CONTAINS',
+          'size' => '60',
+          'autocomplete_type' => 'tags',
+          'placeholder' => '',
+        ],
       ]);
     $fields['external_uid'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Name'))

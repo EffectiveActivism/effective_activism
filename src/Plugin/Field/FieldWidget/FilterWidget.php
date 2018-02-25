@@ -2,10 +2,11 @@
 
 namespace Drupal\effective_activism\Plugin\Field\FieldWidget;
 
+use Drupal;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\effective_activism\Helper\AccountHelper;
+use Drupal\effective_activism\Helper\OrganizationHelper;
 
 /**
  * Allows for selection of filters belonging to organization.
@@ -26,10 +27,10 @@ class FilterWidget extends WidgetBase {
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
     $filter = $form_state->getFormObject()->getEntity();
     $current_id = !empty($filter) ? $filter->id() : FALSE;
-    $allowed_filters = AccountHelper::getFilters();
+    $allowed_filters = OrganizationHelper::getFilters(Drupal::request()->get('organization'));
     $options = [];
     foreach ($allowed_filters as $filter_id => $filter) {
-      $options[$filter_id] = sprintf('%s (%s)', $filter->label(), $filter->organization->entity->label());
+      $options[$filter_id] = $filter->label();
     }
     // Force a default value if possible.
     $default_value = NULL;
