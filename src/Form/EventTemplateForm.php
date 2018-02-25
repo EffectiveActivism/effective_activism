@@ -4,10 +4,8 @@ namespace Drupal\effective_activism\Form;
 
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\effective_activism\Entity\Filter;
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\Organization;
-use Drupal\effective_activism\Helper\OrganizationHelper;
 use Drupal\effective_activism\Helper\PathHelper;
 use ReflectionClass;
 
@@ -69,7 +67,7 @@ class EventTemplateForm extends ContentEntityForm {
     }
     $form_state->setRedirect('entity.event_template.canonical', [
       'organization' => PathHelper::transliterate($entity->organization->entity->label()),
-      'event_template' => $entity->id()
+      'event_template' => $entity->id(),
     ]);
   }
 

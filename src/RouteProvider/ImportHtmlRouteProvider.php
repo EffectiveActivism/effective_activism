@@ -4,16 +4,10 @@ namespace Drupal\effective_activism\RouteProvider;
 
 use Drupal\Core\Config\Entity\ConfigEntityTypeInterface;
 use Drupal\Core\Entity\Controller\EntityController;
-use Drupal\Core\Entity\EntityFieldManagerInterface;
-use Drupal\Core\Entity\EntityHandlerInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Entity\Routing\DefaultHtmlRouteProvider;
 use Drupal\effective_activism\Constant;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Route;
-use Symfony\Component\Routing\RouteCollection;
 
 /**
  * Provides routes for Import entities.
@@ -60,8 +54,8 @@ class ImportHtmlRouteProvider extends DefaultHtmlRouteProvider {
       // and access requirements.
       $expected_parameter = $entity_type->getBundleEntityType() ?: $entity_type->getKey('bundle');
       // @todo: We have to check if a route contains a bundle in its path as
-      //   test entities have inconsistent usage of "add-form" link templates.
-      //   Fix it in https://www.drupal.org/node/2699959.
+      // test entities have inconsistent usage of "add-form" link templates.
+      // Fix it in https://www.drupal.org/node/2699959.
       if (($bundle_key = $entity_type->getKey('bundle')) && strpos($route->getPath(), '{' . $expected_parameter . '}') !== FALSE) {
         $route->setDefault('_title_callback', EntityController::class . '::addBundleTitle');
         // If the bundles are entities themselves, we can add parameter

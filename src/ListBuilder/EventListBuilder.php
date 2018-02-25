@@ -4,12 +4,10 @@ namespace Drupal\effective_activism\ListBuilder;
 
 use Drupal;
 use Drupal\Core\Cache\Cache;
-use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Routing\LinkGeneratorTrait;
-use Drupal\Core\Url;
 use Drupal\effective_activism\Constant;
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\Organization;
@@ -33,14 +31,14 @@ class EventListBuilder extends EntityListBuilder {
   ];
 
   /**
-   * Group
+   * Group.
    *
    * @var \Drupal\effective_activism\Entity\Group
    */
   protected $group;
 
   /**
-   * Organization
+   * Organization.
    *
    * @var \Drupal\effective_activism\Entity\Organization
    */

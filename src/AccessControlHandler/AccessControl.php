@@ -10,7 +10,6 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\effective_activism\Constant;
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\Organization;
-use Drupal\effective_activism\Helper\PathHelper;
 
 /**
  * Provides functions to manage access control.
@@ -22,7 +21,7 @@ class AccessControl {
    *
    * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
    *   The matched route.
-   * @param \Drupal\Core\Routing\RouteMatchInterface $account
+   * @param \Drupal\Core\Session\AccountInterface $account
    *   The account requesting access.
    *
    * @return bool
@@ -39,7 +38,7 @@ class AccessControl {
    *
    * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
    *   The matched route.
-   * @param \Drupal\Core\Routing\RouteMatchInterface $account
+   * @param \Drupal\Core\Session\AccountInterface $account
    *   The account requesting access.
    *
    * @return bool
@@ -56,7 +55,7 @@ class AccessControl {
    *
    * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
    *   The matched route.
-   * @param \Drupal\Core\Routing\RouteMatchInterface $account
+   * @param \Drupal\Core\Session\AccountInterface $account
    *   The account requesting access.
    *
    * @return bool
@@ -73,7 +72,7 @@ class AccessControl {
    *
    * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
    *   The matched route.
-   * @param \Drupal\Core\Routing\RouteMatchInterface $account
+   * @param \Drupal\Core\Session\AccountInterface $account
    *   The account requesting access.
    *
    * @return bool

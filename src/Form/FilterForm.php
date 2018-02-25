@@ -87,7 +87,7 @@ class FilterForm extends ContentEntityForm {
       'entity.filter.canonical', [
         'organization' => PathHelper::transliterate(Drupal::request()->get('organization')->label()),
         'filter' => $entity->id(),
-    ]);
+      ]);
   }
 
 }

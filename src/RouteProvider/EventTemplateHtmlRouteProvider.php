@@ -2,7 +2,6 @@
 
 namespace Drupal\effective_activism\RouteProvider;
 
-use Drupal\Core\Entity\ContentEntityType;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\Routing\DefaultHtmlRouteProvider;
 use Drupal\effective_activism\Constant;

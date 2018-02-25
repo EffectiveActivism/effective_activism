@@ -66,7 +66,7 @@ class ImportForm extends ContentEntityForm {
     $form_state->setRedirect('entity.import.canonical', [
       'organization' => PathHelper::transliterate(Drupal::request()->get('organization')->label()),
       'group' => PathHelper::transliterate(Drupal::request()->get('group')->label()),
-      'import' => $entity->id()
+      'import' => $entity->id(),
     ]);
   }
 
