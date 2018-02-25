@@ -46,11 +46,10 @@ use Drupal\user\UserInterface;
  *   },
  *   bundle_entity_type = "import_type",
  *   links = {
- *     "canonical" = "/manage/imports/{import}",
- *     "add-form" = "/manage/imports/add/{import_type}",
- *     "edit-form" = "/manage/imports/{import}/edit",
- *     "publish-form" = "/manage/imports/{import}/publish",
- *     "collection" = "/manage/imports",
+ *     "add-form" = "/o/{organization}/g/{group}/imports/add/{import_type}",
+ *     "canonical" = "/o/{organization}/g/{group}/imports/{import}",
+ *     "edit-form" = "/o/{organization}/g/{group}/imports/{import}/edit",
+ *     "publish-form" = "/o/{organization}/g/{group}/imports/{import}/publish",
  *   },
  * )
  */

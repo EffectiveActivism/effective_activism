@@ -5,9 +5,12 @@ namespace Drupal\effective_activism\Form;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
+use Drupal\Core\Url;
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\Organization;
 use Drupal\effective_activism\Helper\InvitationHelper;
+use Drupal\effective_activism\Helper\PathHelper;
+use ReflectionClass;
 
 /**
  * Provides an invitation response form.
@@ -43,7 +46,8 @@ class InvitationForm extends FormBase {
       $form_state->setTemporaryValue('invitation_id', $invitation->id);
       $form_state->setTemporaryValue('entity', $entity);
       $form_state->setTemporaryValue('email', $invitation->email);
-      $form['form'] = [
+      $form['#theme'] = (new ReflectionClass($this))->getShortName();
+      $form['invitation'] = [
         '#type' => 'fieldset',
         '#title' => $this->t('You have been invited to an @entity_type', [
           '@entity_type' => $entity->getEntityTypeId(),
@@ -54,19 +58,19 @@ class InvitationForm extends FormBase {
           ],
         ],
       ];
-      $form['form']['invitation'] = [
+      $form['invitation']['description'] = [
         '#type' => 'markup',
         '#markup' => '<p>' . $this->t('You have been invited to join <em>@title</em> as @role. Please accept or decline the invitation.', [
           '@title' => $entity->label(),
           '@role' => $form_state->getTemporaryValue('role'),
         ]) . '</p>',
       ];
-      $form['form']['accept'] = [
+      $form['invitation']['accept'] = [
         '#type' => 'submit',
         '#value' => $this->t('Accept'),
         '#name' => 'accept-invitation',
       ];
-      $form['form']['decline'] = [
+      $form['invitation']['decline'] = [
         '#type' => 'submit',
         '#value' => $this->t('Decline'),
         '#name' => 'decline-invitation',
@@ -84,26 +88,31 @@ class InvitationForm extends FormBase {
     if ($submit_element['#name'] === 'accept-invitation') {
       $entity = $form_state->getTemporaryValue('entity');
       $user = user_load_by_mail($form_state->getTemporaryValue('email'));
-      // Get link to entity default page.
-      $url = $entity->urlInfo()->setOptions([
-        'attributes' => [
-          'target' => '_blank',
-        ],
-      ]);
-      $link = Link::fromTextAndUrl($entity->label(), $url)->toString();
       // Add current user to entity with specified role.
       switch ($entity->getEntityTypeId()) {
         case 'organization':
           $entity->managers[] = $user->id();
+          // Get link to entity default page.
+          $url = new Url(
+            'entity.organization.canonical', [
+              'organization' => PathHelper::transliterate($entity->label()),
+            ]);
           break;
 
         case 'group':
           $entity->organizers[] = $user->id();
+          // Get link to entity default page.
+          $url = new Url(
+            'entity.group.canonical', [
+              'organization' => PathHelper::transliterate($entity->organization->entity->label()),
+              'group' => PathHelper::transliterate($entity->label()),
+            ]);
+          break;
       }
       $entity->save();
       drupal_set_message(t('You are now @role for <em>@link</em>.', [
         '@role' => $form_state->getTemporaryValue('role'),
-        '@link' => $link,
+        '@link' => Link::fromTextAndUrl($entity->label(), $url)->toString(),
       ]));
       // Remove current users invitation.
       InvitationHelper::removeInvition($invitation_id);

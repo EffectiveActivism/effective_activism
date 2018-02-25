@@ -20,9 +20,6 @@ class OrganizationHtmlRouteProvider extends DefaultHtmlRouteProvider {
   public function getRoutes(EntityTypeInterface $entity_type) {
     $collection = parent::getRoutes($entity_type);
     $entity_type_id = $entity_type->id();
-    if ($publish_form_route = $this->getPublishFormRoute($entity_type)) {
-      $collection->add("entity.{$entity_type_id}.publish_form", $publish_form_route);
-    }
     if ($event_template_overview_route = $this->getEventTemplatesRoute($entity_type)) {
       $collection->add("entity.{$entity_type_id}.event_templates", $event_template_overview_route);
     }
@@ -34,6 +31,9 @@ class OrganizationHtmlRouteProvider extends DefaultHtmlRouteProvider {
     }
     if ($group_overview_route = $this->getGroupsRoute($entity_type)) {
       $collection->add("entity.{$entity_type_id}.groups", $group_overview_route);
+    }
+    if ($publish_form_route = $this->getPublishFormRoute($entity_type)) {
+      $collection->add("entity.{$entity_type_id}.publish_form", $publish_form_route);
     }
     if ($result_overview_route = $this->getResultsRoute($entity_type)) {
       $collection->add("entity.{$entity_type_id}.results", $result_overview_route);
@@ -119,7 +119,7 @@ class OrganizationHtmlRouteProvider extends DefaultHtmlRouteProvider {
           '_entity_list' => $entity_type_id,
           '_title' => 'Organizations',
         ])
-        ->setRequirement('_custom_access', '\Drupal\effective_activism\AccessControlHandler\AccessControl::isAnyStaff');
+        ->setRequirement('_custom_access', '\Drupal\effective_activism\AccessControlHandler\AccessControl::fromRouteIsAnyStaff');
       return $route;
     }
   }
@@ -173,7 +173,7 @@ class OrganizationHtmlRouteProvider extends DefaultHtmlRouteProvider {
           '_entity_list' => 'event_template',
           '_title' => "Event templates",
         ])
-        ->setRequirement('_entity_access', "{$entity_type_id}.view")
+        ->setRequirement('_entity_access', "{$entity_type_id}.update")
         ->setOption('parameters', [
           $entity_type_id => ['type' => Constant::ENTITY_ORGANIZATION],
         ]);
@@ -199,7 +199,7 @@ class OrganizationHtmlRouteProvider extends DefaultHtmlRouteProvider {
           '_entity_list' => 'export',
           '_title' => "Exports",
         ])
-        ->setRequirement('_entity_access', "{$entity_type_id}.view")
+        ->setRequirement('_entity_access', "{$entity_type_id}.update")
         ->setOption('parameters', [
           $entity_type_id => ['type' => Constant::ENTITY_ORGANIZATION],
         ]);
@@ -225,7 +225,7 @@ class OrganizationHtmlRouteProvider extends DefaultHtmlRouteProvider {
           '_entity_list' => 'filter',
           '_title' => "Filters",
         ])
-        ->setRequirement('_entity_access', "{$entity_type_id}.view")
+        ->setRequirement('_entity_access', "{$entity_type_id}.update")
         ->setOption('parameters', [
           $entity_type_id => ['type' => Constant::ENTITY_ORGANIZATION],
         ]);

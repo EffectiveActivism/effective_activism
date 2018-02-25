@@ -25,7 +25,7 @@ class AccessControl {
    * @param \Drupal\Core\Routing\RouteMatchInterface $account
    *   The account requesting access.
    *
-   * @return \Drupal\Core\Access\AccessResult
+   * @return bool
    *   Returns an access result.
    */
   public static function fromRouteIsStaff(RouteMatchInterface $route_match, AccountInterface $account) {
@@ -42,7 +42,7 @@ class AccessControl {
    * @param \Drupal\Core\Routing\RouteMatchInterface $account
    *   The account requesting access.
    *
-   * @return \Drupal\Core\Access\AccessResult
+   * @return bool
    *   Returns an access result.
    */
   public static function fromRouteIsManager(RouteMatchInterface $route_match, AccountInterface $account) {
@@ -59,13 +59,29 @@ class AccessControl {
    * @param \Drupal\Core\Routing\RouteMatchInterface $account
    *   The account requesting access.
    *
-   * @return \Drupal\Core\Access\AccessResult
+   * @return bool
    *   Returns an access result.
    */
   public static function fromRouteIsGroupStaff(RouteMatchInterface $route_match, AccountInterface $account) {
     $parameter_bag = $route_match->getParameters();
-    $group = $parameter_bag->get(Constant::SLUG_GROUP);
+    $group = $parameter_bag->get(Constant::ENTITY_GROUP);
     return self::isGroupStaff([$group], $account);
+  }
+
+  /**
+   * Custom access callback for routes to check for any staff.
+   *
+   * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
+   *   The matched route.
+   * @param \Drupal\Core\Routing\RouteMatchInterface $account
+   *   The account requesting access.
+   *
+   * @return bool
+   *   Returns an access result.
+   */
+  public static function fromRouteIsAnyStaff(RouteMatchInterface $route_match, AccountInterface $account) {
+    $parameter_bag = $route_match->getParameters();
+    return self::isAnyStaff($account);
   }
 
   /**

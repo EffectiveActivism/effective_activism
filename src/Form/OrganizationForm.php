@@ -34,13 +34,28 @@ class OrganizationForm extends ContentEntityForm {
     // Hide fields.
     $form['user_id']['#attributes']['class'][] = 'hidden';
     $form['revision_log_message']['#attributes']['class'][] = 'hidden';
-    // Set organization entity id.
-    $form_state->setTemporaryValue('entity_id', $entity->id());
     // If the organization is saved, populate active invitations.
-    if ($entity->id() !== NULL) {
-      $form['#invitation_list'] = InvitationHelper::getInvitationsByEntity($entity);
-    }
+    $form['#invitations'] = $entity->isNew() ? [] : InvitationHelper::getInvitationsByEntity($entity);
     return $form;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    parent::validateForm($form, $form_state);
+    $entity = $this->entity;
+    $title = $form_state->getValue('title')[0]['value'];
+    $existing_organization = PathHelper::loadOrganizationBySlug(PathHelper::transliterate($title));
+    if (
+      !empty($existing_organization) &&
+      ($entity->isNew() || $existing_organization->id() !== $entity->id())
+    ) {
+      $form_state->setErrorByName('title', $this->t('The title you have chosen is in use. Please choose another one.'));
+    }
+    if (PathHelper::transliterate($title) === 'add') {
+      $form_state->setErrorByName('title', $this->t('This title is not allowed. Please choose another one.'));
+    }
   }
 
   /**

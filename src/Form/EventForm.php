@@ -30,7 +30,7 @@ class EventForm extends ContentEntityForm {
     $form['#theme'] = (new ReflectionClass($this))->getShortName();
     $entity = $this->entity;
     // Set values from path.
-    $form['parent']['widget'][0]['target_id']['#default_value'] = Drupal::request()->get('group');
+    $form['parent']['widget'][0]['target_id']['#default_value'] = $group;
     $form['event_template']['widget'][0]['target_id']['#default_value'] = empty($event_template) ? NULL : $event_template;
     // Use event template if valid.
     if (

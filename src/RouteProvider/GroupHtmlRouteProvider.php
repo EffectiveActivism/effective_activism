@@ -53,7 +53,7 @@ class GroupHtmlRouteProvider extends DefaultHtmlRouteProvider {
           '_entity_form' => "{$entity_type_id}.{$operation}",
           '_title' => "Add {$entity_type->getLabel()}",
         ])
-        ->setRequirement('_custom_access', '\Drupal\effective_activism\AccessControlHandler\AccessControl::fromRouteIsGroupStaff')
+        ->setRequirement('_entity_create_access', $entity_type_id)
         ->setOption('parameters', [
           Constant::ENTITY_ORGANIZATION => ['type' => Constant::ENTITY_ORGANIZATION],
         ]);
@@ -79,7 +79,7 @@ class GroupHtmlRouteProvider extends DefaultHtmlRouteProvider {
           '_entity_view' => "{$entity_type_id}.full",
           '_title_callback' => '\Drupal\Core\Entity\Controller\EntityController::title',
         ])
-        ->setRequirement('_custom_access', '\Drupal\effective_activism\AccessControlHandler\AccessControl::fromRouteIsGroupStaff')
+        ->setRequirement('_entity_access', "{$entity_type_id}.view")
         ->setOption('parameters', [
           Constant::ENTITY_ORGANIZATION => ['type' => Constant::ENTITY_ORGANIZATION],
           $entity_type_id => ['type' => Constant::ENTITY_GROUP],
@@ -138,7 +138,7 @@ class GroupHtmlRouteProvider extends DefaultHtmlRouteProvider {
           '_entity_list' => 'event',
           '_title' => "Events",
         ])
-        ->setRequirement('_custom_access', '\Drupal\effective_activism\AccessControlHandler\AccessControl::fromRouteIsGroupStaff')
+        ->setRequirement('_entity_access', "{$entity_type_id}.view")
         ->setOption('parameters', [
           Constant::ENTITY_ORGANIZATION => ['type' => Constant::ENTITY_ORGANIZATION],
           $entity_type_id => ['type' => Constant::ENTITY_GROUP],
@@ -165,7 +165,7 @@ class GroupHtmlRouteProvider extends DefaultHtmlRouteProvider {
           '_entity_list' => 'import',
           '_title' => "Imports",
         ])
-        ->setRequirement('_custom_access', '\Drupal\effective_activism\AccessControlHandler\AccessControl::fromRouteIsGroupStaff')
+        ->setRequirement('_entity_access', "{$entity_type_id}.update")
         ->setOption('parameters', [
           Constant::ENTITY_ORGANIZATION => ['type' => Constant::ENTITY_ORGANIZATION],
           $entity_type_id => ['type' => Constant::ENTITY_GROUP],
@@ -192,7 +192,7 @@ class GroupHtmlRouteProvider extends DefaultHtmlRouteProvider {
           '_form' => '\Drupal\effective_activism\Form\GroupPublishForm',
           '_title' => "Publish {$entity_type->getLabel()}",
         ])
-        ->setRequirement('_custom_access', '\Drupal\effective_activism\AccessControlHandler\AccessControl::fromRouteIsGroupStaff')
+        ->setRequirement('_entity_create_access', $entity_type_id)
         ->setOption('parameters', [
           Constant::ENTITY_ORGANIZATION => ['type' => Constant::ENTITY_ORGANIZATION],
           $entity_type_id => ['type' => Constant::ENTITY_GROUP],

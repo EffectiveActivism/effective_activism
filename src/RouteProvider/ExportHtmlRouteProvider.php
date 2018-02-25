@@ -124,7 +124,7 @@ class ExportHtmlRouteProvider extends DefaultHtmlRouteProvider {
         ->setRequirement('_entity_access', "{$entity_type_id}.view")
         ->setOption('parameters', [
           Constant::ENTITY_ORGANIZATION => ['type' => Constant::ENTITY_ORGANIZATION],
-          $entity_type_id => ['type' => 'entity:' . Constant::ENTITY_EXPORT],
+          $entity_type_id => ['type' => Constant::ENTITY_EXPORT],
         ]);
       // Entity types with serial IDs can specify this in their route
       // requirements, improving the matching process.
@@ -161,7 +161,7 @@ class ExportHtmlRouteProvider extends DefaultHtmlRouteProvider {
         ->setRequirement('_entity_access', "{$entity_type_id}.update")
         ->setOption('parameters', [
           Constant::ENTITY_ORGANIZATION => ['type' => Constant::ENTITY_ORGANIZATION],
-          $entity_type_id => ['type' => 'entity:' . Constant::ENTITY_EXPORT],
+          $entity_type_id => ['type' => Constant::ENTITY_EXPORT],
         ]);
       // Entity types with serial IDs can specify this in their route
       // requirements, improving the matching process.
@@ -191,10 +191,10 @@ class ExportHtmlRouteProvider extends DefaultHtmlRouteProvider {
           '_form' => '\Drupal\effective_activism\Form\ExportPublishForm',
           '_title' => "Publish {$entity_type->getLabel()}",
         ])
-        ->setRequirement('_entity_access', "{$entity_type_id}.update")
+        ->setRequirement('_entity_create_access', $entity_type_id)
         ->setOption('parameters', [
           Constant::ENTITY_ORGANIZATION => ['type' => Constant::ENTITY_ORGANIZATION],
-          $entity_type_id => ['type' => 'entity:' . Constant::ENTITY_EXPORT],
+          $entity_type_id => ['type' => Constant::ENTITY_EXPORT],
         ]);
       // Entity types with serial IDs can specify this in their route
       // requirements, improving the matching process.

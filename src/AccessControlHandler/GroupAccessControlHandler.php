@@ -2,6 +2,7 @@
 
 namespace Drupal\effective_activism\AccessControlHandler;
 
+use Drupal;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Entity\EntityAccessControlHandler;
 use Drupal\Core\Entity\EntityInterface;
@@ -41,7 +42,7 @@ class GroupAccessControlHandler extends EntityAccessControlHandler {
    * {@inheritdoc}
    */
   protected function checkCreateAccess(AccountInterface $account, array $context, $entity_bundle = NULL) {
-    return AccessControl::isAnyManager($account);
+    return AccessControl::isManager(Drupal::request()->get('organization'), $account);
   }
 
 }

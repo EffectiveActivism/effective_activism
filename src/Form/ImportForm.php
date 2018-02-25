@@ -2,8 +2,11 @@
 
 namespace Drupal\effective_activism\Form;
 
+use Drupal;
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\effective_activism\Helper\PathHelper;
+use ReflectionClass;
 
 /**
  * Form controller for Import edit forms.
@@ -17,7 +20,10 @@ class ImportForm extends ContentEntityForm {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $form = parent::buildForm($form, $form_state);
+    $form['#theme'] = (new ReflectionClass($this))->getShortName();
     $entity = $this->entity;
+    // Set values from path.
+    $form['parent']['widget'][0]['target_id']['#default_value'] = Drupal::request()->get('group');
     // Hide fields.
     $form['user_id']['#attributes']['class'][] = 'hidden';
     $form['revision_log_message']['#attributes']['class'][] = 'hidden';
@@ -57,7 +63,11 @@ class ImportForm extends ContentEntityForm {
           '%label' => $entity->label(),
         ]));
     }
-    $form_state->setRedirect('entity.import.canonical', ['import' => $entity->id()]);
+    $form_state->setRedirect('entity.import.canonical', [
+      'organization' => PathHelper::transliterate(Drupal::request()->get('organization')->label()),
+      'group' => PathHelper::transliterate(Drupal::request()->get('group')->label()),
+      'import' => $entity->id()
+    ]);
   }
 
 }

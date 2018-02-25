@@ -30,6 +30,8 @@ class GroupForm extends ContentEntityForm {
     $form = parent::buildForm($form, $form_state);
     $form['#theme'] = (new ReflectionClass($this))->getShortName();
     $entity = $this->entity;
+    // Set values from path.
+    $form['organization']['widget'][0]['target_id']['#default_value'] = $organization;
     // Hide fields.
     $form['user_id']['#attributes']['class'][] = 'hidden';
     $form['revision_log_message']['#attributes']['class'][] = 'hidden';
@@ -57,16 +59,33 @@ class GroupForm extends ContentEntityForm {
       $form['result_types']['#default_value'] = $selected_result_types;
     }
     // If the group is saved, populate active invitations.
-    if (!$entity->isNew()) {
-      $form['#invitation_list'] = InvitationHelper::getInvitationsByEntity($entity);
-    }
+    $form['#invitations'] = $entity->isNew() ? [] : InvitationHelper::getInvitationsByEntity($entity);
     // Only allow managers to see some elements and only for existing groups.
-    if ($entity->isNew() || !AccessControl::isManager($entity->organization->entity, Drupal::currentUser())) {
+    if ($entity->isNew() || AccessControl::isManager($entity->organization->entity, Drupal::currentUser())->isForbidden()) {
       $form['result_types']['#access'] = FALSE;
       $form['organizers']['#access'] = FALSE;
       $form['invitations']['#access'] = FALSE;
     }
     return $form;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    parent::validateForm($form, $form_state);
+    $entity = $this->entity;
+    $title = $form_state->getValue('title')[0]['value'];
+    $existing_group = PathHelper::loadGroupBySlug(PathHelper::transliterate($title), Drupal::request()->get('organization'));
+    if (
+      !empty($existing_group) &&
+      ($entity->isNew() || $existing_group->id() !== $entity->id())
+    ) {
+      $form_state->setErrorByName('title', $this->t('The title you have chosen is in use. Please choose another one.'));
+    }
+    if (PathHelper::transliterate($title) === 'add') {
+      $form_state->setErrorByName('title', $this->t('This title is not allowed. Please choose another one.'));
+    }
   }
 
   /**

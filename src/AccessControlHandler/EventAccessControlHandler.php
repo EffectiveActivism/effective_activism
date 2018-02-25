@@ -2,6 +2,7 @@
 
 namespace Drupal\effective_activism\AccessControlHandler;
 
+use Drupal;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Entity\EntityAccessControlHandler;
 use Drupal\Core\Entity\EntityInterface;
@@ -28,7 +29,7 @@ class EventAccessControlHandler extends EntityAccessControlHandler {
         }
 
       case 'update':
-        return AccessControl::isStaff($entity->get('parent')->entity->get('organization')->entity, $account);
+        return AccessControl::isGroupStaff([$entity->get('parent')->entity], $account);
 
       case 'delete':
         return AccessResult::forbidden();
@@ -41,7 +42,7 @@ class EventAccessControlHandler extends EntityAccessControlHandler {
    * {@inheritdoc}
    */
   protected function checkCreateAccess(AccountInterface $account, array $context, $entity_bundle = NULL) {
-    return AccessControl::isAnyStaff($account);
+    return AccessControl::isGroupStaff([Drupal::request()->get('group')], $account);
   }
 
 }

@@ -45,7 +45,7 @@ class ResultTypeHtmlRouteProvider extends DefaultHtmlRouteProvider {
           '_entity_form' => "{$entity_type_id}.{$operation}",
           '_title' => "Add {$entity_type->getLabel()}",
         ])
-        ->setRequirement('_custom_access', '\Drupal\effective_activism\AccessControlHandler\AccessControl::fromRouteIsManager')
+        ->setRequirement('_entity_create_access', $entity_type_id)
         ->setOption('parameters', [
           Constant::ENTITY_ORGANIZATION => ['type' => Constant::ENTITY_ORGANIZATION],
         ]);

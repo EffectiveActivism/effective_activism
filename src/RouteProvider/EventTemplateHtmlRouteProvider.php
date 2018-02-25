@@ -82,7 +82,7 @@ class EventTemplateHtmlRouteProvider extends DefaultHtmlRouteProvider {
         ->setRequirement('_custom_access', '\Drupal\effective_activism\AccessControlHandler\AccessControl::fromRouteIsManager')
         ->setOption('parameters', [
           Constant::ENTITY_ORGANIZATION => ['type' => Constant::ENTITY_ORGANIZATION],
-          $entity_type_id => ['type' => 'entity:' . $entity_type_id],
+          $entity_type_id => ['type' => Constant::ENTITY_EVENT_TEMPLATE],
         ]);
       // Entity types with serial IDs can specify this in their route
       // requirements, improving the matching process.
@@ -119,7 +119,7 @@ class EventTemplateHtmlRouteProvider extends DefaultHtmlRouteProvider {
         ->setRequirement('_entity_access', "{$entity_type_id}.update")
         ->setOption('parameters', [
           Constant::ENTITY_ORGANIZATION => ['type' => Constant::ENTITY_ORGANIZATION],
-          $entity_type_id => ['type' => 'entity:' . $entity_type_id],
+          $entity_type_id => ['type' => Constant::ENTITY_EVENT_TEMPLATE],
         ]);
       // Entity types with serial IDs can specify this in their route
       // requirements, improving the matching process.
@@ -148,10 +148,10 @@ class EventTemplateHtmlRouteProvider extends DefaultHtmlRouteProvider {
           '_form' => '\Drupal\effective_activism\Form\EventTemplatePublishForm',
           '_title' => "Publish {$entity_type->getLabel()}",
         ])
-        ->setRequirement('_entity_access', "{$entity_type_id}.update")
+        ->setRequirement('_entity_create_access', $entity_type_id)
         ->setOption('parameters', [
           Constant::ENTITY_ORGANIZATION => ['type' => Constant::ENTITY_ORGANIZATION],
-          $entity_type_id => ['type' => 'entity:' . $entity_type_id],
+          $entity_type_id => ['type' => Constant::ENTITY_EVENT_TEMPLATE],
         ]);
       // Entity types with serial IDs can specify this in their route
       // requirements, improving the matching process.

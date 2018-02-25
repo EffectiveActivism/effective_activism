@@ -8,6 +8,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\effective_activism\Entity\DataType;
 use Drupal\effective_activism\Entity\Organization;
+use Drupal\effective_activism\Entity\ResultType;
 use Drupal\effective_activism\Helper\OrganizationHelper;
 use Drupal\effective_activism\Helper\ResultTypeHelper;
 use Drupal\effective_activism\Helper\PathHelper;
@@ -23,8 +24,14 @@ class ResultTypeForm extends EntityForm {
   /**
    * {@inheritdoc}
    */
-  public function form(array $form, FormStateInterface $form_state) {
-    $form = parent::form($form, $form_state);
+  public function buildForm(array $form, FormStateInterface $form_state, Organization $organization = NULL, ResultType $result_type = NULL) {
+    $form = parent::buildForm($form, $form_state);
+    $form['#theme'] = (new ReflectionClass($this))->getShortName();
+    // Set values from path.
+    $form['organization'] = [
+      '#type' => 'value',
+      '#value' => $organization->id(),
+    ];
     // Get available data types.
     $data_bundles = Drupal::entityManager()->getBundleInfo('data');
     $available_datatypes = [];
@@ -32,10 +39,6 @@ class ResultTypeForm extends EntityForm {
       $data_type = DataType::load($bundle_name);
       $available_datatypes[$bundle_name] = sprintf('%s<br><small><em>%s</em></small>', $bundle_info['label'], $data_type->description);
     }
-    // Build form.
-    $form['#prefix'] = '<div id="ajax">';
-    $form['#suffix'] = '</div>';
-    $form['#theme'] = (new ReflectionClass($this))->getShortName();
     $form['label'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Label'),
@@ -110,13 +113,16 @@ class ResultTypeForm extends EntityForm {
     // Only perform this check for new result types.
     if (
       !empty($import_name) &&
-      empty($this->entity->id()) &&
+      $this->entity->isNew() &&
       !ResultTypeHelper::isUniqueImportName($import_name, Drupal::request()->get('organization')->id())
     ) {
       $form_state->setErrorByName('import_name', $this->t('This import name is already in use for your organization. Please type in another one.'));
     }
     // Derive entity id from import name.
-    if (!empty($import_name) && empty($this->entity->id())) {
+    if (
+      !empty($import_name) &&
+      $this->entity->isNew()
+    ) {
       $form_state->setValue('id', ResultTypeHelper::getUniqueID($import_name));
     }
   }

@@ -34,6 +34,8 @@ class EventTemplateForm extends ContentEntityForm {
       ];
     }
     $entity = $this->entity;
+    // Set values from path.
+    $form['organization']['widget'][0]['target_id']['#default_value'] = $organization;
     return $form;
   }
 

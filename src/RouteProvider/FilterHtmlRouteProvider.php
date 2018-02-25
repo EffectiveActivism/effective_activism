@@ -79,7 +79,7 @@ class FilterHtmlRouteProvider extends DefaultHtmlRouteProvider {
         ->setRequirement('_custom_access', '\Drupal\effective_activism\AccessControlHandler\AccessControl::fromRouteIsManager')
         ->setOption('parameters', [
           Constant::ENTITY_ORGANIZATION => ['type' => Constant::ENTITY_ORGANIZATION],
-          $entity_type_id => ['type' => 'entity:' . $entity_type_id],
+          $entity_type_id => ['type' => Constant::ENTITY_FILTER],
         ]);
       // Entity types with serial IDs can specify this in their route
       // requirements, improving the matching process.
@@ -116,7 +116,7 @@ class FilterHtmlRouteProvider extends DefaultHtmlRouteProvider {
         ->setRequirement('_entity_access', "{$entity_type_id}.update")
         ->setOption('parameters', [
           Constant::ENTITY_ORGANIZATION => ['type' => Constant::ENTITY_ORGANIZATION],
-          $entity_type_id => ['type' => 'entity:' . $entity_type_id],
+          $entity_type_id => ['type' => Constant::ENTITY_FILTER],
         ]);
       // Entity types with serial IDs can specify this in their route
       // requirements, improving the matching process.
@@ -145,11 +145,16 @@ class FilterHtmlRouteProvider extends DefaultHtmlRouteProvider {
           '_form' => '\Drupal\effective_activism\Form\FilterPublishForm',
           '_title' => "Publish {$entity_type->getLabel()}",
         ])
-        ->setRequirement('_entity_access', "{$entity_type_id}.update")
+        ->setRequirement('_entity_create_access', $entity_type_id)
         ->setOption('parameters', [
           Constant::ENTITY_ORGANIZATION => ['type' => Constant::ENTITY_ORGANIZATION],
-          $entity_type_id => ['type' => 'entity:' . Constant::ENTITY_FILTER],
+          $entity_type_id => ['type' => Constant::ENTITY_FILTER],
         ]);
+      // Entity types with serial IDs can specify this in their route
+      // requirements, improving the matching process.
+      if ($this->getEntityTypeIdKeyType($entity_type) === 'integer') {
+        $route->setRequirement($entity_type_id, '\d+');
+      }
       return $route;
     }
   }

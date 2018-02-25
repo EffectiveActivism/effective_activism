@@ -38,9 +38,10 @@ class ImportListBuilder extends EntityListBuilder {
   /**
    * {@inheritdoc}
    */
-  public function __construct(EntityTypeInterface $entity_type, EntityStorageInterface $storage, Organization $organization = NULL) {
+  public function __construct(EntityTypeInterface $entity_type, EntityStorageInterface $storage, Organization $organization = NULL, Group $group = NULL) {
     parent::__construct($entity_type, $storage);
     $this->organization = empty($organization) ? Drupal::request()->get('organization') : $organization;
+    $this->group = empty($group) ? Drupal::request()->get('group') : $group;
   }
 
   /**
@@ -50,7 +51,7 @@ class ImportListBuilder extends EntityListBuilder {
     $query = $this->getStorage()->getQuery();
     $query
       ->sort('created')
-      ->condition('organization', $this->organization->id());
+      ->condition('parent', $this->group->id());
     // Only add the pager if a limit is specified.
     if ($this->limit) {
       $query->pager($this->limit);
@@ -76,6 +77,7 @@ class ImportListBuilder extends EntityListBuilder {
   public function render() {
     $build['#theme'] = (new ReflectionClass($this))->getShortName();
     $build['#storage']['entities']['organization'] = $this->organization;
+    $build['#storage']['entities']['group'] = $this->group;
     $build['#storage']['entities']['imports'] = $this->load();
     $build['#cache'] = [
       'max-age' => self::CACHE_MAX_AGE,
