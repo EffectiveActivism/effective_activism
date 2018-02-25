@@ -6,6 +6,7 @@ use Drupal;
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\effective_activism\AccessControlHandler\AccessControl;
+use Drupal\effective_activism\Constant;
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\Organization;
 use Drupal\effective_activism\Entity\ResultType;
@@ -46,11 +47,12 @@ class GroupForm extends ContentEntityForm {
     }
     else {
       $form['result_types']['#description'] = $this->t('Result types available for this group.');
-      $selected_result_types = [];
-      $form['result_types']['#default_value'] = empty($selected_result_types) ? [] : $selected_result_types;
       foreach (OrganizationHelper::getResultTypes($organization) as $result_type) {
         $form['result_types']['#options'][$result_type->id()] = sprintf('%s<br><small><em>%s</em></small>', $result_type->label(), $result_type->description);
-        if (in_array($entity->id(), $result_type->groups)) {
+        if (
+          in_array($entity->id(), $result_type->groups) ||
+          in_array(Constant::RESULT_TYPE_ALL_GROUPS, $result_type->groups)
+        ) {
           $selected_result_types[$result_type->id()] = $result_type->id();
         }
       }
@@ -85,6 +87,15 @@ class GroupForm extends ContentEntityForm {
     if (PathHelper::transliterate($title) === 'add') {
       $form_state->setErrorByName('title', $this->t('This title is not allowed. Please choose another one.'));
     }
+    $result_type_ids = $form_state->getValue('result_types');
+    foreach ($result_type_ids as $result_type_id => $enabled) {
+      $result_type = ResultType::load($result_type_id);
+      if (in_array(Constant::RESULT_TYPE_ALL_GROUPS, $result_type->groups) && $enabled === 0) {
+        $form_state->setErrorByName('result_types', $this->t("Results of type <em>@result_type</em> are enabled for all groups and cannot be disabled from the group page.", [
+          '@result_type' => $result_type->get('label'),
+        ]));
+      }
+    }
   }
 
   /**
@@ -109,7 +120,7 @@ class GroupForm extends ContentEntityForm {
           foreach ($form_state->getValue('result_types') as $result_type_id => $enabled) {
             $result_type = ResultType::load($result_type_id);
             $groups = array_keys($result_type->groups);
-            if ($enabled !== 0 && !in_array($entity->id(), $groups)) {
+            if ($enabled !== 0 && (!in_array($entity->id(), $groups) || !in_array(Constant::RESULT_TYPE_ALL_GROUPS, $groups))) {
               $groups[] = $entity->id();
             }
             elseif ($enabled === 0) {

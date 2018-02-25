@@ -142,4 +142,8 @@ class Constant {
   const EVENT_CREATION_EVENT = '1';
   const EVENT_CREATION_EVENT_TEMPLATE = '2';
 
+  /**
+   * Result type constants.
+   */
+  const RESULT_TYPE_ALL_GROUPS = '-1';
 }
