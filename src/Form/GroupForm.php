@@ -5,7 +5,6 @@ namespace Drupal\effective_activism\Form;
 use Drupal;
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Url;
 use Drupal\effective_activism\AccessControlHandler\AccessControl;
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\Organization;

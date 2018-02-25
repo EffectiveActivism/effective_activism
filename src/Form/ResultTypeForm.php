@@ -96,7 +96,7 @@ class ResultTypeForm extends EntityForm {
       '#options' => array_reduce(OrganizationHelper::getGroups(Drupal::request()->get('organization')), function ($result, $group) {
           $result[$group->id()] = $group->label();
           return $result;
-        }, []),
+      }, []),
       '#multiple' => TRUE,
       '#required' => FALSE,
     ];

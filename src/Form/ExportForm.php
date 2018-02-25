@@ -99,7 +99,7 @@ class ExportForm extends ContentEntityForm {
     }
     $form_state->setRedirect('entity.export.canonical', [
       'organization' => PathHelper::transliterate(Drupal::request()->get('organization')->label()),
-      'export' => $entity->id()
+      'export' => $entity->id(),
     ]);
   }
 

@@ -95,8 +95,8 @@ class ParamConverter implements ParamConverterInterface {
           );
         }
         break;
-     }
-     return NULL;
+    }
+    return NULL;
   }
 
   /**

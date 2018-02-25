@@ -3,7 +3,6 @@
 namespace Drupal\effective_activism\Helper;
 
 use Drupal;
-use Drupal\Core\Routing\RouteMatchInterface\RouteMatchInterface;
 use Drupal\effective_activism\Entity\Event;
 use Drupal\effective_activism\Entity\EventTemplate;
 use Drupal\effective_activism\Entity\Export;
@@ -25,10 +24,10 @@ class PathHelper {
    *   The event id to load.
    * @param \Drupal\effective_activism\Entity\Organization $organization
    *   The organization to search within.
-   * @param \Drupal\effective_activism\Entity\Organization $organization
-   *   The organization to search within.
+   * @param \Drupal\effective_activism\Entity\Group $group
+   *   The group to search within.
    *
-   * @return \Drupal\effective_activism\Entity\Event|NULL
+   * @return \Drupal\effective_activism\Entity\Event|null
    *   An event entity or NULL if not found.
    */
   public static function loadEventById($id, Organization $organization, Group $group) {
@@ -51,7 +50,7 @@ class PathHelper {
    * @param \Drupal\effective_activism\Entity\Organization $organization
    *   The organization to search within.
    *
-   * @return \Drupal\effective_activism\Entity\EventTemplate|NULL
+   * @return \Drupal\effective_activism\Entity\EventTemplate|null
    *   An event template entity or NULL if not found.
    */
   public static function loadEventTemplateById($id, Organization $organization) {
@@ -73,7 +72,7 @@ class PathHelper {
    * @param \Drupal\effective_activism\Entity\Organization $organization
    *   The organization to search within.
    *
-   * @return \Drupal\effective_activism\Entity\Export|NULL
+   * @return \Drupal\effective_activism\Entity\Export|null
    *   An export entity or NULL if not found.
    */
   public static function loadExportById($id, Organization $organization) {
@@ -95,7 +94,7 @@ class PathHelper {
    * @param \Drupal\effective_activism\Entity\Organization $organization
    *   The organization to search within.
    *
-   * @return \Drupal\effective_activism\Entity\Filter|NULL
+   * @return \Drupal\effective_activism\Entity\Filter|null
    *   An filter entity or NULL if not found.
    */
   public static function loadFilterById($id, Organization $organization) {
@@ -117,7 +116,7 @@ class PathHelper {
    * @param \Drupal\effective_activism\Entity\Organization $organization
    *   The organization to search within.
    *
-   * @return \Drupal\effective_activism\Entity\Group|NULL
+   * @return \Drupal\effective_activism\Entity\Group|null
    *   A group entity or NULL if not found.
    */
   public static function loadGroupBySlug($title_as_slug, Organization $organization) {
@@ -138,8 +137,10 @@ class PathHelper {
    *   The import id to load.
    * @param \Drupal\effective_activism\Entity\Organization $organization
    *   The organization to search within.
+   * @param \Drupal\effective_activism\Entity\Group $group
+   *   The group to search within.
    *
-   * @return \Drupal\effective_activism\Entity\Import|NULL
+   * @return \Drupal\effective_activism\Entity\Import|null
    *   An import entity or NULL if not found.
    */
   public static function loadImportById($id, Organization $organization, Group $group) {
@@ -160,7 +161,7 @@ class PathHelper {
    * @param string $title_as_slug
    *   The organization title in slug form to load.
    *
-   * @return \Drupal\effective_activism\Entity\Organization|NULL
+   * @return \Drupal\effective_activism\Entity\Organization|null
    *   An organization entity or NULL if not found.
    */
   public static function loadOrganizationBySlug($title_as_slug) {
@@ -177,8 +178,10 @@ class PathHelper {
    *
    * @param string $import_name_as_slug
    *   The result type import name in slug form to load.
+   * @param \Drupal\effective_activism\Entity\Organization $organization
+   *   The organization to search within.
    *
-   * @return \Drupal\effective_activism\Entity\ResultType|NULL
+   * @return \Drupal\effective_activism\Entity\ResultType|null
    *   A result type configuration entity or NULL if not found.
    */
   public static function loadResultTypeBySlug($import_name_as_slug, Organization $organization) {
