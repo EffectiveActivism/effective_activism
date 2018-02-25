@@ -47,6 +47,7 @@ class GroupForm extends ContentEntityForm {
     }
     else {
       $form['result_types']['#description'] = $this->t('Result types available for this group.');
+      $selected_result_types = [];
       foreach (OrganizationHelper::getResultTypes($organization) as $result_type) {
         $form['result_types']['#options'][$result_type->id()] = sprintf('%s<br><small><em>%s</em></small>', $result_type->label(), $result_type->description);
         if (
