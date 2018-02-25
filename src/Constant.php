@@ -146,4 +146,5 @@ class Constant {
    * Result type constants.
    */
   const RESULT_TYPE_ALL_GROUPS = '-1';
+
 }
