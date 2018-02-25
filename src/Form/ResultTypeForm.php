@@ -6,6 +6,7 @@ use Drupal;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
+use Drupal\effective_activism\Constant;
 use Drupal\effective_activism\Entity\DataType;
 use Drupal\effective_activism\Entity\Organization;
 use Drupal\effective_activism\Entity\ResultType;
@@ -96,7 +97,9 @@ class ResultTypeForm extends EntityForm {
       '#options' => array_reduce(OrganizationHelper::getGroups(Drupal::request()->get('organization')), function ($result, $group) {
           $result[$group->id()] = $group->label();
           return $result;
-      }, []),
+      }, [
+        Constant::RESULT_TYPE_ALL_GROUPS => t('- All groups -'),
+      ]),
       '#multiple' => TRUE,
       '#required' => FALSE,
     ];

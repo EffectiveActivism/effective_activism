@@ -6,6 +6,7 @@ use Drupal;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\effective_activism\Constant;
 use Drupal\effective_activism\Entity\EventTemplate;
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\Organization;
@@ -49,7 +50,10 @@ class EventForm extends ContentEntityForm {
       foreach ($form['results']['widget']['actions']['bundle']['#options'] as $machine_name => $human_name) {
         $result_type = ResultType::load($machine_name);
         if (!empty($result_type)) {
-          if (!in_array(Drupal::request()->get('group')->id(), $result_type->get('groups'))) {
+          if (
+            !in_array(Drupal::request()->get('group')->id(), $result_type->get('groups')) &&
+            !in_array(Constant::RESULT_TYPE_ALL_GROUPS, $result_type->get('groups'))
+          ) {
             unset($form['results']['widget']['actions']['bundle']['#options'][$machine_name]);
           }
         }
@@ -64,7 +68,10 @@ class EventForm extends ContentEntityForm {
     elseif (!empty($form['results']['widget']['actions']['bundle']['#value'])) {
       $result_type = ResultType::load($form['results']['widget']['actions']['bundle']['#value']);
       if (!empty($result_type)) {
-        if (!in_array(Drupal::request()->get('group')->id(), $result_type->get('groups'))) {
+        if (
+          !in_array(Drupal::request()->get('group')->id(), $result_type->get('groups')) &&
+          !in_array(Constant::RESULT_TYPE_ALL_GROUPS, $result_type->get('groups'))
+        ) {
           unset($form['results']['widget']['actions']['ief_add']);
         }
       }
@@ -93,7 +100,10 @@ class EventForm extends ContentEntityForm {
                 $result_type = ResultType::load($result->getType());
                 if (!empty($result_type)) {
                   $allowed_gids = $result_type->get('groups');
-                  if (!in_array(Drupal::request()->get('group')->id(), $allowed_gids)) {
+                  if (
+                    !in_array(Drupal::request()->get('group')->id(), $allowed_gids) &&
+                    !in_array(Constant::RESULT_TYPE_ALL_GROUPS, $allowed_gids)
+                  ) {
                     $form_state->setErrorByName('parent', $this->t('<em>@group</em> does not allow the result type <em>@result_type</em>. Please select another group or remove the result.', [
                       '@group' => Drupal::request()->get('group')->label(),
                       '@result_type' => $result_type->get('label'),
