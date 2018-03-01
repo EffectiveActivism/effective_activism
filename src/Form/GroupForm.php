@@ -63,11 +63,9 @@ class GroupForm extends ContentEntityForm {
     // If the group is saved, populate active invitations.
     $form['#invitations'] = $entity->isNew() ? [] : InvitationHelper::getInvitationsByEntity($entity);
     // Only allow managers to see some elements and only for existing groups.
-    if ($entity->isNew() || AccessControl::isManager($entity->organization->entity, Drupal::currentUser())->isForbidden()) {
-      $form['result_types']['#access'] = FALSE;
-      $form['organizers']['#access'] = FALSE;
-      $form['invitations']['#access'] = FALSE;
-    }
+    $form['result_types']['#access'] = (AccessControl::isManager(Drupal::request()->get('organization'), Drupal::currentUser())->isAllowed());
+    $form['organizers']['#access'] = (AccessControl::isManager(Drupal::request()->get('organization'), Drupal::currentUser())->isAllowed() && !$entity->isNew());
+    $form['invitations']['#access'] = (AccessControl::isManager(Drupal::request()->get('organization'), Drupal::currentUser())->isAllowed() && !$entity->isNew());
     return $form;
   }
 
