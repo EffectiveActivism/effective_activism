@@ -15,7 +15,7 @@ use Drupal\effective_activism\ThirdPartyApi\ThirdPartyApiException;
  *
  * Processed a batch of third party content entities every time cron is run.
  */
-class PopulateThirdPartyContent {
+class PopulateThirdPartyContent implements CronJobInterface {
 
   const BATCH_SIZE = 100;
 

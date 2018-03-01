@@ -12,7 +12,7 @@ use Drupal\effective_activism\Helper\ThirdPartyContentHelper;
  *
  * Adds a batch of third-party content entities every time cron is run.
  */
-class AddThirdPartyContent {
+class AddThirdPartyContent implements CronJobInterface {
 
   const BATCH_SIZE = 10;
 
@@ -42,6 +42,9 @@ class AddThirdPartyContent {
         ];
         $event->setNewRevision();
         $event->save();
+        Drupal::logger('debug')->info('Event entity: ' . $event->id());
+        Drupal::logger('debug')->info(print_r($event->toArray(), TRUE));
+        Drupal::logger('debug')->info('Weather entity: ' . $weather_information->id());
       }
       Drupal::logger('effective_activism')->info(sprintf('%d event(s) added weather information', count($event_ids_without_weather_information)));
     }
