@@ -67,10 +67,7 @@ class OrganizationHtmlRouteProvider extends DefaultHtmlRouteProvider {
           '_entity_form' => "{$entity_type_id}.{$operation}",
           '_title' => "Add {$entity_type->getLabel()}",
         ])
-        ->setRequirement('_entity_create_access', $entity_type_id)
-        ->setOption('parameters', [
-          $entity_type_id => ['type' => 'entity:' . $entity_type_id],
-        ]);
+        ->setRequirement('_entity_create_access', $entity_type_id);
       return $route;
     }
   }

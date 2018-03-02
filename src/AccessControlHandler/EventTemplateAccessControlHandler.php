@@ -32,7 +32,7 @@ class EventTemplateAccessControlHandler extends EntityAccessControlHandler {
         return AccessControl::isManager($entity->get('organization')->entity, $account);
 
       case 'delete':
-        return AccessResult::forbidden();
+        return AccessControl::isManager($entity->get('organization')->entity, $account);
     }
     // Unknown operation, no opinion.
     return AccessResult::neutral();

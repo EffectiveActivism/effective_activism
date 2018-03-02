@@ -23,6 +23,7 @@ use Drupal\user\UserInterface;
  *     "form" = {
  *       "default" = "Drupal\effective_activism\Form\EventTemplateForm",
  *       "add" = "Drupal\effective_activism\Form\EventTemplateForm",
+ *       "delete" = "Drupal\effective_activism\Form\EventTemplateDeleteForm",
  *       "edit" = "Drupal\effective_activism\Form\EventTemplateForm",
  *     },
  *     "access" = "Drupal\effective_activism\AccessControlHandler\EventTemplateAccessControlHandler",
@@ -45,6 +46,7 @@ use Drupal\user\UserInterface;
  *   links = {
  *     "add-form" = "/o/{organization}/event-templates/add",
  *     "canonical" = "/o/{organization}/event-templates/{event_template}",
+ *     "delete-form" = "/o/{organization}/event-templates/{event_template}/delete",
  *     "edit-form" = "/o/{organization}/event-templates/{event_template}/edit",
  *     "publish-form" = "/o/{organization}/event-templates/{event_template}/publish",
  *   },
