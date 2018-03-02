@@ -15,6 +15,7 @@ use Drupal\Core\Config\Entity\ConfigEntityInterface;
  *     "list_builder" = "Drupal\effective_activism\ListBuilder\ResultTypeListBuilder",
  *     "form" = {
  *       "add" = "Drupal\effective_activism\Form\ResultTypeForm",
+ *       "delete" = "Drupal\effective_activism\Form\ResultTypeDeleteForm",
  *       "edit" = "Drupal\effective_activism\Form\ResultTypeForm",
  *     },
  *     "access" = "Drupal\effective_activism\AccessControlHandler\ResultTypeAccessControlHandler",
@@ -31,7 +32,7 @@ use Drupal\Core\Config\Entity\ConfigEntityInterface;
  *   },
  *   links = {
  *     "add-form" = "/o/{organization}/result-types/add",
- *     "collection" = "/o/{organization}/result-types",
+ *     "delete-form" = "/o/{organization}/result-types/{result_type}/delete",
  *     "edit-form" = "/o/{organization}/result-types/{result_type}/edit",
  *     "publish-form" = "/o/{organization}/result-types/{result_type}/publish",
  *   },
