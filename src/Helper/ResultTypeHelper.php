@@ -57,10 +57,14 @@ class ResultTypeHelper {
   /**
    * Get events with results of the result type.
    *
-   * @param string $import_name
-   *   The import name of the result type.
-   * @param int $organization_id
-   *   The organization id.
+   * @param \Drupal\effective_activism\Entity\ResultType $result_type
+   *   The result type.
+   * @param int $position
+   *   The position to start from.
+   * @param int $limit
+   *   The number of events to return.
+   * @param bool $load_entities
+   *   Wether to return full entity objects or entity ids.
    *
    * @return \Drupal\effective_activism\Entity\ResultType
    *   The loaded result type entity.

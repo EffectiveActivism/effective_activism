@@ -28,6 +28,9 @@ class EventTemplateDeleteForm extends ContentEntityDeleteForm {
     return $form;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function validateForm(array &$form, FormStateInterface $form_state) {
     if (count(EventTemplateHelper::getEvents(Drupal::request()->get('event_template'), 0, 0, FALSE)) > 0) {
       $form_state->setErrorByName('submit', $this->t('This template is in use and cannot be deleted.'));

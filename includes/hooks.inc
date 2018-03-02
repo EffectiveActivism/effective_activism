@@ -11,7 +11,6 @@ use Drupal\effective_activism\Hook\CronHook;
 use Drupal\effective_activism\Hook\ElementInfoAlterHook;
 use Drupal\effective_activism\Hook\EntityInsertHook;
 use Drupal\effective_activism\Hook\InlineEntityFormEntityFormAlterHook;
-use Drupal\effective_activism\Hook\LinkAlterHook;
 use Drupal\effective_activism\Hook\MailHook;
 use Drupal\effective_activism\Hook\RequirementsHook;
 
