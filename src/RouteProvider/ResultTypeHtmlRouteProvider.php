@@ -54,6 +54,38 @@ class ResultTypeHtmlRouteProvider extends DefaultHtmlRouteProvider {
   }
 
   /**
+   * Gets the delete-form route.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
+   *   The entity type.
+   *
+   * @return \Symfony\Component\Routing\Route|null
+   *   The generated route, if available.
+   */
+  protected function getDeleteFormRoute(EntityTypeInterface $entity_type) {
+    if ($entity_type->hasLinkTemplate('delete-form')) {
+      $entity_type_id = $entity_type->id();
+      $route = new Route($entity_type->getLinkTemplate('delete-form'));
+      $route
+        ->addDefaults([
+          '_entity_form' => "{$entity_type_id}.delete",
+          '_title_callback' => '\\Drupal\\Core\\Entity\\Controller\\EntityController::deleteTitle',
+        ])
+        ->setRequirement('_entity_access', "{$entity_type_id}.delete")
+        ->setOption('parameters', [
+          Constant::ENTITY_ORGANIZATION => ['type' => Constant::ENTITY_ORGANIZATION],
+          $entity_type_id => ['type' => Constant::ENTITY_RESULT_TYPE],
+        ]);
+      // Entity types with serial IDs can specify this in their route
+      // requirements, improving the matching process.
+      if ($this->getEntityTypeIdKeyType($entity_type) === 'integer') {
+        $route->setRequirement($entity_type_id, '\\d+');
+      }
+      return $route;
+    }
+  }
+
+  /**
    * Gets the edit-form route.
    *
    * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type

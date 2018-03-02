@@ -31,7 +31,7 @@ class ResultTypeAccessControlHandler extends EntityAccessControlHandler {
         return AccessControl::isManager(Organization::load($entity->get('organization')), $account);
 
       case 'delete':
-        return AccessResult::forbidden();
+        return AccessControl::isManager(Organization::load($entity->get('organization')), $account);
     }
     // Unknown operation, no opinion.
     return AccessResult::neutral();
