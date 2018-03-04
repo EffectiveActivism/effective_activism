@@ -134,6 +134,23 @@ class ResultTypeHelper {
   }
 
   /**
+   * Returns TRUE if result type has results.
+   *
+   * @param \Drupal\effective_activism\Entity\ResultType $result_type
+   *   The result type to check.
+   *
+   * @return bool
+   *   Returns TRUE if result type has result, FALSE otherwise.
+   */
+  public static function hasResults(ResultType $result_type) {
+    $results = Drupal::entityQuery('result')
+      ->condition('type', $result_type->id())
+      ->count()
+      ->execute();
+    return $results === 0 ? FALSE : TRUE;
+  }
+
+  /**
    * Add a taxonomy field.
    *
    * @param \Drupal\effective_activism\Entity\ResultType $result_type
