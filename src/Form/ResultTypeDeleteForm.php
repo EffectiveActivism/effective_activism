@@ -56,20 +56,14 @@ class ResultTypeDeleteForm extends EntityConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function getRedirectUrl() {
-    return new Url('entity.organization.result_types', [
-      'organization' => PathHelper::transliterate(Drupal::request()->get('organization')->label()),
-    ]);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->entity->delete();
     drupal_set_message($this->t('Deleted result type @result_type.', [
       '@result_type' => $this->entity->label(),
     ]));
+    $form_state->setRedirect('entity.organization.result_types', [
+      'organization' => PathHelper::transliterate(Drupal::request()->get('organization')->label()),
+    ]);
   }
 
   /**
