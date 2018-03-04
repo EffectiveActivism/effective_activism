@@ -76,7 +76,7 @@ class ResultTypeDeleteForm extends EntityConfirmFormBase {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    if (ResultTypeHelper::hasResults(Drupal::request()->get('result_type')) {
+    if (ResultTypeHelper::hasResults(Drupal::request()->get('result_type'))) {
       $form_state->setErrorByName('submit', $this->t('This result type is in use and cannot be deleted.'));
     }
   }
