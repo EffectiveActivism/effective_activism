@@ -147,7 +147,7 @@ class ResultTypeHelper {
       ->condition('type', $result_type->id())
       ->count()
       ->execute();
-    return $results === 0 ? FALSE : TRUE;
+    return (int) $results === 0 ? FALSE : TRUE;
   }
 
   /**
