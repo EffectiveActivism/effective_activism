@@ -1,0 +1,23 @@
+uuid: e16b810d-9bea-4654-a465-21270c69db87
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.import_type.icalendar
+    - field.storage.import.field_url
+  module:
+    - link
+id: import.icalendar.field_url
+field_name: field_url
+entity_type: import
+bundle: icalendar
+label: Url
+description: 'Add an ICalendar address'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  link_type: 16
+  title: 0
+field_type: link

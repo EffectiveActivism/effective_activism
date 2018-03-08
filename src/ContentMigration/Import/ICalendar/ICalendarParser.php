@@ -6,6 +6,7 @@ use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\Import;
 use Drupal\effective_activism\ContentMigration\ParserInterface;
 use Drupal\effective_activism\ContentMigration\ParserValidationException;
+use Drupal\effective_activism\ContentMigration\Import\EntityImportParser;
 
 /**
  * Parses ICalendar.

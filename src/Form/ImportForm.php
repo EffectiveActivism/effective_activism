@@ -5,6 +5,9 @@ namespace Drupal\effective_activism\Form;
 use Drupal;
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\effective_activism\Entity\Group;
+use Drupal\effective_activism\Entity\Import;
+use Drupal\effective_activism\Entity\Organization;
 use Drupal\effective_activism\Helper\PathHelper;
 use ReflectionClass;
 
@@ -18,12 +21,12 @@ class ImportForm extends ContentEntityForm {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state) {
+  public function buildForm(array $form, FormStateInterface $form_state, Organization $organization = NULL, Group $group = NULL, Import $import = NULL) {
     $form = parent::buildForm($form, $form_state);
     $form['#theme'] = (new ReflectionClass($this))->getShortName();
     $entity = $this->entity;
     // Set values from path.
-    $form['parent']['widget'][0]['target_id']['#default_value'] = Drupal::request()->get('group');
+    $form['parent']['widget'][0]['target_id']['#default_value'] = $group;
     // Hide fields.
     $form['user_id']['#attributes']['class'][] = 'hidden';
     $form['revision_log_message']['#attributes']['class'][] = 'hidden';
@@ -37,8 +40,12 @@ class ImportForm extends ContentEntityForm {
 
       case 'import_csv_edit_form':
         // Restrict access to existing import entities.
-        $form['parent']['#disabled'] = TRUE;
         $form['field_file_csv']['#disabled'] = TRUE;
+        break;
+
+      case 'import_icalendar_edit_form':
+        // Restrict access to existing import entities.
+        $form['field_url']['#disabled'] = TRUE;
         break;
     }
     return $form;
