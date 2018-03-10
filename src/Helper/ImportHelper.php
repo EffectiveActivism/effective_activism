@@ -2,12 +2,14 @@
 
 namespace Drupal\effective_activism\Helper;
 
+use Drupal;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\effective_activism\Entity\Event;
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\Import;
 use Drupal\effective_activism\ContentMigration\Import\CSV\CSVParser;
 use Drupal\effective_activism\ContentMigration\Import\ICalendar\ICalendarParser;
+use Drupal\effective_activism\ContentMigration\ParserValidationException;
 
 /**
  * Helper functions for querying imports.
@@ -30,7 +32,7 @@ class ImportHelper {
    *   An array of events related to the group.
    */
   public static function getEvents(Import $import, $position = 0, $limit = 0, $load_entities = TRUE) {
-    $query = \Drupal::entityQuery('event')
+    $query = Drupal::entityQuery('event')
       ->condition('import', $import->id())
       ->sort('start_date');
     if ($limit > 0) {
@@ -71,15 +73,18 @@ class ImportHelper {
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    *   The form state to validate.
    */
-  public static function validateICalendar(array &$form, FormStateInterface $form_state) {
-    // Get ICalendar file.
+  public static function validateIcalendar(array &$form, FormStateInterface $form_state) {
     $field_url = $form_state->getValue('field_url');
     $parent = $form_state->getValue('parent');
     $gid = $parent[0]['target_id'];
-    $parsedICalendar = new ICalendarParser($field_url[0]['uri'], Group::load($gid), NULL);
-    // Validate ICalendar headers.
-    if (!$parsedICalendar->validate()) {
-      $form_state->setErrorByName('field_url', $parsedICalendar->getErrorMessage());
+    try {
+      $parsedICalendar = new ICalendarParser($field_url[0]['uri'], Group::load($gid), NULL);
+      if (!$parsedICalendar->validate()) {
+        $form_state->setErrorByName('field_url', $parsedICalendar->getErrorMessage());
+      }
+    }
+    catch (ParserValidationException $exception) {
+      $form_state->setErrorByName('field_url', t('The iCalendar file is not found.'));
     }
   }
 

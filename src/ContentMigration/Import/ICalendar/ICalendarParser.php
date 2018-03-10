@@ -23,6 +23,7 @@ class ICalendarParser extends EntityImportParser implements ParserInterface {
 
   const BATCHSIZE = 50;
   const ICALENDAR_DATETIME_FORMAT = 'Ymd\THis';
+  const INVALID_PATH = -11;
 
   /**
    * Any validation error message.
@@ -81,23 +82,25 @@ class ICalendarParser extends EntityImportParser implements ParserInterface {
     $this->import = $import;
     try {
       // Convert webcal scheme to http, as Guzzler may not support webcal.
-      $count = 1;
-      $url = strpos($url, 'webcal://') === 0 ? str_replace('webcal://', 'http://', $url, $count) : $url;
+      $url = strpos($url, 'webcal://') === 0 ? str_replace('webcal://', 'http://', $url) : $url;
       // Retrieve url.
       $response = Drupal::httpClient()->get($url);
       if ($response->getStatusCode() === 200) {
         $this->lines = explode("\n", $response->getBody()->getContents());
         $this->initialize();
       }
+      else {
+        throw new ParserValidationException(self::INVALID_PATH, NULL, NULL, NULL);
+      }
     }
     catch (BadResponseException $exception) {
-      return FALSE;
+      throw new ParserValidationException(self::INVALID_PATH, NULL, NULL, NULL);
     }
     catch (RequestException $exception) {
-      return FALSE;
+      throw new ParserValidationException(self::INVALID_PATH, NULL, NULL, NULL);
     }
     catch (ClientException $exception) {
-      return FALSE;
+      throw new ParserValidationException(self::INVALID_PATH, NULL, NULL, NULL);
     }
   }
 
@@ -151,7 +154,7 @@ class ICalendarParser extends EntityImportParser implements ParserInterface {
     // Strip any extra information.
     $key = strpos($key, ';') !== FALSE ? substr($key, 0, strpos($key, ';')) : $key;
     // Unescape commas.
-    $value = preg_replace( "/\r|\n/", '', str_replace('\,', ',', $value));
+    $value = preg_replace("/\r|\n/", '', str_replace('\,', ',', $value));
     return [$key, $value];
   }
 
@@ -186,7 +189,7 @@ class ICalendarParser extends EntityImportParser implements ParserInterface {
    * @param array $lines
    *   The raw iCalendar file.
    */
-  private function validateHeader($lines) {
+  private function validateHeader(array $lines) {
     if (!preg_match("/BEGIN:VCALENDAR.*VERSION:[12]\.0.*END:VCALENDAR/s", implode("\n", $lines))) {
       throw new ParserValidationException(self::INVALID_HEADERS);
     }
@@ -198,7 +201,7 @@ class ICalendarParser extends EntityImportParser implements ParserInterface {
    * @param array $lines
    *   The raw iCalendar file.
    */
-  private function validateItems($lines) {
+  private function validateItems(array $lines) {
     $position = 0;
     while (isset($lines[$position])) {
       $line = $lines[$position];
@@ -226,7 +229,7 @@ class ICalendarParser extends EntityImportParser implements ParserInterface {
    * @param array $slice
    *   A slice of an iCalendar file that describes an event.
    */
-  private function validateItem($slice) {
+  private function validateItem(array $slice) {
     $event = [];
     $slice_position = 0;
     // Create event, if any.
@@ -240,7 +243,7 @@ class ICalendarParser extends EntityImportParser implements ParserInterface {
           if ($this->hasKeyValue($slice[$read_ahead])) {
             break;
           }
-          $value .= ltrim(preg_replace( "/\r|\n/", '', str_replace('\,', ',', $slice[$read_ahead])));
+          $value .= ltrim(preg_replace("/\r|\n/", '', str_replace('\,', ',', $slice[$read_ahead])));
           $read_ahead++;
         }
         switch ($key) {
@@ -321,7 +324,16 @@ class ICalendarParser extends EntityImportParser implements ParserInterface {
     }
   }
 
-  private function extractEvent($slice) {
+  /**
+   * Extract event from a slice of an iCalendar file.
+   *
+   * @param array $slice
+   *   The slice to extract an event from.
+   *
+   * @return array
+   *   A unique event.
+   */
+  private function extractEvent(array $slice) {
     // Populate event array.
     $event = [];
     $slice_position = 0;
@@ -387,7 +399,6 @@ class ICalendarParser extends EntityImportParser implements ParserInterface {
     if (!empty($event['external_uid'])) {
       $count = Drupal::entityQuery('event')
         ->condition('external_uid', $event['external_uid'])
-        ->condition('parent', $this->group->id())
         ->count()
         ->execute();
       if (!empty($count) && $count > 0) {

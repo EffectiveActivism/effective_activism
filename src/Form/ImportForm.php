@@ -45,7 +45,7 @@ class ImportForm extends ContentEntityForm {
 
       case 'import_icalendar_add_form':
         // Add validation.
-        $form['#validate'][] = 'Drupal\effective_activism\Helper\ImportHelper::validateICalendar';
+        $form['#validate'][] = 'Drupal\effective_activism\Helper\ImportHelper::validateIcalendar';
         break;
 
       case 'import_icalendar_edit_form':
