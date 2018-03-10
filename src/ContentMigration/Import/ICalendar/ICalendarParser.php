@@ -2,10 +2,17 @@
 
 namespace Drupal\effective_activism\ContentMigration\Import\ICalendar;
 
-use Drupal\effective_activism\Entity\Group;
-use Drupal\effective_activism\Entity\Import;
+use DateTime;
+use Drupal;
+use Drupal\effective_activism\ContentMigration\Import\EntityImportParser;
 use Drupal\effective_activism\ContentMigration\ParserInterface;
 use Drupal\effective_activism\ContentMigration\ParserValidationException;
+use Drupal\effective_activism\Entity\Group;
+use Drupal\effective_activism\Entity\Import;
+use Drupal\effective_activism\Helper\LocationHelper;
+use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\ClientException;
 
 /**
  * Parses ICalendar.
@@ -16,6 +23,14 @@ class ICalendarParser extends EntityImportParser implements ParserInterface {
 
   const BATCHSIZE = 50;
   const ICALENDAR_DATETIME_FORMAT = 'Ymd\THis';
+  const INVALID_PATH = -11;
+
+  /**
+   * Any validation error message.
+   *
+   * @var array
+   */
+  private $errorMessage;
 
   /**
    * Parent group.
@@ -32,76 +47,115 @@ class ICalendarParser extends EntityImportParser implements ParserInterface {
   private $import;
 
   /**
-   * The raw calendar.
-   *
-   * @var string
-   */
-  private $raw;
-
-  /**
-   * The parsed calendar.
-   *
-   * @var array
-   */
-  private $cal;
-
-  /**
-   * How many events are in this iCal?
+   * The number of items.
    *
    * @var int
    */
-  private $eventCount = 0;
+  private $itemCount;
 
   /**
-   * Which keyword has been added to cal at last?
-   *
-   * @var string
-   */
-  private $lastKeyword;
-
-  /**
-   * Filters to apply.
+   * The items to process.
    *
    * @var array
    */
-  private $filters;
+  private $items;
 
   /**
-   * Any validation error message.
+   * The unprocessed lines of the iCalendar file.
    *
    * @var array
    */
-  private $errorMessage;
+  private $lines;
 
   /**
    * Creates the ICalendarParser Object.
    *
    * @param string $url
    *   An ICalendar URL.
-   * @param array $filters
-   *   Filters to apply.
    * @param \Drupal\effective_activism\Entity\Group $group
    *   The parent group.
    * @param \Drupal\effective_activism\Entity\Import $import
    *   The import entity.
    */
-  public function __construct($url, array $filters, Group $group, Import $import = NULL) {
-    if (empty($url)) {
-      return FALSE;
-    }
-    // Convert webcal scheme to http, as Guzzler may not support webcal.
-    $count = 1;
-    $url = strpos($url, 'webcal://') === 0 ? str_replace('webcal://', 'http://', $url, $count) : $url;
-    // Retrieve url.
-    $client = \Drupal::httpClient();
-    $request = $client->get($url);
-    $this->raw = (string) $request->getBody();
-    $this->filters = $filters;
-    $lines = explode("\n", $this->raw);
-    $this->initLines($lines);
+  public function __construct($url, Group $group, Import $import = NULL) {
     $this->group = $group;
     $this->import = $import;
-    return $this;
+    try {
+      // Convert webcal scheme to http, as Guzzler may not support webcal.
+      $url = strpos($url, 'webcal://') === 0 ? str_replace('webcal://', 'http://', $url) : $url;
+      // Retrieve url.
+      $response = Drupal::httpClient()->get($url);
+      if ($response->getStatusCode() === 200) {
+        $this->lines = explode("\n", $response->getBody()->getContents());
+        $this->initialize();
+      }
+      else {
+        throw new ParserValidationException(self::INVALID_PATH, NULL, NULL, NULL);
+      }
+    }
+    catch (BadResponseException $exception) {
+      throw new ParserValidationException(self::INVALID_PATH, NULL, NULL, NULL);
+    }
+    catch (RequestException $exception) {
+      throw new ParserValidationException(self::INVALID_PATH, NULL, NULL, NULL);
+    }
+    catch (ClientException $exception) {
+      throw new ParserValidationException(self::INVALID_PATH, NULL, NULL, NULL);
+    }
+  }
+
+  /**
+   * Extract events from an iCalendar file.
+   */
+  private function initialize() {
+    $position = 0;
+    while (isset($this->lines[$position])) {
+      $line = $this->lines[$position];
+      if ('BEGIN:VEVENT' === trim($line)) {
+        // Locate end.
+        $end = array_search('END:VEVENT', array_map(function ($line) {
+          return trim($line);
+        }, array_slice($this->lines, $position, NULL, TRUE)), TRUE);
+        if ($end) {
+          $slice = array_slice($this->lines, $position, $end - $position + 1);
+          $this->items[] = $slice;
+          $this->itemCount++;
+          $position = $end;
+        }
+        else {
+          return FALSE;
+        }
+      }
+      $position++;
+    }
+  }
+
+  /**
+   * Determines if a line has a key and value.
+   *
+   * @return bool
+   *   Returns TRUE if line has key/value pair, FALSE otherwise.
+   */
+  private function hasKeyValue($line) {
+    return strpos($line, ' ') !== 0 && strpos($line, ':') !== FALSE;
+  }
+
+  /**
+   * Extracts a key/value pair from a line.
+   *
+   * @param string $line
+   *   A line.
+   *
+   * @return array
+   *   A key/value pair.
+   */
+  private function extractKeyValue($line) {
+    list($key, $value) = explode(':', $line, 2);
+    // Strip any extra information.
+    $key = strpos($key, ';') !== FALSE ? substr($key, 0, strpos($key, ';')) : $key;
+    // Unescape commas.
+    $value = preg_replace("/\r|\n/", '', str_replace('\,', ',', $value));
+    return [$key, $value];
   }
 
   /**
@@ -110,26 +164,18 @@ class ICalendarParser extends EntityImportParser implements ParserInterface {
   public function validate() {
     $isValid = TRUE;
     try {
-      $this->validateHeader();
-      $this->validateItems();
+      $this->validateHeader($this->lines);
+      $this->validateItems($this->lines);
     }
     catch (ParserValidationException $exception) {
       $isValid = FALSE;
       switch ($exception->getErrorCode()) {
         case self::INVALID_HEADERS:
-          $this->errorMessage = t('The ICalendar file is not recognized.');
+          $this->errorMessage = t('The iCalendar file is not recognized.');
           break;
 
         case self::INVALID_DATE:
-          $this->errorMessage = t('The ICalendar file contains an event with an incorrect date.');
-          break;
-
-        case self::INVALID_EVENT:
-          $this->errorMessage = t('The ICalendar file contains an incorrect event.');
-          break;
-
-        case self::INVALID_LOCATION:
-          $this->errorMessage = t('The ICalendar file contains an event with an incorrect address.');
+          $this->errorMessage = t('The iCalendar file contains an event with an invalid date.');
           break;
 
       }
@@ -138,89 +184,98 @@ class ICalendarParser extends EntityImportParser implements ParserInterface {
   }
 
   /**
-   * Validate headers.
+   * Validate header.
+   *
+   * @param array $lines
+   *   The raw iCalendar file.
    */
-  public function validateHeader() {
-    if (!preg_match("/BEGIN:VCALENDAR.*VERSION:[12]\.0.*END:VCALENDAR/s", $this->raw)) {
+  private function validateHeader(array $lines) {
+    if (!preg_match("/BEGIN:VCALENDAR.*VERSION:[12]\.0.*END:VCALENDAR/s", implode("\n", $lines))) {
       throw new ParserValidationException(self::INVALID_HEADERS);
     }
   }
 
   /**
-   * Validate items.
+   * Validate events.
+   *
+   * @param array $lines
+   *   The raw iCalendar file.
    */
-  private function validateItems() {
-    if (!empty($this->cal['VEVENT'])) {
-      foreach ($this->cal['VEVENT'] as $event) {
-        // Apply filters, if any.
-        if ((
-          // If title doesn't contain string from title filter.
-          !empty($this->filters['title']) &&
-          !empty($event['SUMMARY']) &&
-          strstr($event['SUMMARY'], $this->filters['title']) === FALSE
-        ) ||
-        (
-          // Or description doesn't contain string from description filter.
-          !empty($this->filters['description']) &&
-          !empty($event['DESCRIPTION']) &&
-          strstr($event['DESCRIPTION'], $this->filters['description']) === FALSE
-        ) ||
-        (
-          // Or start date is older than start date filter.
-          !empty($this->filters['date_start']) &&
-          !empty($event['DSTART']) &&
-          strtotime($this->filters['date_start']) < strtotime($event['DTSTART'])
-        ) ||
-        (
-          // Or end date is newer than end date filter.
-          !empty($this->filters['date_end']) &&
-          !empty($event['DEND']) &&
-          strtotime($this->filters['date_end']) > strtotime($event['DEND'])
-        )) {
-          // ... Then skip event.
-          continue;
+  private function validateItems(array $lines) {
+    $position = 0;
+    while (isset($lines[$position])) {
+      $line = $lines[$position];
+      if ('BEGIN:VEVENT' === trim($line)) {
+        // Locate end.
+        $end = array_search('END:VEVENT', array_map(function ($line) {
+          return trim($line);
+        }, array_slice($this->lines, $position, NULL, TRUE)), TRUE);
+        if ($end) {
+          $slice = array_slice($this->lines, $position, $end - $position + 1);
+          $this->validateItem($slice);
+          $position = $end;
         }
-        $this->validateItem($event);
+        else {
+          return FALSE;
+        }
       }
+      $position++;
     }
   }
 
   /**
-   * Validate items.
+   * Validate an event.
    *
-   * @param array $values
-   *   The values to validate.
+   * @param array $slice
+   *   A slice of an iCalendar file that describes an event.
    */
-  private function validateItem(array $values) {
-    foreach ($values as $key => $value) {
-      switch ($key) {
-        case 'DTSTART':
-        case 'DTEND':
-          $date = \DateTime::createFromFormat(self::ICALENDAR_DATETIME_FORMAT, $value);
-          if (!$date || $date->format(self::ICALENDAR_DATETIME_FORMAT) !== $value) {
-            throw new ParserValidationException(self::INVALID_DATE);
+  private function validateItem(array $slice) {
+    $event = [];
+    $slice_position = 0;
+    // Create event, if any.
+    while (isset($slice[$slice_position])) {
+      $line = $slice[$slice_position];
+      if ($this->hasKeyValue($line)) {
+        list($key, $value) = $this->extractKeyValue($line);
+        // Read ahead to capture multi-line values.
+        $read_ahead = $slice_position + 1;
+        while (isset($slice[$read_ahead])) {
+          if ($this->hasKeyValue($slice[$read_ahead])) {
+            break;
           }
-          break;
+          $value .= ltrim(preg_replace("/\r|\n/", '', str_replace('\,', ',', $slice[$read_ahead])));
+          $read_ahead++;
+        }
+        switch ($key) {
+          case 'DTSTART':
+          case 'DTEND':
+            // Remove the 'Z' from date.
+            $value = strpos($value, 'Z') === strlen($value) - 1 ? substr($value, 0, strlen($value) - 1) : $value;
+            $date = DateTime::createFromFormat(self::ICALENDAR_DATETIME_FORMAT, $value);
+            if (!$date || $date->format(self::ICALENDAR_DATETIME_FORMAT) !== $value) {
+              throw new ParserValidationException(self::INVALID_DATE, NULL, NULL, $value);
+            }
+            break;
+        }
       }
+      $slice_position++;
     }
-    // Validate event if required fields are present.
-    if ($this->isEvent($values)) {
-      $values = [
-        !empty($values['SUMMARY']) ? $values['SUMMARY'] : NULL,
-        \DateTime::createFromFormat(self::ICALENDAR_DATETIME_FORMAT, $values['DTSTART'])->format(DATETIME_DATETIME_STORAGE_FORMAT),
-        \DateTime::createFromFormat(self::ICALENDAR_DATETIME_FORMAT, $values['DTEND'])->format(DATETIME_DATETIME_STORAGE_FORMAT),
-        [
-          'address' => NULL,
-          'extra_information' => NULL,
-        ],
-        !empty($values['DESCRIPTION']) ? str_replace(['\n', '\,'], ["\n"], $values['DESCRIPTION']) : NULL,
+    $event = $this->extractEvent($slice);
+    if ($event !== FALSE) {
+      if (!$this->validateEvent([
+        $event['title'],
+        $event['start_date'],
+        $event['end_date'],
+        $event['location'],
+        $event['description'],
         NULL,
         $this->group->id(),
         NULL,
         NULL,
-      ];
-      if (!$this->validateEvent($values)) {
-        throw new ParserValidationException(self::INVALID_EVENT);
+        NULL,
+        NULL,
+      ])) {
+        throw new ParserValidationException(self::INVALID_EVENT, $this->row, NULL);
       }
     }
   }
@@ -236,310 +291,121 @@ class ICalendarParser extends EntityImportParser implements ParserInterface {
    * {@inheritdoc}
    */
   public function getItemCount() {
-    return $this->eventCount;
-  }
-
-  /**
-   * Checks if values contains an event.
-   *
-   * @param array $values
-   *   The values to check.
-   *
-   * @return bool
-   *   Whether or not the values contains an event.
-   */
-  private function isEvent(array $values) {
-    return !empty($values['DTSTART']);
+    return $this->itemCount;
   }
 
   /**
    * {@inheritdoc}
    */
   public function getNextBatch($position) {
-    $itemCount = 1;
-    $items = [];
-    if (!empty($this->cal['VEVENT'])) {
-      foreach ($this->cal['VEVENT'] as $event) {
-        // Skip to current event.
-        if ($itemCount < $position) {
-          $itemCount++;
-          continue;
-        }
-        // Apply filters, if any.
-        if ((
-          // If title doesn't contain string from title filter.
-          !empty($this->filters['title']) &&
-          !empty($event['SUMMARY']) &&
-          strstr($event['SUMMARY'], $this->filters['title']) === FALSE
-        ) ||
-        (
-          // Or description doesn't contain string from description filter.
-          !empty($this->filters['description']) &&
-          !empty($event['DESCRIPTION']) &&
-          strstr($event['DESCRIPTION'], $this->filters['description']) === FALSE
-        ) ||
-        (
-          // Or start date is older than start date filter.
-          !empty($this->filters['date_start']) &&
-          !empty($event['DSTART']) &&
-          strtotime($this->filters['date_start']) < strtotime($event['DTSTART'])
-        ) ||
-        (
-          // Or end date is newer than end date filter.
-          !empty($this->filters['date_end']) &&
-          !empty($event['DEND']) &&
-          strtotime($this->filters['date_end']) > strtotime($event['DEND'])
-        )) {
-          // ... Then skip event.
-          continue;
-        }
-        // Otherwise, add event.
-        $items[] = $event;
-        $itemCount++;
-        if ($itemCount === $position + self::BATCHSIZE) {
-          break;
-        }
-      }
-    }
-    return $items;
+    return array_slice($this->items, $position, self::BATCHSIZE);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function importItem(array $values) {
-    // Check if event exists for group.
-    if (!empty($values['UID'])) {
-      $count = \Drupal::entityQuery('event')
-        ->condition('external_uid', $values['UID'])
+  public function processItem($item) {
+    $event = $this->extractEvent($item);
+    // Create event.
+    if ($event !== FALSE) {
+      $this->latestEvent = $this->importEvent([
+        $event['title'],
+        $event['start_date'],
+        $event['end_date'],
+        $event['location'],
+        $event['description'],
+        NULL,
+        $this->group->id(),
+        NULL,
+        $this->import->id(),
+        NULL,
+        NULL,
+      ]);
+    }
+  }
+
+  /**
+   * Extract event from a slice of an iCalendar file.
+   *
+   * @param array $slice
+   *   The slice to extract an event from.
+   *
+   * @return array
+   *   A unique event.
+   */
+  private function extractEvent(array $slice) {
+    // Populate event array.
+    $event = [];
+    $slice_position = 0;
+    // Create event, if any.
+    while (isset($slice[$slice_position])) {
+      $line = $slice[$slice_position];
+      if ($this->hasKeyValue($line)) {
+        list($key, $value) = $this->extractKeyValue($line);
+        // Read ahead to capture multi-line values.
+        $read_ahead = $slice_position + 1;
+        while (isset($slice[$read_ahead])) {
+          if ($this->hasKeyValue($slice[$read_ahead])) {
+            break;
+          }
+          $next_line = str_replace(["\r", "\n"], '', str_replace('\,', ',', $slice[$read_ahead]));
+          $value .= substr($next_line, 1);
+          $read_ahead++;
+        }
+        switch ($key) {
+          case 'DTSTART':
+            // Remove the 'Z' from date.
+            $value = strpos($value, 'Z') === strlen($value) - 1 ? substr($value, 0, strlen($value) - 1) : $value;
+            $event['start_date'] = DateTime::createFromFormat(self::ICALENDAR_DATETIME_FORMAT, $value)->format(DATETIME_DATETIME_STORAGE_FORMAT);
+            break;
+
+          case 'DTEND':
+            // Remove the 'Z' from date.
+            $value = strpos($value, 'Z') === strlen($value) - 1 ? substr($value, 0, strlen($value) - 1) : $value;
+            $event['end_date'] = DateTime::createFromFormat(self::ICALENDAR_DATETIME_FORMAT, $value)->format(DATETIME_DATETIME_STORAGE_FORMAT);
+            break;
+
+          case 'LOCATION':
+            $address = NULL;
+            $extra_information = NULL;
+            if (LocationHelper::validateAddress($value)) {
+              $address = $value;
+            }
+            else {
+              $extra_information = $value;
+            }
+            $event['location'] = [
+              'address' => $address,
+              'extra_information' => $extra_information,
+            ];
+            break;
+
+          case 'SUMMARY':
+            $event['title'] = $value;
+            break;
+
+          case 'DESCRIPTION':
+            $event['description'] = str_replace('\n', "\n", $value);
+            break;
+
+          case 'UID':
+            $event['external_uid'] = $value;
+            break;
+        }
+      }
+      $slice_position++;
+    }
+    // Only include event if it isn't imported already.
+    if (!empty($event['external_uid'])) {
+      $count = Drupal::entityQuery('event')
+        ->condition('external_uid', $event['external_uid'])
         ->count()
         ->execute();
       if (!empty($count) && $count > 0) {
         return FALSE;
       }
     }
-    $event = $this->importEvent([
-      !empty($values['SUMMARY']) ? $values['SUMMARY'] : NULL,
-      \DateTime::createFromFormat(self::ICALENDAR_DATETIME_FORMAT, $values['DTSTART'])->format(DATETIME_DATETIME_STORAGE_FORMAT),
-      \DateTime::createFromFormat(self::ICALENDAR_DATETIME_FORMAT, $values['DTEND'])->format(DATETIME_DATETIME_STORAGE_FORMAT),
-      [
-        'address' => !empty($values['LOCATION']) ? $values['LOCATION'] : NULL,
-        'extra_information' => NULL,
-      ],
-      !empty($values['DESCRIPTION']) ? str_replace(['\n', '\,'], ["\n"], $values['DESCRIPTION']) : NULL,
-      NULL,
-      $this->group->id(),
-      !empty($values['UID']) ? $values['UID'] : NULL,
-      $this->import->id(),
-    ]);
-    return $event->id();
-  }
-
-  /**
-   * Initializes lines from file.
-   *
-   * @param array $lines
-   *   The lines to initialize.
-   *
-   * @return Object
-   *   The iCal Object.
-   */
-  private function initLines(array $lines) {
-    if (stristr($lines[0], 'BEGIN:VCALENDAR') === FALSE) {
-      return FALSE;
-    }
-    else {
-      foreach ($lines as $line) {
-        // Trim trailing whitespace.
-        $line = rtrim($line);
-        $add = $this->keyValueFromString($line);
-        if ($add === FALSE) {
-          $this->addCalendarComponentWithKeyAndValue($component, FALSE, $line);
-          continue;
-        }
-        $keyword = $add[0];
-        // Could be an array containing multiple values.
-        $values = $add[1];
-        if (!is_array($values)) {
-          if (!empty($values)) {
-            // Make an array as not already.
-            $values = [$values];
-            // Empty placeholder array.
-            $blank_array = [];
-            array_push($values, $blank_array);
-          }
-          else {
-            // Use blank array to ignore this line.
-            $values = [];
-          }
-        }
-        elseif (empty($values[0])) {
-          // Use blank array to ignore this line.
-          $values = [];
-        }
-        // Reverse so that our array of properties is processed first.
-        $values = array_reverse($values);
-        foreach ($values as $value) {
-          switch ($line) {
-            case 'BEGIN:VEVENT':
-              if (!is_array($value)) {
-                $this->eventCount++;
-              }
-              $component = 'VEVENT';
-              break;
-
-            // All other special strings.
-            case 'BEGIN:VCALENDAR':
-            case 'BEGIN:DAYLIGHT':
-            case 'BEGIN:VTIMEZONE':
-            case 'BEGIN:STANDARD':
-              $component = $value;
-              break;
-
-            case 'END:VEVENT':
-            case 'END:VCALENDAR':
-            case 'END:DAYLIGHT':
-            case 'END:VTIMEZONE':
-            case 'END:STANDARD':
-              $component = 'VCALENDAR';
-              break;
-
-            default:
-              $this->addCalendarComponentWithKeyAndValue($component, $keyword, $value);
-          }
-        }
-      }
-    }
-  }
-
-  /**
-   * Add to $this->ical array one value and key.
-   *
-   * @param string $component
-   *   This could be VTODO, VEVENT, VCALENDAR, ...
-   * @param string $keyword
-   *   The keyword, for example DTSTART.
-   * @param string $value
-   *   The value, for example 20110105T090000Z.
-   */
-  private function addCalendarComponentWithKeyAndValue($component, $keyword, $value) {
-    if ($keyword == FALSE) {
-      $keyword = $this->lastKeyword;
-    }
-    switch ($component) {
-      case 'VEVENT':
-        if (!isset($this->cal[$component][$this->eventCount - 1][$keyword . '_array'])) {
-          // Create array().
-          $this->cal[$component][$this->eventCount - 1][$keyword . '_array'] = [];
-        }
-        if (is_array($value)) {
-          // Add array of properties to the end.
-          array_push($this->cal[$component][$this->eventCount - 1][$keyword . '_array'], $value);
-        }
-        else {
-          if (!isset($this->cal[$component][$this->eventCount - 1][$keyword])) {
-            $this->cal[$component][$this->eventCount - 1][$keyword] = $value;
-          }
-          $this->cal[$component][$this->eventCount - 1][$keyword . '_array'][] = $value;
-          // Glue back together for multi-line content.
-          if ($this->cal[$component][$this->eventCount - 1][$keyword] != $value) {
-            // First char.
-            $ord = (isset($value[0])) ? ord($value[0]) : NULL;
-
-            // Is space or tab?.
-            if (in_array($ord, [9, 32])) {
-              // Only trim the first character.
-              $value = substr($value, 1);
-            }
-            // Account for multiple definitions of cur. keyword (e.g. ATTENDEE).
-            if (is_array($this->cal[$component][$this->eventCount - 1][$keyword . '_array'][1])) {
-              // Concat value *with separator* as content spans multple lines.
-              $this->cal[$component][$this->eventCount - 1][$keyword] .= ';' . $value;
-            }
-            else {
-              if ($keyword === 'EXDATE') {
-                // This will give out a comma separated EXDATE string
-                // as per RFC2445.
-                // Example:
-                // EXDATE:19960402T010000Z,19960403T010000Z,19960404T010000Z.
-                // Usage: $event['EXDATE'] will print out
-                // 19960402T010000Z,19960403T010000Z,19960404T010000Z.
-                $this->cal[$component][$this->eventCount - 1][$keyword] .= ',' . $value;
-              }
-              else {
-                // Concat value as content spans multiple lines.
-                $this->cal[$component][$this->eventCount - 1][$keyword] .= $value;
-              }
-            }
-          }
-        }
-        break;
-
-      default:
-        $this->cal[$component][$keyword] = $value;
-    }
-    $this->lastKeyword = $keyword;
-  }
-
-  /**
-   * Get a key-value pair of a string.
-   *
-   * @param string $text
-   *   Which is like "VCALENDAR:Begin" or "LOCATION:".
-   *
-   * @return array
-   *   array("VCALENDAR", "Begin").
-   */
-  private function keyValueFromString($text) {
-    // Match colon separator outside of quoted substrings.
-    // Fallback to nearest semicolon outside of quoted substrings,
-    // if colon cannot be found.
-    // Do not try and match within the value paired with the keyword.
-    preg_match('/(.*?)(?::(?=(?:[^"]*"[^"]*")*[^"]*$)|;(?=[^:]*$))([\w\W]*)/', htmlspecialchars($text, ENT_QUOTES, 'UTF-8'), $matches);
-    if (count($matches) == 0) {
-      return FALSE;
-    }
-    if (preg_match('/^([A-Z-]+)([;][\w\W]*)?$/', $matches[1])) {
-      // Remove first match and re-align ordering.
-      $matches = array_splice($matches, 1, 2);
-      // Process properties.
-      if (preg_match('/([A-Z-]+)[;]([\w\W]*)/', $matches[0], $properties)) {
-        // Remove first match.
-        array_shift($properties);
-        // Fix to ignore everything in keyword after a ;
-        // (e.g. Language, TZID, etc.).
-        $matches[0] = $properties[0];
-        // Repeat removing first match.
-        array_shift($properties);
-        $formatted = [];
-        foreach ($properties as $property) {
-          // Match semicolon separator outside of quoted substrings.
-          preg_match_all('~[^\r\n";]+(?:"[^"\\\]*(?:\\\.[^"\\\]*)*"[^\r\n";]*)*~', $property, $attributes);
-          // Remove multi-dimensional array and use the first key.
-          $attributes = (count($attributes) == 0) ? [$property] : reset($attributes);
-          foreach ($attributes as $attribute) {
-            // Match equals sign separator outside of quoted substrings.
-            preg_match_all('~[^\r\n"=]+(?:"[^"\\\]*(?:\\\.[^"\\\]*)*"[^\r\n"=]*)*~', $attribute, $values);
-            // Remove multi-dimensional array and use the first key.
-            $value = (count($values) == 0) ? NULL : reset($values);
-            if (is_array($value) && isset($value[1])) {
-              // Remove double quotes from beginning and end only.
-              $formatted[$value[0]] = trim($value[1], '"');
-            }
-          }
-        }
-        // Assign the keyword property information.
-        $properties[0] = $formatted;
-        // Add match to beginning of array.
-        array_unshift($properties, $matches[1]);
-        $matches[1] = $properties;
-      }
-      return $matches;
-    }
-    else {
-      // Ignore this match.
-      return FALSE;
-    }
+    return $event;
   }
 
 }

@@ -4,6 +4,7 @@ namespace Drupal\effective_activism\Hook;
 
 use Drupal\effective_activism\ContentMigration\Export\CSV\CSVParser as ExportCSVParser;
 use Drupal\effective_activism\ContentMigration\Import\CSV\CSVParser as ImportCSVParser;
+use Drupal\effective_activism\ContentMigration\Import\ICalendar\ICalendarParser;
 
 /**
  * Implements hook_entity_insert().
@@ -51,6 +52,25 @@ class EntityInsertHook implements HookInterface {
               ],
             ],
             'finished' => 'Drupal\effective_activism\ContentMigration\Import\CSV\BatchProcess::finished',
+          ];
+          batch_set($batch);
+        }
+        elseif ($entity->bundle() === 'icalendar') {
+          $field_url = $entity->get('field_url')->getValue();
+          $group = $entity->get('parent')->entity;
+          // Get iCalendar.
+          $icalendarParser = new ICalendarParser($field_url[0]['uri'], $group, $entity);
+          $batch = [
+            'title' => t('Importing...'),
+            'operations' => [
+              [
+                'Drupal\effective_activism\ContentMigration\Import\ICalendar\BatchProcess::process',
+                [
+                  $icalendarParser,
+                ],
+              ],
+            ],
+            'finished' => 'Drupal\effective_activism\ContentMigration\Import\ICalendar\BatchProcess::finished',
           ];
           batch_set($batch);
         }

@@ -246,7 +246,7 @@ class CSVParser extends EntityImportParser implements ParserInterface {
         case 'start_date':
         case 'end_date':
           if (!empty($data)) {
-            $date = \DateTime::createFromFormat('Y-m-d H:i', $data);
+            $date = DateTime::createFromFormat('Y-m-d H:i', $data);
             if (!$date || $date->format('Y-m-d H:i') !== $data) {
               throw new ParserValidationException(self::INVALID_DATE, $this->row, $this->convertColumn($this->column), $data);
             }
