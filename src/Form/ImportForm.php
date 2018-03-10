@@ -43,6 +43,11 @@ class ImportForm extends ContentEntityForm {
         $form['field_file_csv']['#disabled'] = TRUE;
         break;
 
+      case 'import_icalendar_add_form':
+        // Add validation.
+        $form['#validate'][] = 'Drupal\effective_activism\Helper\ImportHelper::validateICalendar';
+        break;
+
       case 'import_icalendar_edit_form':
         // Restrict access to existing import entities.
         $form['field_url']['#disabled'] = TRUE;

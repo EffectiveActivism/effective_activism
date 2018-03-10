@@ -59,14 +59,14 @@ class EntityInsertHook implements HookInterface {
           $field_url = $entity->get('field_url')->getValue();
           $group = $entity->get('parent')->entity;
           // Get iCalendar.
-          $icalendarParser = new ICalendarParser($field_url[0]['value'], $group, $entity);
+          $icalendarParser = new ICalendarParser($field_url[0]['uri'], $group, $entity);
           $batch = [
             'title' => t('Importing...'),
             'operations' => [
               [
                 'Drupal\effective_activism\ContentMigration\Import\ICalendar\BatchProcess::process',
                 [
-                  $csvParser,
+                  $icalendarParser,
                 ],
               ],
             ],

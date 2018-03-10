@@ -32,7 +32,7 @@ class OrganizationHelper {
    *   An array of event templates related to the organization.
    */
   public static function getEventTemplates(Organization $organization, $position = 0, $limit = 0, $load_entities = TRUE) {
-    $query = \Drupal::entityQuery('event_template')
+    $query = Drupal::entityQuery('event_template')
       ->condition('organization', $organization->id())
       ->sort('created');
     if ($limit > 0) {
@@ -56,7 +56,7 @@ class OrganizationHelper {
    *   An array of event templates related to the organization.
    */
   public static function getEventTemplatesPaged(Organization $organization, $page_count = 20, $load_entities = TRUE) {
-    $query = \Drupal::entityQuery('event_template')
+    $query = Drupal::entityQuery('event_template')
       ->condition('organization', $organization->id())
       ->pager($page_count)
       ->sort('created');
@@ -80,7 +80,7 @@ class OrganizationHelper {
    *   An array of exports related to the organization.
    */
   public static function getExports(Organization $organization, $position = 0, $limit = 0, $load_entities = TRUE) {
-    $query = \Drupal::entityQuery('export')
+    $query = Drupal::entityQuery('export')
       ->condition('organization', $organization->id())
       ->sort('created');
     if ($limit > 0) {
@@ -104,7 +104,7 @@ class OrganizationHelper {
    *   An array of exports related to the organization.
    */
   public static function getExportsPaged(Organization $organization, $page_count = 20, $load_entities = TRUE) {
-    $query = \Drupal::entityQuery('export')
+    $query = Drupal::entityQuery('export')
       ->condition('organization', $organization->id())
       ->pager($page_count)
       ->sort('created');
@@ -128,7 +128,7 @@ class OrganizationHelper {
    *   An array of filters related to the organization.
    */
   public static function getFilters(Organization $organization, $position = 0, $limit = 0, $load_entities = TRUE) {
-    $query = \Drupal::entityQuery('filter')
+    $query = Drupal::entityQuery('filter')
       ->condition('organization', $organization->id())
       ->sort('created');
     if ($limit > 0) {
@@ -152,7 +152,7 @@ class OrganizationHelper {
    *   An array of filters related to the organization.
    */
   public static function getFiltersPaged(Organization $organization, $page_count = 20, $load_entities = TRUE) {
-    $query = \Drupal::entityQuery('filter')
+    $query = Drupal::entityQuery('filter')
       ->condition('organization', $organization->id())
       ->pager($page_count)
       ->sort('created');

@@ -7,7 +7,7 @@ use Drupal\effective_activism\Entity\Event;
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\Import;
 use Drupal\effective_activism\ContentMigration\Import\CSV\CSVParser;
-use Drupal\effective_activism\ContentMigration\Import\CSV\ICalendarParser;
+use Drupal\effective_activism\ContentMigration\Import\ICalendar\ICalendarParser;
 
 /**
  * Helper functions for querying imports.
@@ -64,38 +64,19 @@ class ImportHelper {
   }
 
   /**
-   * Validation callback for the ICalendar import form.
+   * Validation callback for the iCalendar import form.
    *
    * @param array $form
    *   The form array.
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    *   The form state to validate.
    */
-  public static function validateIcalendar(array &$form, FormStateInterface $form_state) {
-    $filter_title = $form_state->getValue('field_filter_title');
-    $filter_description = $form_state->getValue('field_filter_title');
-    $filter_date_start = $form_state->getValue('field_filter_date_start');
-    $filter_date_end = $form_state->getValue('field_filter_date_end');
-    // Validate filter fields.
-    if (
-      !empty($filter_date_start[0]['value']) &&
-      !empty($filter_date_end[0]['value']) &&
-      $filter_date_start[0]['value'] > $filter_date_end[0]['value']
-    ) {
-      $form_state->setErrorByName('field_url', 'The start date must be before the end date.');
-      return;
-    }
-    // Add filters.
-    $filters = [];
-    $filters['title'] = !empty($filter_title[0]['value']) ? $filter_title[0]['value'] : NULL;
-    $filters['description'] = !empty($filter_description[0]['value']) ? $filter_description[0]['value'] : NULL;
-    $filters['date_start'] = !empty($filter_date_start[0]['value']) ? $filter_date_start[0]['value'] : NULL;
-    $filters['date_end'] = !empty($filter_date_end[0]['value']) ? $filter_date_end[0]['value'] : NULL;
+  public static function validateICalendar(array &$form, FormStateInterface $form_state) {
     // Get ICalendar file.
     $field_url = $form_state->getValue('field_url');
     $parent = $form_state->getValue('parent');
     $gid = $parent[0]['target_id'];
-    $parsedICalendar = new ICalendarParser($field_url[0]['uri'], $filters, Group::load($gid), NULL);
+    $parsedICalendar = new ICalendarParser($field_url[0]['uri'], Group::load($gid), NULL);
     // Validate ICalendar headers.
     if (!$parsedICalendar->validate()) {
       $form_state->setErrorByName('field_url', $parsedICalendar->getErrorMessage());
