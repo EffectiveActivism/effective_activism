@@ -178,6 +178,9 @@ class ICalendarParser extends EntityImportParser implements ParserInterface {
           $this->errorMessage = t('The iCalendar file contains an event with an invalid date.');
           break;
 
+        case self::INVALID_EVENT:
+          $this->errorMessage = t('The iCalendar file contains an invalid event.');
+          break;
       }
     }
     return $isValid;
@@ -270,12 +273,12 @@ class ICalendarParser extends EntityImportParser implements ParserInterface {
         $event['description'],
         NULL,
         $this->group->id(),
-        NULL,
+        $event['external_uid'],
         NULL,
         NULL,
         NULL,
       ])) {
-        throw new ParserValidationException(self::INVALID_EVENT, $this->row, NULL);
+        throw new ParserValidationException(self::INVALID_EVENT, NULL, NULL);
       }
     }
   }
@@ -316,7 +319,7 @@ class ICalendarParser extends EntityImportParser implements ParserInterface {
         $event['description'],
         NULL,
         $this->group->id(),
-        NULL,
+        $event['external_uid'],
         $this->import->id(),
         NULL,
         NULL,
@@ -335,7 +338,16 @@ class ICalendarParser extends EntityImportParser implements ParserInterface {
    */
   private function extractEvent(array $slice) {
     // Populate event array.
-    $event = [];
+    $event = [
+      'title' => NULL,
+      'description' => NULL,
+      'start_date' => NULL,
+      'end_date' => NULL,
+      'location' => [
+        'address' => NULL,
+        'extra_information' => NULL,
+      ],
+    ];
     $slice_position = 0;
     // Create event, if any.
     while (isset($slice[$slice_position])) {
@@ -399,6 +411,7 @@ class ICalendarParser extends EntityImportParser implements ParserInterface {
     if (!empty($event['external_uid'])) {
       $count = Drupal::entityQuery('event')
         ->condition('external_uid', $event['external_uid'])
+        ->condition('parent', $this->group->id())
         ->count()
         ->execute();
       if (!empty($count) && $count > 0) {
