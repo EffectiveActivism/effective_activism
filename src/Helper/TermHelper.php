@@ -15,8 +15,10 @@ class TermHelper {
   /**
    * Get group events.
    *
-   * @param \Drupal\effective_activism\Entity\Group $group
-   *   The group to get events from.
+   * @param \Drupal\effective_activism\Entity\Organization $organization
+   *   The organization to get events from.
+   * @param \Drupal\taxonomy\Entity\Term $term
+   *   The term to get events from.
    * @param int $position
    *   The position to start from.
    * @param int $limit
