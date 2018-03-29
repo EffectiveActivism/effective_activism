@@ -49,7 +49,10 @@ class InlineEntityFormEntityFormAlterHook implements HookInterface {
     $entity_form = &$args['entity_form'];
     $form_state = &$args['form_state'];
     $entity_type = $entity_form['#entity_type'];
-    if ($entity_type === 'result') {
+    if (
+      $entity_form['#op'] === 'add' &&
+      $entity_type === 'result'
+    ) {
       $start_date = $form_state->getValue('start_date');
       $end_date = $form_state->getValue('end_date');
       if (
