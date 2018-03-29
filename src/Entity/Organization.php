@@ -57,6 +57,7 @@ use Drupal\effective_activism\Constant;
  *     "publish-form" = "/o/{organization}/publish",
  *     "results" = "/o/{organization}/results",
  *     "result_types" = "/o/{organization}/result-types",
+ *     "terms" = "/o/{organization}/tags",
  *   },
  * )
  */

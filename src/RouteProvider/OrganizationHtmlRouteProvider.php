@@ -41,6 +41,9 @@ class OrganizationHtmlRouteProvider extends DefaultHtmlRouteProvider {
     if ($result_overview_route = $this->getResultTypesRoute($entity_type)) {
       $collection->add("entity.{$entity_type_id}.result_types", $result_overview_route);
     }
+    if ($tag_overview_route = $this->getTagsRoute($entity_type)) {
+      $collection->add("entity.{$entity_type_id}.terms", $tag_overview_route);
+    }
     return $collection;
   }
 
@@ -325,6 +328,32 @@ class OrganizationHtmlRouteProvider extends DefaultHtmlRouteProvider {
         ->setDefaults([
           '_entity_list' => 'result_type',
           '_title' => 'Result types',
+        ])
+        ->setRequirement('_entity_access', "{$entity_type_id}.update")
+        ->setOption('parameters', [
+          $entity_type_id => ['type' => Constant::ENTITY_ORGANIZATION],
+        ]);
+      return $route;
+    }
+  }
+
+  /**
+   * Gets the tags route.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
+   *   The entity type.
+   *
+   * @return \Symfony\Component\Routing\Route|null
+   *   The generated route, if available.
+   */
+  protected function getTagsRoute(EntityTypeInterface $entity_type) {
+    if ($entity_type->hasLinkTemplate('terms')) {
+      $entity_type_id = $entity_type->id();
+      $route = new Route($entity_type->getLinkTemplate('terms'));
+      $route
+        ->setDefaults([
+          '_entity_list' => 'taxonomy_term',
+          '_title' => 'Tags',
         ])
         ->setRequirement('_entity_access', "{$entity_type_id}.update")
         ->setOption('parameters', [
