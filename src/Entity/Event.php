@@ -303,7 +303,7 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
       ->setDefaultValue('')
       ->setDisplayOptions('view', [
         'label' => 'hidden',
-        'type' => 'hidden',
+        'region' => 'hidden',
         'weight' => array_search('external_uid', self::WEIGHTS),
       ])
       ->setDisplayOptions('form', [
@@ -391,7 +391,7 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
       ->setDefaultValueCallback('Drupal\node\Entity\Node::getCurrentUserId')
       ->setDisplayOptions('view', [
         'label' => 'hidden',
-        'type' => 'hidden',
+        'region' => 'hidden',
       ])
       ->setDisplayOptions('form', [
         'type' => 'entity_reference_autocomplete',
