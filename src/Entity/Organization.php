@@ -161,7 +161,7 @@ class Organization extends RevisionableContentEntityBase implements Organization
       ->setRevisionable(TRUE)
       ->setSetting('target_type', 'user')
       ->setSetting('handler', 'default')
-      ->setDefaultValueCallback('Drupal\node\Entity\Node::getCurrentUserId')
+      ->setDefaultValueCallback('Drupal\effective_activism\Helper\AccountHelper::getCurrentUserId')
       ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'author',

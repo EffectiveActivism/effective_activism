@@ -136,7 +136,7 @@ class Result extends RevisionableContentEntityBase implements ResultInterface {
       ->setRevisionable(TRUE)
       ->setSetting('target_type', 'user')
       ->setSetting('handler', 'default')
-      ->setDefaultValueCallback('Drupal\node\Entity\Node::getCurrentUserId')
+      ->setDefaultValueCallback('Drupal\effective_activism\Helper\AccountHelper::getCurrentUserId')
       ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'author',

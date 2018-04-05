@@ -228,4 +228,14 @@ class AccountHelper {
     return $load_entities ? Group::loadMultiple($result) : array_values($result);
   }
 
+  /**
+   * Get current user Id.
+   *
+   * @return int
+   *   The current user id.
+   */
+  public static function getCurrentUserId() {
+    return [Drupal::currentUser()->id()];
+  }
+
 }
