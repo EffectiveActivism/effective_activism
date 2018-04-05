@@ -1,0 +1,7 @@
+uuid: f63c3b57-d3f1-4b5a-94d9-6e1ff8949139
+langcode: en
+status: true
+dependencies: {  }
+id: servings
+label: Servings
+description: 'The number of servings of food samples, food give-aways or food sales.'
