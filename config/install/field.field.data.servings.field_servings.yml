@@ -1,0 +1,25 @@
+uuid: f5460e27-e8b3-48b4-b24c-0d76ccc66351
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.data_type.servings
+    - field.storage.data.field_servings
+id: data.servings.field_servings
+field_name: field_servings
+entity_type: data
+bundle: servings
+label: Servings
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  min: 0
+  max: 99999999
+  prefix: ''
+  suffix: ''
+field_type: integer

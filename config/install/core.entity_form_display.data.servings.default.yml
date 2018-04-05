@@ -1,0 +1,20 @@
+uuid: 1a062aa8-d7a1-4efd-9370-fd39004d2717
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.data_type.servings
+    - field.field.data.servings.field_servings
+id: data.servings.default
+targetEntityType: data
+bundle: servings
+mode: default
+content:
+  field_servings:
+    weight: 26
+    settings:
+      placeholder: Servings
+    third_party_settings: {  }
+    type: number
+    region: content
+hidden: {  }
