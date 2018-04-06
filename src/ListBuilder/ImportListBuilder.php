@@ -24,6 +24,8 @@ class ImportListBuilder extends EntityListBuilder {
     Constant::CACHE_TAG_IMPORT,
   ];
 
+  const DEFAULT_LIMIT = 10;
+
   /**
    * The organization that the imports belongs to.
    *
@@ -38,6 +40,7 @@ class ImportListBuilder extends EntityListBuilder {
     parent::__construct($entity_type, $storage);
     $this->organization = empty($organization) ? Drupal::request()->get('organization') : $organization;
     $this->group = empty($group) ? Drupal::request()->get('group') : $group;
+    $this->limit = self::DEFAULT_LIMIT;
   }
 
   /**
@@ -79,6 +82,7 @@ class ImportListBuilder extends EntityListBuilder {
       'max-age' => self::CACHE_MAX_AGE,
       'tags' => self::CACHE_TAGS,
     ];
+    $build['pager'] = ['#type' => 'pager'];
     return $build;
   }
 

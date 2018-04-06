@@ -24,6 +24,8 @@ class ExportListBuilder extends EntityListBuilder {
     Constant::CACHE_TAG_EXPORT,
   ];
 
+  const DEFAULT_LIMIT = 10;
+
   /**
    * The organization that the exports belongs to.
    *
@@ -37,6 +39,7 @@ class ExportListBuilder extends EntityListBuilder {
   public function __construct(EntityTypeInterface $entity_type, EntityStorageInterface $storage, Organization $organization = NULL) {
     parent::__construct($entity_type, $storage);
     $this->organization = empty($organization) ? Drupal::request()->get('organization') : $organization;
+    $this->limit = self::DEFAULT_LIMIT;
   }
 
   /**
@@ -77,6 +80,7 @@ class ExportListBuilder extends EntityListBuilder {
       'max-age' => self::CACHE_MAX_AGE,
       'tags' => self::CACHE_TAGS,
     ];
+    $build['pager'] = ['#type' => 'pager'];
     return $build;
   }
 

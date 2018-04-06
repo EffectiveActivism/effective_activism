@@ -5,6 +5,8 @@ namespace Drupal\effective_activism\ListBuilder;
 use Drupal;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\EntityListBuilder;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\effective_activism\Constant;
 use Drupal\effective_activism\Helper\AccountHelper;
 use ReflectionClass;
@@ -22,6 +24,16 @@ class OrganizationListBuilder extends EntityListBuilder {
     Constant::CACHE_TAG_USER,
     Constant::CACHE_TAG_ORGANIZATION,
   ];
+
+  const DEFAULT_LIMIT = 10;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct(EntityTypeInterface $entity_type, EntityStorageInterface $storage) {
+    parent::__construct($entity_type, $storage);
+    $this->limit = self::DEFAULT_LIMIT;
+  }
 
   /**
    * {@inheritdoc}
@@ -68,6 +80,7 @@ class OrganizationListBuilder extends EntityListBuilder {
       'max-age' => self::CACHE_MAX_AGE,
       'tags' => self::CACHE_TAGS,
     ];
+    $build['pager'] = ['#type' => 'pager'];
     return $build;
   }
 
