@@ -30,6 +30,8 @@ class EventListBuilder extends EntityListBuilder {
     Constant::CACHE_TAG_EVENT,
   ];
 
+  const DEFAULT_LIMIT = 10;
+
   /**
    * Group.
    *
@@ -51,6 +53,7 @@ class EventListBuilder extends EntityListBuilder {
     parent::__construct($entity_type, $storage);
     $this->organization = empty($organization) ? Drupal::request()->get('organization') : $organization;
     $this->group = empty($group) ? Drupal::request()->get('group') : $group;
+    $this->limit = self::DEFAULT_LIMIT;
   }
 
   /**
@@ -97,6 +100,7 @@ class EventListBuilder extends EntityListBuilder {
       'max-age' => self::CACHE_MAX_AGE,
       'tags' => self::CACHE_TAGS,
     ];
+    $build['pager'] = ['#type' => 'pager'];
     return $build;
   }
 

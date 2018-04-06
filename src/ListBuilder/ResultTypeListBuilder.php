@@ -22,6 +22,8 @@ class ResultTypeListBuilder extends ConfigEntityListBuilder {
     Constant::CACHE_TAG_RESULT_TYPE,
   ];
 
+  const DEFAULT_LIMIT = 10;
+
   /**
    * The organization that the groups belongs to.
    *
@@ -35,6 +37,7 @@ class ResultTypeListBuilder extends ConfigEntityListBuilder {
   public function __construct(EntityTypeInterface $entity_type, EntityStorageInterface $storage, Organization $organization = NULL) {
     parent::__construct($entity_type, $storage);
     $this->organization = empty($organization) ? Drupal::request()->get('organization') : $organization;
+    $this->limit = self::DEFAULT_LIMIT;
   }
 
   /**
@@ -54,6 +57,17 @@ class ResultTypeListBuilder extends ConfigEntityListBuilder {
   }
 
   /**
+   * Setter to dynamically set limit. See https://www.drupal.org/node/2736377.
+   *
+   * @var int $limit
+   *   The limit to set.
+   */
+  public function setLimit($limit) {
+    $this->limit = $limit;
+    return $this;
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function render() {
@@ -64,18 +78,8 @@ class ResultTypeListBuilder extends ConfigEntityListBuilder {
       'max-age' => self::CACHE_MAX_AGE,
       'tags' => self::CACHE_TAGS,
     ];
+    $build['pager'] = ['#type' => 'pager'];
     return $build;
-  }
-
-  /**
-   * Setter to dynamically set limit. See https://www.drupal.org/node/2736377.
-   *
-   * @var int $limit
-   *   The limit to set.
-   */
-  public function setLimit($limit) {
-    $this->limit = $limit;
-    return $this;
   }
 
 }
