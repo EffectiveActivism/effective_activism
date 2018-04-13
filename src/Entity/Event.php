@@ -191,7 +191,7 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
         'weight' => array_search('start_date', self::WEIGHTS),
       ])
       ->setDisplayOptions('form', [
-        'type' => 'datetime_default',
+        'type' => 'datetimepicker_widget',
         'weight' => array_search('start_date', self::WEIGHTS),
       ]);
     $fields['end_date'] = BaseFieldDefinition::create('datetime')
@@ -215,7 +215,7 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
         'weight' => array_search('end_date', self::WEIGHTS),
       ])
       ->setDisplayOptions('form', [
-        'type' => 'datetime_default',
+        'type' => 'datetimepicker_widget',
         'weight' => array_search('end_date', self::WEIGHTS),
       ]);
     $fields['location'] = BaseFieldDefinition::create('location')

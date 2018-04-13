@@ -1,0 +1,4 @@
+# Composer
+assets/libraries
+vendor/
+composer.lock
