@@ -2,7 +2,6 @@
 
 namespace Drupal\effective_activism\Form;
 
-use DateTime;
 use DateTimeZone;
 use Drupal;
 use Drupal\Core\Datetime\DrupalDateTime;
