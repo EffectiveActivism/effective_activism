@@ -1,0 +1,33 @@
+{
+    "name": "effective_activism",
+    "description": "Provides data models and business logic for quantifying outreach.",
+    "type": "drupal-module",
+    "license": "AGPL",
+    "minimum-stability": "stable",
+    "repositories": [
+        {
+            "type"    : "package",
+            "package" : {
+                "name"    : "bloody-hell/xdan-datetimepicker",
+                "version" : "dev-master",
+                "type"    : "drupal-library",
+                "source"  : {
+                    "url"       : "https://github.com/xdan/datetimepicker.git",
+                    "type"      : "git",
+                    "reference" : "master"
+                },
+                "require": {
+                    "composer/installers": "~1.0"
+                }
+            }
+        }
+    ],
+    "require": {
+        "bloody-hell/xdan-datetimepicker": "dev-master"
+    },
+    "extra": {
+        "installer-paths": {
+            "assets/libraries/{$name}" : ["type:drupal-library"]
+        }
+    }
+}

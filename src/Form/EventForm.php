@@ -2,6 +2,8 @@
 
 namespace Drupal\effective_activism\Form;
 
+use DateTime;
+use DateTimeZone;
 use Drupal;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\ContentEntityForm;
@@ -118,11 +120,11 @@ class EventForm extends ContentEntityForm {
       }
     }
     // Event start date must be older or equal to end date.
-    $start_date = $form_state->getValue('start_date')[0]['value'];
-    $end_date = $form_state->getValue('end_date')[0]['value'];
+    $start_date = new DrupalDateTime($form_state->getValue('start_date')[0]['value'], new DateTimezone(DATETIME_STORAGE_TIMEZONE));
+    $end_date = new DrupalDateTime($form_state->getValue('end_date')[0]['value'], new DateTimezone(DATETIME_STORAGE_TIMEZONE));
     if (
-      $start_date instanceof DrupalDateTime &&
-      $end_date instanceof DrupalDateTime &&
+      !$start_date->hasErrors() &&
+      !$end_date->hasErrors() &&
       $start_date->format('U') > $end_date->format('U')
     ) {
       $form_state->setErrorByName('end_date', $this->t('End date must be later than start date.'));

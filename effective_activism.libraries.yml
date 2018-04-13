@@ -7,6 +7,20 @@ autocomplete:
     - core/drupalSettings
     - core/drupal.ajax
     - core/jquery.ui.autocomplete
+
+datetimepicker:
+  js:
+    assets/js/datetimepicker.js: {}
+    assets/libraries/xdan-datetimepicker/build/jquery.datetimepicker.full.js: {}
+  css:
+    component:
+      assets/libraries/xdan-datetimepicker/build/jquery.datetimepicker.min.css: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/drupalSettings
+    - core/jquery.once
+
 highcharts:
   remote: https://code.highcharts.com/
   version: 5.0.12
