@@ -11,7 +11,6 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\datetime\Plugin\Field\FieldWidget\DateTimeWidgetBase;
-use Drupal\datetime\Plugin\Field\FieldType\DateTimeItem;
 
 /**
  * Plugin implementation of the DateTimePickerWidget widget.
