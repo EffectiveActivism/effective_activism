@@ -29,6 +29,20 @@
           dayOfWeekStart: startDayWeek,
           step: step,
           formatDate: format,
+          onChangeDateTime: function (dp,$input) {
+            var startDateInput = $('input.datetimepicker[name="start_date[0][value]"]');
+            var endDateInput = $('input.datetimepicker[name="end_date[0][value]"]');
+            var startDate = new Date(startDateInput.val());
+            var endDate = new Date(endDateInput.val());
+            if (startDate > endDate) {
+              if (startDateInput.is(input)) {
+                endDateInput.val(startDate.getFullYear() + '-' + ('0' + (startDate.getMonth() + 1)).slice(-2) + '-' + ('0' + startDate.getDate()).slice(-2) + ' ' + ('0' + (startDate.getHours() + 1)).slice(-2) + ':' + ('0' + startDate.getMinutes()).slice(-2));
+              }
+              else {
+                startDateInput.val(endDate.getFullYear() + '-' + ('0' + (endDate.getMonth() + 1)).slice(-2) + '-' + ('0' + endDate.getDate()).slice(-2) + ' ' + ('0' + endDate.getHours()).slice(-2) + ':' + ('0' + endDate.getMinutes()).slice(-2));
+              }
+            }
+          }
         });
       });
     },
