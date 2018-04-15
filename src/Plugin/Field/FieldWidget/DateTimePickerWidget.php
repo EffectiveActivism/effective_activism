@@ -4,12 +4,9 @@ namespace Drupal\effective_activism\Plugin\Field\FieldWidget;
 
 use DateTimeZone;
 use Drupal\Core\Datetime\DrupalDateTime;
-use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\Core\Field\FieldDefinitionInterface;
+use Drupal\Core\Field\WidgetInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\datetime\Plugin\Field\FieldWidget\DateTimeWidgetBase;
 
 /**
@@ -23,7 +20,7 @@ use Drupal\datetime\Plugin\Field\FieldWidget\DateTimeWidgetBase;
  *   }
  * )
  */
-class DateTimePickerWidget extends DateTimeWidgetBase implements ContainerFactoryPluginInterface {
+class DateTimePickerWidget extends DateTimeWidgetBase implements WidgetInterface {
 
   const DATETIMEPICKER_FORMAT = 'Y-m-d H:i';
   const DATETIMEPICKER_FORMAT_EXAMPLE = '2018-12-31 23:59';
@@ -43,35 +40,6 @@ class DateTimePickerWidget extends DateTimeWidgetBase implements ContainerFactor
   }
 
   /**
-   * The date format storage.
-   *
-   * @var \Drupal\Core\Entity\EntityStorageInterface
-   */
-  protected $dateStorage;
-
-  /**
-   * {@inheritdoc}
-   */
-  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, EntityStorageInterface $date_storage) {
-    parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $third_party_settings);
-    $this->dateStorage = $date_storage;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static(
-      $plugin_id,
-      $plugin_definition,
-      $configuration['field_definition'],
-      $configuration['settings'],
-      $configuration['third_party_settings'],
-      $container->get('entity.manager')->getStorage('date_format')
-    );
-  }
-
-  /**
    * {@inheritdoc}
    */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
@@ -79,12 +47,18 @@ class DateTimePickerWidget extends DateTimeWidgetBase implements ContainerFactor
     // Field type.
     $element['value'] = [
       '#title' => $element['#title'],
-      '#type' => 'datetimepicker',
+      '#type' => 'textfield',
       '#date_timezone' => drupal_get_user_timezone(),
       '#default_value' => NULL,
       '#required' => $element['#required'],
       '#element_validate' => [
         [$this, 'validateDate'],
+      ],
+      '#attached' => [
+        'library' => ['effective_activism/datetimepicker'],
+      ],
+      '#attributes' => [
+        'class' => ['datetimepicker'],
       ],
     ];
     if ($items[$delta]->date) {
