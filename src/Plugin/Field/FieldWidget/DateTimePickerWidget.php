@@ -3,13 +3,9 @@
 namespace Drupal\effective_activism\Plugin\Field\FieldWidget;
 
 use Drupal\Core\Datetime\DrupalDateTime;
-use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Field\WidgetInterface;
-use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\datetime\Plugin\Field\FieldWidget\DateTimeWidgetBase;
 
 /**
