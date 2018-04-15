@@ -2,11 +2,14 @@
 
 namespace Drupal\effective_activism\Plugin\Field\FieldWidget;
 
-use DateTimeZone;
 use Drupal\Core\Datetime\DrupalDateTime;
+use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\Core\Field\WidgetInterface;
+use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Field\WidgetInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\datetime\Plugin\Field\FieldWidget\DateTimeWidgetBase;
 
 /**
@@ -32,7 +35,7 @@ class DateTimePickerWidget extends DateTimeWidgetBase implements WidgetInterface
     foreach ($values as &$item) {
       if (!empty($item['value'])) {
         // Date value is now string not instance of DrupalDateTime (without T).
-        $date = new DrupalDateTime($item['value'], new DateTimezone(DATETIME_STORAGE_TIMEZONE));
+        $date = new DrupalDateTime($item['value']);
         $item['value'] = $date->hasErrors() ? '' : $date->format(DATETIME_DATETIME_STORAGE_FORMAT);
       }
     }
@@ -63,7 +66,6 @@ class DateTimePickerWidget extends DateTimeWidgetBase implements WidgetInterface
     ];
     if ($items[$delta]->date) {
       $date = $items[$delta]->date;
-      $date->setTimezone(new DateTimeZone($element['value']['#date_timezone']));
       $element['value']['#default_value'] = $date->format(self::DATETIMEPICKER_FORMAT);
     }
     return $element;
@@ -73,7 +75,7 @@ class DateTimePickerWidget extends DateTimeWidgetBase implements WidgetInterface
    * {@inheritdoc}
    */
   public function validateDate($element, FormStateInterface $form_state) {
-    $date = new DrupalDateTime($element['#value'], new DateTimezone(DATETIME_STORAGE_TIMEZONE));
+    $date = new DrupalDateTime($element['#value']);
     if ($date->hasErrors()) {
       $form_state->setError($element, $this->t('The date format is wrong. Please submit a date in the following format: @format', [
         '@format' => self::DATETIMEPICKER_FORMAT_EXAMPLE,
