@@ -17,7 +17,7 @@
       var hoursFormat = 'H:i';
       var format = 'd.m.Y';
 
-      $(context).find('.form-type-datetimepicker input').once('datePicker').each(function () {
+      $(context).find('input.datetimepicker').once('datePicker').each(function () {
         var input = $(this);
         $("#" + input.attr('id')).datetimepicker({
           lang: language,
