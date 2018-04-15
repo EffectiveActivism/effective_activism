@@ -10,7 +10,7 @@
 
       // Setting the current language for the calendar.
       var language = drupalSettings.path.currentLanguage;
-      var startDayWeek = 'Monday';
+      var startDayWeek = 1;
       var dateFormat = 'Y-m-d H:i';
       var allowTimepicker = true;
       var step = 15;
