@@ -131,7 +131,7 @@ class CSVParser implements ParserInterface {
       if (is_array($value)) {
         $value = $this->collapseArray($value);
       }
-      $row[$key] = $this->formatValue($value);
+      $row[$this->formatValue($key)] = $this->formatValue($value);
     }
     return $row;
   }
