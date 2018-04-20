@@ -24,7 +24,11 @@ class EventTemplateHelper {
    */
   public static function applyEventTemplate(EventTemplate $event_template, array $event_form) {
     $event_form['title']['widget'][0]['value']['#default_value'] = $event_template->event_title->value;
+    $event_form['start_date']['widget'][0]['value']['#default_value'] = $event_template->event_start_date->value;
+    $event_form['end_date']['widget'][0]['value']['#default_value'] = $event_template->event_end_date->value;
     $event_form['description']['widget'][0]['value']['#default_value'] = $event_template->event_description->value;
+    $event_form['location']['widget'][0]['address']['#default_value'] = $event_template->event_location->address;
+    $event_form['location']['widget'][0]['extra_information']['#default_value'] = $event_template->event_location->extra_information;
     return $event_form;
   }
 

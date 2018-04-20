@@ -264,6 +264,59 @@ class EventTemplate extends RevisionableContentEntityBase implements EventTempla
           'placeholder' => t('Event title'),
         ],
       ]);
+    $fields['event_start_date'] = BaseFieldDefinition::create('datetime')
+      ->setLabel(t('Start date'))
+      ->setDescription(t('The beginning of the event.'))
+      ->setRevisionable(TRUE)
+      ->setRequired(FALSE)
+      ->setSettings([
+        'default_value' => '',
+        'text_processing' => 0,
+      ])
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'datetime_default',
+        'weight' => array_search('start_date', self::WEIGHTS),
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'datetimepicker_widget',
+        'weight' => array_search('start_date', self::WEIGHTS),
+      ]);
+    $fields['event_end_date'] = BaseFieldDefinition::create('datetime')
+      ->setLabel(t('End date'))
+      ->setDescription(t('The end of the event.'))
+      ->setRevisionable(TRUE)
+      ->setRequired(FALSE)
+      ->setSettings([
+        'default_value' => '',
+        'text_processing' => 0,
+      ])
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'datetime_default',
+        'weight' => array_search('end_date', self::WEIGHTS),
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'datetimepicker_widget',
+        'weight' => array_search('end_date', self::WEIGHTS),
+      ]);
+    $fields['event_location'] = BaseFieldDefinition::create('location')
+      ->setLabel(t('Location'))
+      ->setDescription(t('The location of the event.'))
+      ->setRevisionable(TRUE)
+      ->setSettings([
+        'text_processing' => 0,
+      ])
+      ->setDefaultValue('')
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'location_default',
+        'weight' => array_search('location', self::WEIGHTS),
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'location_default',
+        'weight' => array_search('location', self::WEIGHTS),
+      ]);
     $fields['event_description'] = BaseFieldDefinition::create('string_long')
       ->setLabel(t('Event description'))
       ->setDescription(t('The description of the event.'))
