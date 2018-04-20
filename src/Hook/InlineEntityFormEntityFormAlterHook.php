@@ -2,6 +2,9 @@
 
 namespace Drupal\effective_activism\Hook;
 
+use DateTimeZone;
+use Drupal\Core\Datetime\DrupalDateTime;
+
 /**
  * Implements hook_inline_entity_form_entity_form_alter().
  */
@@ -53,13 +56,13 @@ class InlineEntityFormEntityFormAlterHook implements HookInterface {
       $entity_form['#op'] === 'add' &&
       $entity_type === 'result'
     ) {
-      $start_date = $form_state->getValue('start_date');
-      $end_date = $form_state->getValue('end_date');
+      $start_date = new DrupalDateTime($form_state->getValue('start_date')[0]['value'], new DateTimezone(DATETIME_STORAGE_TIMEZONE));
+      $end_date = new DrupalDateTime($form_state->getValue('end_date')[0]['value'], new DateTimezone(DATETIME_STORAGE_TIMEZONE));
       if (
-        !empty($start_date[0]['value']['object']) &&
-        !empty($end_date[0]['value']['object'])
+        !$start_date->hasErrors() &&
+        !$end_date->hasErrors()
       ) {
-        $interval = $start_date[0]['value']['object']->diff($end_date[0]['value']['object']);
+        $interval = $start_date->diff($end_date);
         // Cap interval calculation at one month as longer spans are
         // unsupported at the moment.
         if (
