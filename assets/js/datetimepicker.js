@@ -38,9 +38,6 @@
               if (startDateInput.is(input)) {
                 endDateInput.val(startDate.getFullYear() + '-' + ('0' + (startDate.getMonth() + 1)).slice(-2) + '-' + ('0' + startDate.getDate()).slice(-2) + ' ' + ('0' + (startDate.getHours() + 1)).slice(-2) + ':' + ('0' + startDate.getMinutes()).slice(-2));
               }
-              else {
-                startDateInput.val(endDate.getFullYear() + '-' + ('0' + (endDate.getMonth() + 1)).slice(-2) + '-' + ('0' + endDate.getDate()).slice(-2) + ' ' + ('0' + endDate.getHours()).slice(-2) + ':' + ('0' + endDate.getMinutes()).slice(-2));
-              }
             }
           }
         });
