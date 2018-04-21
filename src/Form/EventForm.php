@@ -52,8 +52,9 @@ class EventForm extends ContentEntityForm {
         $result_type = ResultType::load($machine_name);
         if (!empty($result_type)) {
           if (
-            !in_array(Drupal::request()->get('group')->id(), $result_type->get('groups')) &&
-            !in_array(Constant::RESULT_TYPE_ALL_GROUPS, $result_type->get('groups'))
+            !(in_array($group->id(), $result_type->get('groups')) ||
+            (in_array(Constant::RESULT_TYPE_ALL_GROUPS, $result_type->get('groups')) &&
+            (int) $organization->id() === $result_type->get('organization')))
           ) {
             unset($form['results']['widget']['actions']['bundle']['#options'][$machine_name]);
           }
@@ -70,8 +71,9 @@ class EventForm extends ContentEntityForm {
       $result_type = ResultType::load($form['results']['widget']['actions']['bundle']['#value']);
       if (!empty($result_type)) {
         if (
-          !in_array(Drupal::request()->get('group')->id(), $result_type->get('groups')) &&
-          !in_array(Constant::RESULT_TYPE_ALL_GROUPS, $result_type->get('groups'))
+          !(in_array($group->id(), $result_type->get('groups')) ||
+          (in_array(Constant::RESULT_TYPE_ALL_GROUPS, $result_type->get('groups')) &&
+          (int) $organization->id() === $result_type->get('organization')))
         ) {
           unset($form['results']['widget']['actions']['ief_add']);
         }
