@@ -2,9 +2,12 @@
 
 namespace Drupal\effective_activism\Helper;
 
+use DateTimeZone;
 use Drupal;
+use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\effective_activism\Entity\Event;
 use Drupal\effective_activism\Entity\EventTemplate;
+use Drupal\effective_activism\Plugin\Field\FieldWidget\DateTimePickerWidget;
 
 /**
  * Helper functions for querying events through filter.
@@ -24,11 +27,17 @@ class EventTemplateHelper {
    */
   public static function applyEventTemplate(EventTemplate $event_template, array $event_form) {
     $event_form['title']['widget'][0]['value']['#default_value'] = $event_template->event_title->value;
-    $event_form['start_date']['widget'][0]['value']['#default_value'] = $event_template->event_start_date->value;
-    $event_form['end_date']['widget'][0]['value']['#default_value'] = $event_template->event_end_date->value;
     $event_form['description']['widget'][0]['value']['#default_value'] = $event_template->event_description->value;
     $event_form['location']['widget'][0]['address']['#default_value'] = $event_template->event_location->address;
     $event_form['location']['widget'][0]['extra_information']['#default_value'] = $event_template->event_location->extra_information;
+    if (!$event_template->event_start_date->isEmpty()) {
+      $start_date = new DrupalDateTime($event_template->event_start_date->value, new DateTimezone(DATETIME_STORAGE_TIMEZONE));
+      $event_form['start_date']['widget'][0]['value']['#default_value'] = $start_date->format(DateTimePickerWidget::DATETIMEPICKER_FORMAT);
+    }
+    if (!$event_template->event_end_date->isEmpty()) {
+      $end_date = new DrupalDateTime($event_template->event_end_date->value, new DateTimezone(DATETIME_STORAGE_TIMEZONE));
+      $event_form['end_date']['widget'][0]['value']['#default_value'] = $end_date->format(DateTimePickerWidget::DATETIMEPICKER_FORMAT);
+    }
     return $event_form;
   }
 
