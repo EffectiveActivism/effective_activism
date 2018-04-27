@@ -1,0 +1,8 @@
+uuid: 3598d12b-82bc-449d-92b5-4ed34b797e54
+langcode: en
+status: true
+dependencies: {  }
+id: iso_8601_weekday
+label: 'ISO 8601 with weekday'
+locked: false
+pattern: 'D, Y-m-d H:i'

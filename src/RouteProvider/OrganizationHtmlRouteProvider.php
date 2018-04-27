@@ -20,6 +20,9 @@ class OrganizationHtmlRouteProvider extends DefaultHtmlRouteProvider {
   public function getRoutes(EntityTypeInterface $entity_type) {
     $collection = parent::getRoutes($entity_type);
     $entity_type_id = $entity_type->id();
+    if ($events_overview_route = $this->getEventsRoute($entity_type)) {
+      $collection->add("entity.{$entity_type_id}.events", $events_overview_route);
+    }
     if ($event_template_overview_route = $this->getEventTemplatesRoute($entity_type)) {
       $collection->add("entity.{$entity_type_id}.event_templates", $event_template_overview_route);
     }
@@ -148,6 +151,32 @@ class OrganizationHtmlRouteProvider extends DefaultHtmlRouteProvider {
           '_title_callback' => '\Drupal\Core\Entity\Controller\EntityController::editTitle',
         ])
         ->setRequirement('_entity_access', "{$entity_type_id}.update")
+        ->setOption('parameters', [
+          $entity_type_id => ['type' => Constant::ENTITY_ORGANIZATION],
+        ]);
+      return $route;
+    }
+  }
+
+  /**
+   * Gets the events overview route.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
+   *   The entity type.
+   *
+   * @return \Symfony\Component\Routing\Route|null
+   *   The generated route, if available.
+   */
+  protected function getEventsRoute(EntityTypeInterface $entity_type) {
+    if ($entity_type->hasLinkTemplate('events')) {
+      $entity_type_id = $entity_type->id();
+      $route = new Route($entity_type->getLinkTemplate('events'));
+      $route
+        ->setDefaults([
+          '_entity_list' => 'event',
+          '_title' => "Events",
+        ])
+        ->setRequirement('_entity_access', "{$entity_type_id}.view")
         ->setOption('parameters', [
           $entity_type_id => ['type' => Constant::ENTITY_ORGANIZATION],
         ]);
