@@ -50,6 +50,7 @@ use Drupal\effective_activism\Constant;
  *     "add-form" = "/o/add",
  *     "collection" = "/o",
  *     "edit-form" = "/o/{organization}/edit",
+ *     "events" = "/o/{organization}/e",
  *     "event_templates" = "/o/{organization}/event-templates",
  *     "exports" = "/o/{organization}/exports",
  *     "filters" = "/o/{organization}/filters",

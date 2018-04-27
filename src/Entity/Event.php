@@ -188,6 +188,9 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
       ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'datetime_default',
+        'settings' => [
+          'format_type' => 'iso_8601',
+        ],
         'weight' => array_search('start_date', self::WEIGHTS),
       ])
       ->setDisplayOptions('form', [
@@ -212,6 +215,9 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
       ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'datetime_default',
+        'settings' => [
+          'format_type' => 'iso_8601',
+        ],
         'weight' => array_search('end_date', self::WEIGHTS),
       ])
       ->setDisplayOptions('form', [
