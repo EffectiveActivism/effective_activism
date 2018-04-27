@@ -45,14 +45,19 @@ class EventTemplateForm extends ContentEntityForm {
   public function validateForm(array &$form, FormStateInterface $form_state) {
     parent::validateForm($form, $form_state);
     // Event start date must be older or equal to end date.
-    $start_date = new DrupalDateTime($form_state->getValue('event_start_date')[0]['value'], new DateTimezone(DATETIME_STORAGE_TIMEZONE));
-    $end_date = new DrupalDateTime($form_state->getValue('event_end_date')[0]['value'], new DateTimezone(DATETIME_STORAGE_TIMEZONE));
     if (
-      !$start_date->hasErrors() &&
-      !$end_date->hasErrors() &&
-      $start_date->format('U') > $end_date->format('U')
+      !empty($form_state->getValue('event_start_date')[0]['value']) &&
+      !empty($form_state->getValue('event_end_date')[0]['value'])
     ) {
-      $form_state->setErrorByName('event_end_date', $this->t('End date must be later than start date.'));
+      $start_date = new DrupalDateTime($form_state->getValue('event_start_date')[0]['value'], new DateTimezone(DATETIME_STORAGE_TIMEZONE));
+      $end_date = new DrupalDateTime($form_state->getValue('event_end_date')[0]['value'], new DateTimezone(DATETIME_STORAGE_TIMEZONE));
+      if (
+        !$start_date->hasErrors() &&
+        !$end_date->hasErrors() &&
+        $start_date->format('U') > $end_date->format('U')
+      ) {
+        $form_state->setErrorByName('event_end_date', $this->t('End date must be later than start date.'));
+      }
     }
   }
 
