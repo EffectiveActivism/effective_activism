@@ -62,6 +62,7 @@ class Filter extends RevisionableContentEntityBase implements FilterInterface {
     'start_date',
     'end_date',
     'location',
+    'event_template',
     'result_types',
     'user_id',
   ];
@@ -228,7 +229,6 @@ class Filter extends RevisionableContentEntityBase implements FilterInterface {
       ->setSettings([
         'default_value' => '',
         'text_processing' => 0,
-        'datetime_type' => 'date',
       ])
       ->setDefaultValue([
         0 => NULL,
@@ -236,10 +236,13 @@ class Filter extends RevisionableContentEntityBase implements FilterInterface {
       ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'datetime_default',
+        'settings' => [
+          'format_type' => 'iso_8601',
+        ],
         'weight' => array_search('start_date', self::WEIGHTS),
       ])
       ->setDisplayOptions('form', [
-        'type' => 'datetime_default',
+        'type' => 'datetimepicker_widget',
         'weight' => array_search('start_date', self::WEIGHTS),
       ]);
     $fields['end_date'] = BaseFieldDefinition::create('datetime')
@@ -250,7 +253,6 @@ class Filter extends RevisionableContentEntityBase implements FilterInterface {
       ->setSettings([
         'default_value' => '',
         'text_processing' => 0,
-        'datetime_type' => 'date',
       ])
       ->setDefaultValue([
         0 => NULL,
@@ -258,10 +260,13 @@ class Filter extends RevisionableContentEntityBase implements FilterInterface {
       ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'datetime_default',
+        'settings' => [
+          'format_type' => 'iso_8601',
+        ],
         'weight' => array_search('end_date', self::WEIGHTS),
       ])
       ->setDisplayOptions('form', [
-        'type' => 'datetime_default',
+        'type' => 'datetimepicker_widget',
         'weight' => array_search('end_date', self::WEIGHTS),
       ]);
     $fields['location'] = BaseFieldDefinition::create('location')
@@ -280,6 +285,23 @@ class Filter extends RevisionableContentEntityBase implements FilterInterface {
       ->setDisplayOptions('form', [
         'type' => 'location_default',
         'weight' => array_search('location', self::WEIGHTS),
+      ]);
+    $fields['event_template'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(t('Event template'))
+      ->setRevisionable(TRUE)
+      ->setDescription(t('The event template used to create events with.'))
+      ->setSetting('target_type', 'event_template')
+      ->setSetting('handler', 'default')
+      ->setCardinality(1)
+      ->setRequired(FALSE)
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'string',
+        'weight' => array_search('event_template', self::WEIGHTS),
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'options_select',
+        'weight' => array_search('event_template', self::WEIGHTS),
       ]);
     $fields['user_id'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Authored by'))

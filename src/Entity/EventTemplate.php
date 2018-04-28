@@ -61,6 +61,9 @@ class EventTemplate extends RevisionableContentEntityBase implements EventTempla
     'organization',
     'event_title',
     'event_description',
+    'event_start_date',
+    'event_end_date',
+    'event_location',
     'user_id',
   ];
 
@@ -276,11 +279,11 @@ class EventTemplate extends RevisionableContentEntityBase implements EventTempla
       ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'datetime_default',
-        'weight' => array_search('start_date', self::WEIGHTS),
+        'weight' => array_search('event_start_date', self::WEIGHTS),
       ])
       ->setDisplayOptions('form', [
         'type' => 'datetimepicker_widget',
-        'weight' => array_search('start_date', self::WEIGHTS),
+        'weight' => array_search('event_start_date', self::WEIGHTS),
       ]);
     $fields['event_end_date'] = BaseFieldDefinition::create('datetime')
       ->setLabel(t('End date'))
@@ -294,11 +297,11 @@ class EventTemplate extends RevisionableContentEntityBase implements EventTempla
       ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'datetime_default',
-        'weight' => array_search('end_date', self::WEIGHTS),
+        'weight' => array_search('event_end_date', self::WEIGHTS),
       ])
       ->setDisplayOptions('form', [
         'type' => 'datetimepicker_widget',
-        'weight' => array_search('end_date', self::WEIGHTS),
+        'weight' => array_search('event_end_date', self::WEIGHTS),
       ]);
     $fields['event_location'] = BaseFieldDefinition::create('location')
       ->setLabel(t('Location'))
@@ -311,11 +314,11 @@ class EventTemplate extends RevisionableContentEntityBase implements EventTempla
       ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'location_default',
-        'weight' => array_search('location', self::WEIGHTS),
+        'weight' => array_search('event_location', self::WEIGHTS),
       ])
       ->setDisplayOptions('form', [
         'type' => 'location_default',
-        'weight' => array_search('location', self::WEIGHTS),
+        'weight' => array_search('event_location', self::WEIGHTS),
       ]);
     $fields['event_description'] = BaseFieldDefinition::create('string_long')
       ->setLabel(t('Event description'))

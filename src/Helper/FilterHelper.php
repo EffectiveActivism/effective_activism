@@ -2,7 +2,9 @@
 
 namespace Drupal\effective_activism\Helper;
 
+use DateTimeZone;
 use Drupal;
+use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\effective_activism\Entity\Event;
 use Drupal\effective_activism\Entity\Filter;
 
@@ -32,10 +34,12 @@ class FilterHelper {
       ->condition('parent', $group_ids, 'IN')
       ->sort('start_date');
     if (!$filter->start_date->isEmpty()) {
-      $query->condition('start_date', $filter->start_date->date->format(DATETIME_DATETIME_STORAGE_FORMAT), '>=');
+      $start_date = new DrupalDateTime($filter->start_date->value, new DateTimezone(DATETIME_STORAGE_TIMEZONE));
+      $query->condition('start_date', $start_date->format(DATETIME_DATETIME_STORAGE_FORMAT), '>=');
     }
     if (!$filter->end_date->isEmpty()) {
-      $query->condition('end_date', $filter->end_date->date->format(DATETIME_DATETIME_STORAGE_FORMAT), '<=');
+      $end_date = new DrupalDateTime($filter->end_date->value, new DateTimezone(DATETIME_STORAGE_TIMEZONE));
+      $query->condition('end_date', $end_date->format(DATETIME_DATETIME_STORAGE_FORMAT), '<=');
     }
     if (!$filter->location->isEmpty()) {
       $address = $filter->location->address;
@@ -46,6 +50,10 @@ class FilterHelper {
       if (!empty($filter->location->extra_information)) {
         $query->condition('location__extra_information', $filter->location->extra_information, 'CONTAINS');
       }
+    }
+    if (!$filter->event_template->isEmpty()) {
+      $event_template = $filter->event_template->target_id;
+      $query->condition('event_template', $event_template, '=');
     }
     if ($limit > 0) {
       $query->range($position, $limit + $position);
