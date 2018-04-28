@@ -2,11 +2,14 @@
 
 namespace Drupal\effective_activism\Form;
 
+use DateTimeZone;
 use Drupal;
+use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\effective_activism\Entity\Filter;
 use Drupal\effective_activism\Entity\Organization;
+use Drupal\effective_activism\Helper\OrganizationHelper;
 use Drupal\effective_activism\Helper\PathHelper;
 use ReflectionClass;
 
@@ -34,7 +37,23 @@ class FilterForm extends ContentEntityForm {
     }
     $entity = $this->entity;
     // Set values from path.
-    $form['organization']['widget'][0]['target_id']['#default_value'] = Drupal::request()->get('organization');
+    $form['organization']['widget'][0]['target_id']['#default_value'] = $organization;
+    // Restrict event templates to those belonging to organization.
+    $organization_templates = array_reduce(OrganizationHelper::getEventTemplates($organization), function ($result, $event_template) {
+      if ($event_template->isPublished()) {
+        $result[] = $event_template->id();
+      }
+      return $result;
+    });
+    foreach ($form['event_template']['widget']['#options'] as $key => $value) {
+      if ($key === '_none') {
+        continue;
+      }
+      elseif (!in_array($key, $organization_templates)) {
+        unset($form['event_template']['widget']['#options'][$key]);
+      }
+    }
+    asort($form['event_template']['widget']['#options']);
     return $form;
   }
 
@@ -43,15 +62,20 @@ class FilterForm extends ContentEntityForm {
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
     parent::validateForm($form, $form_state);
-    // Start date must be older or equal to end date.
-    $start_date = $form_state->getValue('start_date')[0]['value'];
-    $end_date = $form_state->getValue('end_date')[0]['value'];
+    // Event start date must be older or equal to end date.
     if (
-      isset($start_date) &&
-      isset($end_date) &&
-      $start_date->format('U') > $end_date->format('U')
+      !empty($form_state->getValue('start_date')[0]['value']) &&
+      !empty($form_state->getValue('end_date')[0]['value'])
     ) {
-      $form_state->setErrorByName('end_date', $this->t('End date must be later than start date.'));
+      $start_date = new DrupalDateTime($form_state->getValue('start_date')[0]['value'], new DateTimezone(DATETIME_STORAGE_TIMEZONE));
+      $end_date = new DrupalDateTime($form_state->getValue('end_date')[0]['value'], new DateTimezone(DATETIME_STORAGE_TIMEZONE));
+      if (
+        !$start_date->hasErrors() &&
+        !$end_date->hasErrors() &&
+        $start_date->format('U') > $end_date->format('U')
+      ) {
+        $form_state->setErrorByName('end_date', $this->t('End date must be later than start date.'));
+      }
     }
   }
 
@@ -65,7 +89,7 @@ class FilterForm extends ContentEntityForm {
       $entity->setNewRevision();
       // If a new revision is created, save the current user as revision author.
       $entity->setRevisionCreationTime(REQUEST_TIME);
-      $entity->setRevisionUserId(\Drupal::currentUser()->id());
+      $entity->setRevisionUserId(Drupal::currentUser()->id());
     }
     else {
       $entity->setNewRevision(FALSE);

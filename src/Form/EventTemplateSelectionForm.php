@@ -39,6 +39,7 @@ class EventTemplateSelectionForm extends FormBase {
       }
       return $result;
     });
+    asort($event_templates);
     if (!empty($event_templates)) {
       $form['event_template'] = [
         '#type' => 'select',

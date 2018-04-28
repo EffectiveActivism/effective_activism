@@ -3,6 +3,7 @@
 namespace Drupal\effective_activism\Form;
 
 use DateTimeZone;
+use Drupal;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
@@ -71,7 +72,7 @@ class EventTemplateForm extends ContentEntityForm {
       $entity->setNewRevision();
       // If a new revision is created, save the current user as revision author.
       $entity->setRevisionCreationTime(REQUEST_TIME);
-      $entity->setRevisionUserId(\Drupal::currentUser()->id());
+      $entity->setRevisionUserId(Drupal::currentUser()->id());
     }
     else {
       $entity->setNewRevision(FALSE);
