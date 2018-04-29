@@ -2,6 +2,7 @@
 
 namespace Drupal\effective_activism\AccessControlHandler;
 
+use Drupal;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Entity\EntityAccessControlHandler;
 use Drupal\Core\Entity\EntityInterface;
