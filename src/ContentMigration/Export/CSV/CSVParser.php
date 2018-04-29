@@ -4,8 +4,8 @@ namespace Drupal\effective_activism\ContentMigration\Export\CSV;
 
 use Drupal;
 use Drupal\effective_activism\Entity\Export;
-use Drupal\effective_activism\Entity\Organization;
-use Drupal\effective_activism\Helper\OrganizationHelper;
+use Drupal\effective_activism\Entity\Filter;
+use Drupal\effective_activism\Helper\FilterHelper;
 use Drupal\effective_activism\ContentMigration\ParserInterface;
 
 /**
@@ -48,11 +48,11 @@ class CSVParser implements ParserInterface {
   private $itemCount;
 
   /**
-   * Organization.
+   * Filter.
    *
-   * @var \Drupal\effective_activism\Entity\Organization
+   * @var \Drupal\effective_activism\Entity\Filter
    */
-  private $organization;
+  private $filter;
 
   /**
    * Export.
@@ -64,13 +64,13 @@ class CSVParser implements ParserInterface {
   /**
    * Creates the CSVParser Object.
    *
-   * @param \Drupal\effective_activism\Entity\Organization $organization
-   *   The organization to export events from.
+   * @param \Drupal\effective_activism\Entity\Filter $filter
+   *   The filter to export events with.
    * @param \Drupal\effective_activism\Entity\Export $export
    *   The export to save the file to.
    */
-  public function __construct(Organization $organization, Export $export) {
-    $this->organization = $organization;
+  public function __construct(Filter $filter, Export $export) {
+    $this->filter = $filter;
     $this->export = $export;
     $this->setItemCount();
     return $this;
@@ -104,7 +104,7 @@ class CSVParser implements ParserInterface {
    * Set the number of items to be exported.
    */
   private function setItemCount() {
-    $this->itemCount = OrganizationHelper::getEvents($this->organization, 0, 0, FALSE);
+    $this->itemCount = FilterHelper::getEvents($this->filter, 0, 0, FALSE);
     return $this;
   }
 
