@@ -187,17 +187,21 @@ class ChartForm extends FormBase {
         foreach ($result_entity->entity->getFields() as $result_field) {
           if (strpos($result_field->getName(), 'data_') === 0) {
             $data_type_label = $result_field->getDataDefinition()->getLabel();
-            foreach ($result_field->entity->getFields() as $data_field) {
-              if (
-                strpos($data_field->getName(), 'field_') === 0 &&
-                !in_array($data_field->getName(), self::DATA_FIELDS_BLACKLIST)
-              ) {
-                $date_field_label = $data_field->getDataDefinition()->getLabel();
-                if (isset($series_data[sprintf('%s - %s', $result_type_label, $date_field_label)][$time_slice])) {
-                  $series_data[sprintf('%s - %s', $result_type_label, $date_field_label)][$time_slice] += (int) $data_field->value;
-                }
-                else {
-                  $series_data[sprintf('%s - %s', $result_type_label, $date_field_label)][$time_slice] = (int) $data_field->value;
+            // Result field may be empty if previously added and removed from
+            // result type.
+            if (!$result_field->isEmpty()) {
+              foreach ($result_field->entity->getFields() as $data_field) {
+                if (
+                  strpos($data_field->getName(), 'field_') === 0 &&
+                  !in_array($data_field->getName(), self::DATA_FIELDS_BLACKLIST)
+                ) {
+                  $date_field_label = $data_field->getDataDefinition()->getLabel();
+                  if (isset($series_data[sprintf('%s - %s', $result_type_label, $date_field_label)][$time_slice])) {
+                    $series_data[sprintf('%s - %s', $result_type_label, $date_field_label)][$time_slice] += (int) $data_field->value;
+                  }
+                  else {
+                    $series_data[sprintf('%s - %s', $result_type_label, $date_field_label)][$time_slice] = (int) $data_field->value;
+                  }
                 }
               }
             }
