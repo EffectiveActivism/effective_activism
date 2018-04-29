@@ -45,6 +45,7 @@ class FilterForm extends ContentEntityForm {
       }
       return $result;
     });
+    $organization_templates = $organization_templates === NULL ? [] : $organization_templates;
     foreach ($form['event_template']['widget']['#options'] as $key => $value) {
       if ($key === '_none') {
         continue;
