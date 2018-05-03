@@ -13,6 +13,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\effective_activism\Chart\Providers\HighCharts\HighChartsChart;
 use Drupal\effective_activism\Chart\Providers\HighCharts\HighChartsAxis;
 use Drupal\effective_activism\Entity\Filter;
+use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\Organization;
 use Drupal\effective_activism\Helper\FilterHelper;
 use Drupal\effective_activism\Helper\OrganizationHelper;
@@ -67,7 +68,9 @@ class ChartForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, Organization $organization = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, Organization $organization = NULL, Group $group = NULL) {
+    // Carry any group on to submit handler.
+    $form_state->setTemporaryValue('group', $group);
     // Get available filters.
     $available_filters = [];
     foreach (OrganizationHelper::getFilters($organization) as $filter_id => $filter) {
@@ -152,7 +155,8 @@ class ChartForm extends FormBase {
     ], TRUE));
     $filter = Filter::load($form_state->getValue('filter'));
     // Get events.
-    $events = FilterHelper::getEvents($filter);
+    $group = $form_state->getTemporaryValue('group');
+    $events = empty($group) ? FilterHelper::getEvents($filter) : FilterHelper::getEventsByGroup($filter, $group);
     // Get oldest event.
     $oldest_event = reset($events);
     // Get newest event.
@@ -163,7 +167,6 @@ class ChartForm extends FormBase {
         '#type' => 'status_messages',
       ];
       $response->addCommand(new InsertCommand(NULL, $form['messages']));
-
       return $response;
     }
     // Create timesliced array.

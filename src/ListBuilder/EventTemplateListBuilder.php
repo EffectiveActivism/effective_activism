@@ -77,6 +77,7 @@ class EventTemplateListBuilder extends EntityListBuilder {
       'max-age' => self::CACHE_MAX_AGE,
       'tags' => self::CACHE_TAGS,
     ];
+    $build['pager'] = ['#type' => 'pager'];
     return $build;
   }
 
