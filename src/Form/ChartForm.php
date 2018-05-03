@@ -13,6 +13,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\effective_activism\Chart\Providers\HighCharts\HighChartsChart;
 use Drupal\effective_activism\Chart\Providers\HighCharts\HighChartsAxis;
 use Drupal\effective_activism\Entity\Filter;
+use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\Organization;
 use Drupal\effective_activism\Helper\FilterHelper;
 use Drupal\effective_activism\Helper\OrganizationHelper;
@@ -67,7 +68,9 @@ class ChartForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, Organization $organization = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, Organization $organization = NULL, Group $group = NULL) {
+    // Carry any group on to submit handler.
+    $form_state->setTemporaryValue('group', $group);
     // Get available filters.
     $available_filters = [];
     foreach (OrganizationHelper::getFilters($organization) as $filter_id => $filter) {
@@ -152,7 +155,8 @@ class ChartForm extends FormBase {
     ], TRUE));
     $filter = Filter::load($form_state->getValue('filter'));
     // Get events.
-    $events = FilterHelper::getEvents($filter);
+    $group = $form_state->getTemporaryValue('group');
+    $events = empty($group) ? FilterHelper::getEvents($filter) : FilterHelper::getEventsByGroup($filter, $group);
     // Get oldest event.
     $oldest_event = reset($events);
     // Get newest event.
@@ -163,7 +167,6 @@ class ChartForm extends FormBase {
         '#type' => 'status_messages',
       ];
       $response->addCommand(new InsertCommand(NULL, $form['messages']));
-
       return $response;
     }
     // Create timesliced array.
@@ -187,17 +190,21 @@ class ChartForm extends FormBase {
         foreach ($result_entity->entity->getFields() as $result_field) {
           if (strpos($result_field->getName(), 'data_') === 0) {
             $data_type_label = $result_field->getDataDefinition()->getLabel();
-            foreach ($result_field->entity->getFields() as $data_field) {
-              if (
-                strpos($data_field->getName(), 'field_') === 0 &&
-                !in_array($data_field->getName(), self::DATA_FIELDS_BLACKLIST)
-              ) {
-                $date_field_label = $data_field->getDataDefinition()->getLabel();
-                if (isset($series_data[sprintf('%s - %s', $result_type_label, $date_field_label)][$time_slice])) {
-                  $series_data[sprintf('%s - %s', $result_type_label, $date_field_label)][$time_slice] += (int) $data_field->value;
-                }
-                else {
-                  $series_data[sprintf('%s - %s', $result_type_label, $date_field_label)][$time_slice] = (int) $data_field->value;
+            // Result field may be empty if previously added and removed from
+            // result type.
+            if (!$result_field->isEmpty()) {
+              foreach ($result_field->entity->getFields() as $data_field) {
+                if (
+                  strpos($data_field->getName(), 'field_') === 0 &&
+                  !in_array($data_field->getName(), self::DATA_FIELDS_BLACKLIST)
+                ) {
+                  $date_field_label = $data_field->getDataDefinition()->getLabel();
+                  if (isset($series_data[sprintf('%s - %s', $result_type_label, $date_field_label)][$time_slice])) {
+                    $series_data[sprintf('%s - %s', $result_type_label, $date_field_label)][$time_slice] += (int) $data_field->value;
+                  }
+                  else {
+                    $series_data[sprintf('%s - %s', $result_type_label, $date_field_label)][$time_slice] = (int) $data_field->value;
+                  }
                 }
               }
             }

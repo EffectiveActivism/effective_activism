@@ -50,6 +50,7 @@ use Drupal\user\UserInterface;
  *     "events" = "/o/{organization}/g/{group}/e",
  *     "imports" = "/o/{organization}/g/{group}/imports",
  *     "publish-form" = "/o/{organization}/g/{group}/publish",
+ *     "results" = "/o/{organization}/g/{group}/results",
  *   },
  * )
  */
