@@ -89,6 +89,8 @@ class Constant {
     'title' => 'My first group',
   ];
 
+  const GROUP_INHERIT_TIMEZONE = 'inherit';
+
   /**
    * Cache table for storing addresses.
    */
