@@ -4,6 +4,7 @@ namespace Drupal\effective_activism\ListBuilder;
 
 use Drupal;
 use Drupal\Core\Cache\Cache;
+use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\EntityListBuilder;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
@@ -30,7 +31,27 @@ class EventListBuilder extends EntityListBuilder {
     Constant::CACHE_TAG_EVENT,
   ];
 
+  const DEFAULT_EMPTY_TEXT = 'No events created yet.';
+
   const DEFAULT_LIMIT = 10;
+
+  const DEFAULT_SORTING_PREFERENCE = FALSE;
+
+  const DEFAULT_TITLE = 'All events';
+
+  /**
+   * Empty text.
+   *
+   * @var string
+   */
+  protected $emptyText;
+
+  /**
+   * From date.
+   *
+   * @var \Drupal\Core\Datetime\DrupalDateTime
+   */
+  protected $fromDate;
 
   /**
    * Group.
@@ -47,13 +68,30 @@ class EventListBuilder extends EntityListBuilder {
   protected $organization;
 
   /**
+   * Sorting preference.
+   *
+   * @var bool
+   */
+  protected $sortAsc;
+
+  /**
+   * Title.
+   *
+   * @var string
+   */
+  protected $title;
+
+  /**
    * {@inheritdoc}
    */
   public function __construct(EntityTypeInterface $entity_type, EntityStorageInterface $storage, Organization $organization = NULL, Group $group = NULL) {
     parent::__construct($entity_type, $storage);
     $this->organization = empty($organization) ? Drupal::request()->get('organization') : $organization;
     $this->group = empty($group) ? Drupal::request()->get('group') : $group;
+    $this->emptyText = self::DEFAULT_EMPTY_TEXT;
     $this->limit = self::DEFAULT_LIMIT;
+    $this->sortAsc = self::DEFAULT_SORTING_PREFERENCE;
+    $this->title = self::DEFAULT_TITLE;
   }
 
   /**
@@ -61,7 +99,6 @@ class EventListBuilder extends EntityListBuilder {
    */
   protected function getEntityIds() {
     $query = $this->getStorage()->getQuery();
-    $query->sort('start_date', 'DESC');
     if (isset($this->group)) {
       $query->condition('parent', $this->group->id());
     }
@@ -69,12 +106,45 @@ class EventListBuilder extends EntityListBuilder {
       $groups = OrganizationHelper::getGroups($this->organization, 0, 0, FALSE);
       $query->condition('parent', $groups, 'IN');
     }
+    // Only show events equal to or newer than this date.
+    if (isset($this->fromDate)) {
+      $query->condition('start_date', $this->fromDate->format(DATETIME_DATETIME_STORAGE_FORMAT), '>=');
+    }
+    // Sorting preference.
+    if ($this->sortAsc) {
+      $query->sort('start_date', 'ASC');
+    }
+    else {
+      $query->sort('start_date', 'DESC');
+    }
     // Only add the pager if a limit is specified.
     if ($this->limit) {
       $query->pager($this->limit);
     }
     $result = $query->execute();
     return $result;
+  }
+
+  /**
+   * Set the empty message when there is nothing to list.
+   *
+   * @var string $empty
+   *   The empty text to set.
+   */
+  public function setEmpty($empty) {
+    $this->emptyText = $empty;
+    return $this;
+  }
+
+  /**
+   * Set a from date.
+   *
+   * @var \Drupal\Core\Datetime\DrupalDateTime $date
+   *   The date to set.
+   */
+  public function setFromDate(DrupalDateTime $date) {
+    $this->fromDate = $date;
+    return $this;
   }
 
   /**
@@ -89,6 +159,28 @@ class EventListBuilder extends EntityListBuilder {
   }
 
   /**
+   * Determine if sorting by start date should be ascending or descending.
+   *
+   * @var bool $preference
+   *   Whether or not to sort start date ascending.
+   */
+  public function setSortAsc($preference) {
+    $this->sortAsc = $preference;
+    return $this;
+  }
+
+  /**
+   * Sets the title.
+   *
+   * @var string $title
+   *   The title to set.
+   */
+  public function setTitle($title) {
+    $this->title = $title;
+    return $this;
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function render() {
@@ -96,6 +188,8 @@ class EventListBuilder extends EntityListBuilder {
     $build['#storage']['entities']['organization'] = $this->organization;
     $build['#storage']['entities']['group'] = $this->group;
     $build['#storage']['entities']['events'] = $this->load();
+    $build['content']['title'] = $this->t($this->title);
+    $build['content']['empty'] = $this->t($this->emptyText);
     $build['#cache'] = [
       'max-age' => self::CACHE_MAX_AGE,
       'tags' => self::CACHE_TAGS,

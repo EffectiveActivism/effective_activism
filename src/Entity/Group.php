@@ -9,6 +9,7 @@ use Drupal\Core\Entity\RevisionableContentEntityBase;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\user\UserInterface;
+use Drupal\effective_activism\Constant;
 
 /**
  * Defines the Group entity.
@@ -331,7 +332,7 @@ class Group extends RevisionableContentEntityBase implements GroupInterface {
       ->setRequired(TRUE)
       ->setDefaultValue('inherit')
       ->setSettings([
-        'allowed_values' => array_merge(['inherit' => 'Inherit from organization'], system_time_zones()),
+        'allowed_values' => array_merge([Constant::GROUP_INHERIT_TIMEZONE => 'Inherit from organization'], system_time_zones()),
       ])
       ->setDisplayOptions('view', [
         'label' => 'above',
