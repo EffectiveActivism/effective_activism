@@ -188,8 +188,8 @@ class EventListBuilder extends EntityListBuilder {
     $build['#storage']['entities']['organization'] = $this->organization;
     $build['#storage']['entities']['group'] = $this->group;
     $build['#storage']['entities']['events'] = $this->load();
-    $build['content']['title'] = $this->t($this->title);
-    $build['content']['empty'] = $this->t($this->emptyText);
+    $build['content']['title'] = $this->title;
+    $build['content']['empty'] = $this->emptyText;
     $build['#cache'] = [
       'max-age' => self::CACHE_MAX_AGE,
       'tags' => self::CACHE_TAGS,
