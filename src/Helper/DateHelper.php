@@ -2,7 +2,6 @@
 
 namespace Drupal\effective_activism\Helper;
 
-use Drupal;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\effective_activism\Entity\Organization;
 use Drupal\effective_activism\Entity\Group;
