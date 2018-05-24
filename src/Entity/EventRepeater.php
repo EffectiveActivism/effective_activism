@@ -98,14 +98,10 @@ class EventRepeater extends RevisionableContentEntityBase implements EventRepeat
         }
         if (!empty($event_ids)) {
           $event = Event::load(array_shift($event_ids));
-          if (
+          if (!(
             $event->start_date->value === $new_start_date->format('Y-m-d\TH:i:s') &&
             $event->end_date->value === $new_end_date->format('Y-m-d\TH:i:s')
-          ) {
-            dpm('Existing event ' . $event->id() . ' skipped for date ' . $new_start_date->format('Y-m-d H:i:s'));
-          }
-          else {
-            dpm('Existing event ' . $event->id() . ': ' . $event->start_date->value . ' gets ' . $new_start_date->format('Y-m-d H:i:s'));
+          )) {
             $event->start_date->setValue($new_start_date->format(DATETIME_DATETIME_STORAGE_FORMAT));
             $event->end_date->setValue($new_end_date->format(DATETIME_DATETIME_STORAGE_FORMAT));
             $event->setNewRevision();
@@ -114,7 +110,6 @@ class EventRepeater extends RevisionableContentEntityBase implements EventRepeat
         }
         // Create a new event.
         else {
-          dpm('New event gets ' . $new_start_date->format('Y-m-d H:i:s'));
           $event = $calling_event->createDuplicate();
           $event->start_date->setValue($new_start_date->format(DATETIME_DATETIME_STORAGE_FORMAT));
           $event->end_date->setValue($new_end_date->format(DATETIME_DATETIME_STORAGE_FORMAT));
@@ -134,14 +129,7 @@ class EventRepeater extends RevisionableContentEntityBase implements EventRepeat
           $start_date->format('U') > $now->format('U') &&
           $first_event->id() !== $event->id()
         ) {
-          dpm('Delete event with id ' . $event_id);
           $event->delete();
-        }
-        elseif ($first_event->id() === $event->id()) {
-          dpm('Skipping first/newest event with id: ' . $first_event->id());
-        }
-        else {
-          dpm('Skipping old event');
         }
       }
     }
