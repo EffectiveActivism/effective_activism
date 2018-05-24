@@ -13,7 +13,6 @@ use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\Organization;
 use Drupal\effective_activism\Entity\ResultType;
 use Drupal\effective_activism\Helper\DateHelper;
-use Drupal\effective_activism\Helper\EventTemplateHelper;
 use Drupal\effective_activism\Helper\PathHelper;
 use ReflectionClass;
 
@@ -87,17 +86,6 @@ class EventForm extends ContentEntityForm {
       $entity->event_repeater->entity->isEnabled()
     ) {
       $form['event_repeater']['widget'][0]['#open'] = TRUE;
-      // Add temporary fields to event repeater entity.
-      $form['event_repeater']['widget'][0]['apply_to'] = [
-        '#type' => 'select',
-        '#default_value' => 'this',
-        '#options' => [
-          'this' => t('This event'),
-          'future' => t('This event and future events'),
-          'all' => t('All events'),
-        ],
-        '#title' => t('Apply changes to'),
-      ];
     }
     // Hide event repeater for old events.
     if (
