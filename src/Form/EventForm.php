@@ -12,6 +12,7 @@ use Drupal\effective_activism\Entity\EventTemplate;
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\Organization;
 use Drupal\effective_activism\Entity\ResultType;
+use Drupal\effective_activism\Helper\DateHelper;
 use Drupal\effective_activism\Helper\EventTemplateHelper;
 use Drupal\effective_activism\Helper\PathHelper;
 use ReflectionClass;
@@ -40,7 +41,7 @@ class EventForm extends ContentEntityForm {
       $event_template !== NULL &&
       $event_template->access('view')
     ) {
-      $form = EventTemplateHelper::applyEventTemplate($event_template, $form);
+      $form = $event_template->applyToEventForm($form);
     }
     // Never allow adding existing results. However, we have to enable the
     // 'allow_existing' setting to force inline entity form to display
@@ -77,6 +78,35 @@ class EventForm extends ContentEntityForm {
         ) {
           unset($form['results']['widget']['actions']['ief_add']);
         }
+      }
+    }
+    // Wrap event repeater in detail form element.
+    $form['event_repeater']['widget'][0]['#type'] = 'details';
+    if (
+      !$entity->event_repeater->isEmpty() &&
+      $entity->event_repeater->entity->isEnabled()
+    ) {
+      $form['event_repeater']['widget'][0]['#open'] = TRUE;
+      // Add temporary fields to event repeater entity.
+      $form['event_repeater']['widget'][0]['apply_to'] = [
+        '#type' => 'select',
+        '#default_value' => 'this',
+        '#options' => [
+          'this' => t('This event'),
+          'future' => t('This event and future events'),
+          'all' => t('All events'),
+        ],
+        '#title' => t('Apply changes to'),
+      ];
+    }
+    // Hide event repeater for old events.
+    if (
+      !$this->entity->isNew()
+    ) {
+      $start_date = new DrupalDateTime($this->entity->start_date->value);
+      $now = DateHelper::getNow($this->entity->parent->entity->organization->entity, $this->entity->parent->entity);
+      if ($start_date->format('U') < $now->format('U')) {
+        hide($form['event_repeater']);
       }
     }
     // Hide fields.
@@ -130,6 +160,34 @@ class EventForm extends ContentEntityForm {
     ) {
       $form_state->setErrorByName('end_date', $this->t('End date must be later than start date.'));
     }
+    $event_repeater_values = $form_state->getValue('event_repeater');
+    // Event start date must be older than or equal to end on date (if set).
+    if (!empty($event_repeater_values[0]['inline_entity_form']['end_on_date'][0]['value'])) {
+      $end_on_date = new DrupalDateTime($event_repeater_values[0]['inline_entity_form']['end_on_date'][0]['value'], new DateTimezone(DATETIME_STORAGE_TIMEZONE));
+      if (
+        !$end_on_date->hasErrors() &&
+        $start_date->format('U') > $end_on_date->format('U')
+      ) {
+        $form_state->setErrorByName('event_repeater][0][inline_entity_form][end_on_date][0][value', $this->t('End on date must be equal to or later than event start date.'));
+      }
+    }
+    // Check for changes in event repeater or event start date.
+    if (
+      !$this->entity->isNew() &&
+      $this->entity->event_repeater->entity->isEnabled() &&
+      (
+        $form_state->getValue('start_date')[0]['value'] != $form['start_date']['widget'][0]['value']['#default_value'] ||
+        $event_repeater_values[0]['inline_entity_form']['step'][0]['value'] != $form['event_repeater']['widget'][0]['inline_entity_form']['step']['widget'][0]['value']['#default_value'] ||
+        $event_repeater_values[0]['inline_entity_form']['frequency'][0]['value'] != $form['event_repeater']['widget'][0]['inline_entity_form']['frequency']['widget']['#default_value'][0] ||
+        $event_repeater_values[0]['inline_entity_form']['end_on_date'][0]['value'] != $form['event_repeater']['widget'][0]['inline_entity_form']['end_on_date']['widget'][0]['value']['#default_value']
+      )
+    ) {
+      $now = DateHelper::getNow($this->entity->parent->entity->organization->entity, $this->entity->parent->entity);
+      // Do not allow changes of event repeater in old events.
+      if ($start_date->format('U') < $now->format('U')) {
+        $form_state->setErrorByName('event_repeater', $this->t('You can only repeat future events.'));
+      }
+    }
   }
 
   /**
@@ -139,6 +197,7 @@ class EventForm extends ContentEntityForm {
     $entity = $this->entity;
     $entity->setNewRevision();
     $status = parent::save($form, $form_state);
+    $entity->event_repeater->entity->updateEvents($entity);
     switch ($status) {
       case SAVED_NEW:
         drupal_set_message($this->t('Created event.'));

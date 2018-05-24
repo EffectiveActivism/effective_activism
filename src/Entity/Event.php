@@ -9,6 +9,7 @@ use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\RevisionableContentEntityBase;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
+use Drupal\effective_activism\Constant;
 use Drupal\user\UserInterface;
 
 /**
@@ -67,6 +68,7 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
     'start_date',
     'end_date',
     'location',
+    'event_repeater',
     'results',
     'external_uid',
     'import',
@@ -74,6 +76,10 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
     'event_template',
     'user_id',
   ];
+
+  public function getTimezone() {
+    return $this->parent->entity->timezone->value !== Constant::GROUP_INHERIT_TIMEZONE ? $this->parent->entity->timezone->value : $this->parent->entity->organization->entity->timezone->value;
+  }
 
   /**
    * {@inheritdoc}
@@ -256,6 +262,20 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
       ->setDisplayOptions('view', [
         'type' => 'basic_string',
         'weight' => array_search('description', self::WEIGHTS),
+      ]);
+    $fields['event_repeater'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(t('Repeat event'))
+      ->setRevisionable(TRUE)
+      ->setSetting('target_type', 'event_repeater')
+      ->setSetting('handler', 'default')
+      ->setCardinality(1)
+      ->setDisplayOptions('view', [
+        'type' => 'string',
+        'weight' => array_search('event_repeater', self::WEIGHTS),
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'inline_entity_form_simple',
+        'weight' => array_search('event_repeater', self::WEIGHTS),
       ]);
     $fields['results'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Results'))

@@ -8,6 +8,7 @@ use Drupal\Core\Entity\RevisionableContentEntityBase;
 use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\user\UserInterface;
+use Drupal\effective_activism\Constant;
 
 /**
  * Defines the Event template entity.
@@ -66,6 +67,61 @@ class EventTemplate extends RevisionableContentEntityBase implements EventTempla
     'event_location',
     'user_id',
   ];
+
+  /**
+   * Applies event template to event entity.
+   *
+   * @param \Drupal\effective_activism\Entity\Event $event
+   *   An event entity.
+   *
+   * @return \Drupal\effective_activism\Entity\Event
+   *   The event entity.
+   */
+  public function applyToEvent(Event $event, $save = FALSE) {
+    $event->title->setValue($this->event_title->value);
+    $event->description->setValue($this->event_description->value);
+    $event->location->setValue([
+      'address' => $this->event_location->address,
+      'extra_information' => $this->event_location->extra_information,
+    ]);
+    if (!$this->event_start_date->isEmpty()) {
+      $start_date = new DrupalDateTime($this->event_start_date->value, new DateTimezone(DATETIME_STORAGE_TIMEZONE));
+      $event->start_date->setValue($start_date->format(DATETIME_DATETIME_STORAGE_FORMAT));
+    }
+    if (!$this->event_end_date->isEmpty()) {
+      $end_date = new DrupalDateTime($this->event_end_date->value, new DateTimezone(DATETIME_STORAGE_TIMEZONE));
+      $event->end_date->setValue($end_date->format(DATETIME_DATETIME_STORAGE_FORMAT));
+    }
+    if ($save) {
+      $event->save();
+    }
+    return $event;
+  }
+
+  /**
+   * Applies event template to event form.
+   *
+   * @param array $event_form
+   *   A fresh event form.
+   *
+   * @return array
+   *   The event form with default values set.
+   */
+  public function applyToEventForm(array $event_form) {
+    $event_form['title']['widget'][0]['value']['#default_value'] = $this->event_title->value;
+    $event_form['description']['widget'][0]['value']['#default_value'] = $this->event_description->value;
+    $event_form['location']['widget'][0]['address']['#default_value'] = $this->event_location->address;
+    $event_form['location']['widget'][0]['extra_information']['#default_value'] = $this->event_location->extra_information;
+    if (!$this->event_start_date->isEmpty()) {
+      $start_date = new DrupalDateTime($this->event_start_date->value, new DateTimezone(DATETIME_STORAGE_TIMEZONE));
+      $event_form['start_date']['widget'][0]['value']['#default_value'] = $start_date->format(Constant::DATETIMEPICKER_FORMAT);
+    }
+    if (!$this->event_end_date->isEmpty()) {
+      $end_date = new DrupalDateTime($this->event_end_date->value, new DateTimezone(DATETIME_STORAGE_TIMEZONE));
+      $event_form['end_date']['widget'][0]['value']['#default_value'] = $end_date->format(Constant::DATETIMEPICKER_FORMAT);
+    }
+    return $event_form;
+  }
 
   /**
    * {@inheritdoc}

@@ -7,6 +7,7 @@ use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Field\WidgetInterface;
 use Drupal\datetime\Plugin\Field\FieldWidget\DateTimeWidgetBase;
+use Drupal\effective_activism\Constant;
 
 /**
  * Plugin implementation of the DateTimePickerWidget widget.
@@ -20,9 +21,6 @@ use Drupal\datetime\Plugin\Field\FieldWidget\DateTimeWidgetBase;
  * )
  */
 class DateTimePickerWidget extends DateTimeWidgetBase implements WidgetInterface {
-
-  const DATETIMEPICKER_FORMAT = 'Y-m-d H:i';
-  const DATETIMEPICKER_FORMAT_EXAMPLE = '2018-12-31 23:59';
 
   /**
    * {@inheritdoc}
@@ -62,7 +60,7 @@ class DateTimePickerWidget extends DateTimeWidgetBase implements WidgetInterface
     ];
     if ($items[$delta]->date) {
       $date = $items[$delta]->date;
-      $element['value']['#default_value'] = $date->format(self::DATETIMEPICKER_FORMAT);
+      $element['value']['#default_value'] = $date->format(Constant::DATETIMEPICKER_FORMAT);
     }
     return $element;
   }
@@ -74,7 +72,7 @@ class DateTimePickerWidget extends DateTimeWidgetBase implements WidgetInterface
     $date = new DrupalDateTime($element['#value']);
     if ($date->hasErrors()) {
       $form_state->setError($element, $this->t('The date format is wrong. Please submit a date in the following format: @format', [
-        '@format' => self::DATETIMEPICKER_FORMAT_EXAMPLE,
+        '@format' => Constant::DATETIMEPICKER_FORMAT_EXAMPLE,
       ]));
     }
   }

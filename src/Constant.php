@@ -52,6 +52,12 @@ class Constant {
   const SLUG_THIRD_PARTY_CONTENT_TYPE = self::ENTITY_THIRD_PARTY_CONTENT_TYPE . self::SLUG_POSTFIX;
 
   /**
+   * Date formats.
+   */
+  const DATETIMEPICKER_FORMAT = 'Y-m-d H:i';
+  const DATETIMEPICKER_FORMAT_EXAMPLE = '2018-12-31 23:59';
+
+  /**
    * The default result types.
    */
   const DEFAULT_RESULT_TYPES = [

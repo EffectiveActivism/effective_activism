@@ -17,6 +17,7 @@ class InlineEntityFormEntityFormAlterHook implements HookInterface {
     'data',
     'person',
     'result',
+    'event_repeater',
   ];
 
   /**
@@ -26,6 +27,7 @@ class InlineEntityFormEntityFormAlterHook implements HookInterface {
     'data' => 'inline_entity_form_data',
     'person' => 'inline_entity_form_person',
     'result' => 'inline_entity_form_result',
+    'event_repeater' => 'inline_entity_form_event_repeater',
   ];
 
   /**
@@ -75,6 +77,7 @@ class InlineEntityFormEntityFormAlterHook implements HookInterface {
         }
       }
     }
+    // Add theming information to inline entity forms.
     if (in_array($entity_type, self::INLINE_ENTITY_TYPES)) {
       $entity_form['#theme'] = self::INLINE_ENTITY_FORM_TEMPLATES[$entity_type];
       // Hide revision and user fields.
