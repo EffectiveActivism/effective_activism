@@ -8,6 +8,7 @@ use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\effective_activism\Constant;
+use Drupal\effective_activism\Entity\EventRepeater;
 use Drupal\effective_activism\Entity\EventTemplate;
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\Organization;
@@ -162,6 +163,7 @@ class EventForm extends ContentEntityForm {
     // Check for changes in event repeater or event start date.
     if (
       !$this->entity->isNew() &&
+      !$this->entity->event_repeater->isEmpty() &&
       $this->entity->event_repeater->entity->isEnabled() &&
       (
         $form_state->getValue('start_date')[0]['value'] != $form['start_date']['widget'][0]['value']['#default_value'] ||
@@ -185,7 +187,18 @@ class EventForm extends ContentEntityForm {
     $entity = $this->entity;
     $entity->setNewRevision();
     $status = parent::save($form, $form_state);
-    $entity->event_repeater->entity->updateEvents($entity);
+    if (
+      !$entity->event_repeater->isEmpty() &&
+      $entity->event_repeater->entity->isEnabled()
+    ) {
+      $entity->event_repeater->entity->updateEvents($entity);
+      drupal_set_message(Drupal::translation()->formatPlural(
+        EventRepeater::MAX_REPEATS,
+        'This event is repeated. One upcoming event is available.',
+        'This event is repeated. Up to @max_repeats upcoming events are available.', [
+        '@max_repeats' => EventRepeater::MAX_REPEATS,
+      ]));
+    }
     switch ($status) {
       case SAVED_NEW:
         drupal_set_message($this->t('Created event.'));

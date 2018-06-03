@@ -5,7 +5,6 @@ namespace Drupal\effective_activism\Entity;
 use DateInterval;
 use DatePeriod;
 use DateTime;
-use DateTimeZone;
 use Drupal;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\EntityStorageInterface;
@@ -13,6 +12,7 @@ use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Entity\RevisionableContentEntityBase;
 use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
 use Drupal\effective_activism\Entity\Event;
 use Drupal\effective_activism\Helper\DateHelper;
 use Drupal\user\UserInterface;
@@ -72,16 +72,51 @@ class EventRepeater extends RevisionableContentEntityBase implements EventRepeat
    * {@inheritdoc}
    */
   public function updateEvents(Event $calling_event) {
-    // Create periods from start date, step and frequency.
+    $new_events_created = 0;
+    $existing_events_updated = 0;
+    $events_deleted = 0;
+    // Get 'now' based on the calling event.
     $now = DateHelper::getNow($calling_event->parent->entity->organization->entity, $calling_event->parent->entity);
+    // Get all events.
     $query = Drupal::entityQuery('event');
     $query
       ->sort('start_date', 'ASC')
       ->condition('event_repeater', $this->id())
-      ->condition('start_date', $now->format(DATETIME_DATETIME_STORAGE_FORMAT), '>=');
+      ->condition('start_date', $now->format(DateTimeItemInterface::DATETIME_STORAGE_FORMAT), '>=');
     $event_ids = array_values($query->execute());
     $first_event = isset($event_ids[0]) ? Event::load($event_ids[0]) : NULL;
+    // Special case: check if the calling event has just changed and has a
+    // former start date value that would make it the first event.
+    if (
+      $first_event !== NULL &&
+      !$calling_event->isNew() &&
+      $calling_event->getChangedTime() > $calling_event->getCreatedTime() &&
+      $calling_event->getChangedTime() > $first_event->getChangedTime()
+    ) {
+      // Get former revision if it exists.
+      $connection = Drupal::database();
+      $revisions = $connection->query('SELECT revision_id FROM {events_revision} WHERE id=:id ORDER BY revision_id', [
+          ':id' => $calling_event->id(),
+        ])
+        ->fetchCol();
+      if (count($revisions) > 1) {
+        end($revisions);
+        $former_revision_id = prev($revisions);
+        $calling_event_former_revision = Drupal::entityTypeManager()->getStorage('event')->loadRevision($former_revision_id);
+        $calling_event_former_revision_start_date = new DateTime($calling_event_former_revision->start_date->value);
+        $first_event_start_date = new DateTime($first_event->start_date->value);
+        if ($calling_event_former_revision_start_date->format('U') < $first_event_start_date->format('U')) {
+          $first_event = $calling_event;
+          // Reshuffle events to ensure that calling event is first.
+          $calling_event_index = array_search($calling_event->id(), $event_ids);
+          unset($event_ids[$calling_event_index]);
+          $event_ids = array_merge([$calling_event->id()], $event_ids);
+        }
+      }
+    }
+    // Update events for this event repeater.
     if ($this->isEnabled() && isset($first_event)) {
+      // Create periods from start date, step and frequency.
       $start_date = new DateTime($first_event->start_date->value);
       $difference = $start_date->diff(new DateTime($first_event->end_date->value));
       $interval = new DateInterval(sprintf('P%d%s', $this->step->value, $this->frequency->value));
@@ -102,18 +137,22 @@ class EventRepeater extends RevisionableContentEntityBase implements EventRepeat
             $event->start_date->value === $new_start_date->format('Y-m-d\TH:i:s') &&
             $event->end_date->value === $new_end_date->format('Y-m-d\TH:i:s')
           )) {
-            $event->start_date->setValue($new_start_date->format(DATETIME_DATETIME_STORAGE_FORMAT));
-            $event->end_date->setValue($new_end_date->format(DATETIME_DATETIME_STORAGE_FORMAT));
+            $event->start_date->setValue($new_start_date->format(DateTimeItemInterface::DATETIME_STORAGE_FORMAT));
+            $event->end_date->setValue($new_end_date->format(DateTimeItemInterface::DATETIME_STORAGE_FORMAT));
             $event->setNewRevision();
             $event->save();
+            $existing_events_updated++;
           }
         }
         // Create a new event.
         else {
-          $event = $calling_event->createDuplicate();
-          $event->start_date->setValue($new_start_date->format(DATETIME_DATETIME_STORAGE_FORMAT));
-          $event->end_date->setValue($new_end_date->format(DATETIME_DATETIME_STORAGE_FORMAT));
+          $event = $first_event->createDuplicate();
+          $event->start_date->setValue($new_start_date->format(DateTimeItemInterface::DATETIME_STORAGE_FORMAT));
+          $event->end_date->setValue($new_end_date->format(DateTimeItemInterface::DATETIME_STORAGE_FORMAT));
+          // Do not include results.
+          $event->results->setValue(NULL);
           $event->save();
+          $new_events_created++;
         }
         $i++;
       }
@@ -130,8 +169,28 @@ class EventRepeater extends RevisionableContentEntityBase implements EventRepeat
           $first_event->id() !== $event->id()
         ) {
           $event->delete();
+          $events_deleted++;
         }
       }
+    }
+    // Add logging and messages.
+    if ($new_events_created > 0) {
+      Drupal::logger('event_repeater')->info(sprintf('%d events created for event with id %d',
+        $new_events_created,
+        $calling_event->id()
+      ));
+    }
+    if ($existing_events_updated > 0) {
+      Drupal::logger('event_repeater')->info(sprintf('%d events updated for event with id %d',
+        $existing_events_updated,
+        $calling_event->id()
+      ));
+    }
+    if ($events_deleted > 0) {
+      Drupal::logger('event_repeater')->info(sprintf('%d events deleted for event with id %d',
+        $events_deleted,
+        $calling_event->id()
+      ));
     }
     return $this;
   }
