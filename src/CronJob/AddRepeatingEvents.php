@@ -3,9 +3,11 @@
 namespace Drupal\effective_activism\CronJob;
 
 use Drupal;
+use Drupal\Core\Datetime\DrupalDateTime;
+use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
 use Drupal\effective_activism\Constant;
 use Drupal\effective_activism\Entity\Event;
-use Drupal\effective_activism\Helper\EventRepeaterHelper;
+use Drupal\effective_activism\Entity\EventRepeater;
 
 /**
  * This cron job adds third-party content entities to events.
@@ -14,33 +16,35 @@ use Drupal\effective_activism\Helper\EventRepeaterHelper;
  */
 class AddRepeatingEvents implements CronJobInterface {
 
-  const BATCH_SIZE = 10;
-
-  const FUTURE_EVENTS_LIMIT = 10;
+  const BATCH_SIZE = 100;
 
   /**
    * {@inheritdoc}
    */
-  public static function run() {
-    $event_repeaters = EventRepeaterHelper::getEventRepeaters(self::BATCH_SIZE);
-    $events_created = 0;
-    foreach ($event_repeaters as $event_repeater) {
-      $future_events = $event_repeater->getFutureEvents();
-      if (
-        $event_repeater->isActive() &&
-        count($future_events) < self::FUTURE_EVENTS_LIMIT
-      ) {
-        // Create up to FUTURE_EVENTS_LIMIT number of events.
-        while ($future_events < self::FUTURE_EVENTS_LIMIT) {
-          $events_created++;
-          $future_events = $event_repeater->getFutureEvents();
-        }
-        
+  public static function run()
+  {
+    $position = Drupal::state()->get('effective_activism_event_repeater_position', 0);
+    // Approximate now.
+    $now = new DrupalDateTime('now -12 hours');
+    // Find all active event repeaters.
+    $query = Drupal::entityQuery('event');
+    $result = $query
+      ->condition('event_repeater.entity.step', 0, '>')
+      ->condition('event_repeater.entity.end_on_date', $now->format(DateTimeItemInterface::DATETIME_STORAGE_FORMAT), '>=')
+      ->range($position, $position + self::BATCH_SIZE)
+      ->execute();
+    $events = Event::loadMultiple($result);
+    $processed_event_repeaters = [];
+    foreach ($events as $event) {
+      if (!in_array($event->event_repeater->entity->id(), $processed_event_repeaters)) {
+        $event->event_repeater->entity->updateEvents($event);
+        $processed_event_repeaters[] = $event->event_repeater->entity->id();
       }
     }
-    if ($events_created > 0) {
-      Drupal::logger('effective_activism')->info(sprintf('%d repeated event(s) created', $events_created));
-    }
+    // Reset position if we have gone through the entire batch.
+    $position = count($events) === self::BATCH_SIZE ? $position + self::BATCH_SIZE : 0;
+    Drupal::state()->set('effective_activism_event_repeater_position', $position);
+    Drupal::logger('event_repeater')->info(sprintf('%d event repeaters updated', count($processed_event_repeaters)));
   }
 
 }

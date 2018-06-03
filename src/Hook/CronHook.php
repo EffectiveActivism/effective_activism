@@ -2,6 +2,7 @@
 
 namespace Drupal\effective_activism\Hook;
 
+use Drupal\effective_activism\CronJob\AddRepeatingEvents;
 use Drupal\effective_activism\CronJob\AddThirdPartyContent;
 use Drupal\effective_activism\CronJob\PopulateThirdPartyContent;
 
@@ -31,6 +32,7 @@ class CronHook implements HookInterface {
    * {@inheritdoc}
    */
   public function invoke(array $args) {
+    AddRepeatingEvents::run();
     AddThirdPartyContent::run();
     PopulateThirdPartyContent::run();
   }
