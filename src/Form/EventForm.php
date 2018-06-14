@@ -2,11 +2,14 @@
 
 namespace Drupal\effective_activism\Form;
 
+use DateInterval;
+use DateTime;
 use DateTimeZone;
 use Drupal;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
 use Drupal\effective_activism\Constant;
 use Drupal\effective_activism\Entity\EventRepeater;
 use Drupal\effective_activism\Entity\EventTemplate;
@@ -80,7 +83,7 @@ class EventForm extends ContentEntityForm {
         }
       }
     }
-    // Wrap event repeater in detail form element.
+    // Wrap event repeater in detail form element and show by default.
     $form['event_repeater']['widget'][0]['#type'] = 'details';
     if (
       !$entity->event_repeater->isEmpty() &&
@@ -96,6 +99,19 @@ class EventForm extends ContentEntityForm {
       $now = DateHelper::getNow($this->entity->parent->entity->organization->entity, $this->entity->parent->entity);
       if ($start_date->format('U') < $now->format('U')) {
         hide($form['event_repeater']);
+      }
+    }
+    // Disable start and end date if event is repeated but isn't the first
+    // upcoming event.
+    if (
+      !$entity->isNew() &&
+      !$entity->event_repeater->isEmpty() &&
+      $entity->event_repeater->entity->isEnabled()
+    ) {
+      $now = DateHelper::getNow(Drupal::request()->get('organization'), Drupal::request()->get('group'));
+      $event_ids = $entity->event_repeater->entity->getUpcomingEvents($now);
+      if ($event_ids[0] !== $entity->id()) {
+        drupal_set_message($this->t('Please note: Changing the start and end date of this upcoming event is not supported yet.'), 'warning');
       }
     }
     // Hide fields.
@@ -185,20 +201,61 @@ class EventForm extends ContentEntityForm {
    */
   public function save(array $form, FormStateInterface $form_state) {
     $entity = $this->entity;
+    // If this event is repeated, check that start date is changed.
+    // If it has changed, reschedule this event and stop older events
+    // from repeating by setting an end on date one hour before this
+    // events' old start date.
+    if (
+      !$entity->isNew() &&
+      !$entity->event_repeater->isEmpty() &&
+      $entity->event_repeater->entity->isEnabled()
+    ) {
+      if ($form['start_date']['widget'][0]['value']['#default_value'] !== $form_state->getValue('start_date')[0]['value']) {
+        $new_event_repeater = $entity->event_repeater->entity->createDuplicate();
+        $new_event_repeater->save();
+        $old_event_repeater = $entity->event_repeater->first()->get('entity')->getTarget()->getValue();
+        // Create a date one hour older than the old start date of this event.
+        $old_event_repeater_end_on_date = new DateTime($form['start_date']['widget'][0]['value']['#default_value']);
+        $old_event_repeater_end_on_date->sub(new DateInterval('PT1H'));
+        // Set the current event repeater 'end on date' to this date value.
+        $entity->event_repeater->entity->end_on_date->setValue($old_event_repeater_end_on_date->format(DateTimeItemInterface::DATETIME_STORAGE_FORMAT));
+        $entity->event_repeater->entity->save();
+        // Assign the new event repeater to this event.
+        $form_state->setValue('event_repeater', $new_event_repeater->id());
+        $entity->event_repeater->target_id = $new_event_repeater->id();
+      }
+    }
     $entity->setNewRevision();
     $status = parent::save($form, $form_state);
     if (
       !$entity->event_repeater->isEmpty() &&
       $entity->event_repeater->entity->isEnabled()
     ) {
-      $entity->event_repeater->entity->updateEvents($entity);
+      // Reschedule upcoming events as needed.
+      $now = DateHelper::getNow(Drupal::request()->get('organization'), Drupal::request()->get('group'));
+      $entity->event_repeater->entity->scheduleUpcomingEvents($now);
+      // Also reschedule events from old event repeater, if it is set.
+      if (isset($old_event_repeater)) {
+        $old_event_repeater->scheduleUpcomingEvents($now);
+      }
       drupal_set_message(Drupal::translation()->formatPlural(
         EventRepeater::MAX_REPEATS,
         'This event is repeated. One upcoming event is available.',
         'This event is repeated. Up to @max_repeats upcoming events are available.', [
         '@max_repeats' => EventRepeater::MAX_REPEATS,
       ]));
+      // Check if event has been deleted and redirect as necessary.
+      $query = Drupal::entityQuery('event');
+      $query->condition('id', $entity->id());
+      $this_event = $query->execute();
+      if (empty($this_event)) {
+        $form_state->setRedirect('entity.group.canonical', [
+          'organization' => PathHelper::transliterate(Drupal::request()->get('organization')->label()),
+          'group' => PathHelper::transliterate(Drupal::request()->get('group')->label()),
+        ]);
+      }
     }
+
     switch ($status) {
       case SAVED_NEW:
         drupal_set_message($this->t('Created event.'));
