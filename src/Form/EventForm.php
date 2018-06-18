@@ -237,13 +237,21 @@ class EventForm extends ContentEntityForm {
       // Also reschedule events from old event repeater, if it is set.
       if (isset($old_event_repeater)) {
         $old_event_repeater->scheduleUpcomingEvents($now);
+        drupal_set_message(Drupal::translation()->formatPlural(
+          EventRepeater::MAX_REPEATS,
+          'Rescheduled this and future events.',
+          'Rescheduled this and up to @max_repeats upcoming events.', [
+          '@max_repeats' => EventRepeater::MAX_REPEATS,
+        ]));
       }
-      drupal_set_message(Drupal::translation()->formatPlural(
-        EventRepeater::MAX_REPEATS,
-        'This event is repeated. One upcoming event is available.',
-        'This event is repeated. Up to @max_repeats upcoming events are available.', [
-        '@max_repeats' => EventRepeater::MAX_REPEATS,
-      ]));
+      else {
+        drupal_set_message(Drupal::translation()->formatPlural(
+          EventRepeater::MAX_REPEATS,
+          'This event is repeated. One upcoming event is available.',
+          'This event is repeated. Up to @max_repeats upcoming events are available.', [
+          '@max_repeats' => EventRepeater::MAX_REPEATS,
+        ]));
+      }
       // Check if event has been deleted and redirect as necessary.
       $query = Drupal::entityQuery('event');
       $query->condition('id', $entity->id());

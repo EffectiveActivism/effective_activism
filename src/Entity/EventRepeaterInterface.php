@@ -2,6 +2,7 @@
 
 namespace Drupal\effective_activism\Entity;
 
+use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\RevisionLogInterface;
 use Drupal\Core\Entity\EntityChangedInterface;
@@ -13,6 +14,33 @@ use Drupal\user\EntityOwnerInterface;
  * @ingroup effective_activism
  */
 interface EventRepeaterInterface extends ContentEntityInterface, RevisionLogInterface, EntityChangedInterface, EntityOwnerInterface {
+
+  /**
+   * Returns TRUE if event repeater is enabled, FALSE otherwise.
+   *
+   * @return bool
+   *   TRUE if enabled, FALSE otherwise.
+   */
+  public function isEnabled();
+
+  /**
+   * Returns a list of upcoming events, relative to the DrupalDateTime 'now'.
+   *
+   * @param \Drupal\Core\Datetime\DrupalDateTime $now
+   *   Now, relative to a group or organization.
+   *
+   * @return array
+   *   An array of entity ids as integers.
+   */
+  public function getUpcomingEvents(DrupalDateTime $now);
+
+  /**
+   * Schedules and reschedules events and deletes superfluous events.
+   *
+   * @param \Drupal\Core\Datetime\DrupalDateTime $now
+   *   Now, relative to a group or organization.
+   */
+  public function scheduleUpcomingEvents(DrupalDateTime $now);
 
   /**
    * Gets the EventRepeater creation timestamp.
