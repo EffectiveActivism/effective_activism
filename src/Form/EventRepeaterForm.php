@@ -108,9 +108,8 @@ class EventRepeaterForm extends FormBase {
     $start_date = new DateTime($event->start_date->value);
     $difference = $start_date->diff(new DateTime($event->end_date->value));
     $interval = new DateInterval(sprintf('P%d%s', $form_state->getValue('step'), $form_state->getValue('frequency')));
-    $date_period = new DatePeriod($start_date, $interval, $form_state->getValue('repeats'));
-    // Map periods onto existing events and create new events until
-    // MAX_REPEATS is reached.
+    $date_period = new DatePeriod($start_date, $interval, $form_state->getValue('repeats'), DatePeriod::EXCLUDE_START_DATE);
+    // Map periods onto existing events and create new events until done.
     $i = 1;
     foreach ($date_period as $new_start_date) {
       $new_end_date = clone $new_start_date;
@@ -132,9 +131,10 @@ class EventRepeaterForm extends FormBase {
         '@repeats' => $form_state->getValue('repeats'),
       ]
     ));
-    $form_state->setRedirect('entity.group.events', [
+    $form_state->setRedirect('entity.event.canonical', [
       'organization' => PathHelper::transliterate(Drupal::request()->get('organization')->label()),
       'group' => PathHelper::transliterate(Drupal::request()->get('group')->label()),
+      'event' => $event->id(),
     ]);
   }
 
