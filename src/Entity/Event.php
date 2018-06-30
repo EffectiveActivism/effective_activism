@@ -28,6 +28,7 @@ use Drupal\user\UserInterface;
  *       "add-from-template" = "Drupal\effective_activism\Form\EventTemplateSelectionForm",
  *       "edit" = "Drupal\effective_activism\Form\EventForm",
  *       "publish" = "Drupal\effective_activism\Form\EventPublishForm",
+ *       "repeat" = "Drupal\effective_acitivism\Form\EventRepeaterForm",
  *     },
  *     "access" = "Drupal\effective_activism\AccessControlHandler\EventAccessControlHandler",
  *     "route_provider" = {
@@ -51,6 +52,7 @@ use Drupal\user\UserInterface;
  *     "add-from-template-form" = "/o/{organization}/g/{group}/e/add/{event_template}",
  *     "edit-form" = "/o/{organization}/g/{group}/e/{event}/edit",
  *     "publish-form" = "/o/{organization}/g/{group}/e/{event}/publish",
+ *     "repeat-form" = "/o/{organization}/g/{group}/e/{event}/repeat",
  *   },
  * )
  */
