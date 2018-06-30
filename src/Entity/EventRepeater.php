@@ -141,8 +141,8 @@ class EventRepeater extends RevisionableContentEntityBase implements EventRepeat
         $event = Event::load($event_id);
         $start_date = new DateTime($event->start_date->value);
         if (
-          $start_date->format('U') > $now->format('U') &&
-          $first_event->id() !== $event->id()
+          $event->id() !== $first_event->id() &&
+          $start_date->format('U') > $now->format('U')
         ) {
           $event->delete();
           $events_deleted++;
