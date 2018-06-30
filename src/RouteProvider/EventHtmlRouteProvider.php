@@ -267,4 +267,5 @@ class EventHtmlRouteProvider extends DefaultHtmlRouteProvider {
       return $route;
     }
   }
+
 }

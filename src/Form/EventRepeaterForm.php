@@ -42,7 +42,7 @@ class EventRepeaterForm extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state, Organization $organization = NULL, Group $group = NULL, Event $event = NULL) {
     // Do not allow repeating of old events.
-    $now = Drupal\effective_activism\Helper\DateHelper::getNow($organization, $group);
+    $now = DateHelper::getNow($organization, $group);
     $start_date = new DateTime($event->start_date->value);
     if ($start_date->format('U') < $now->format('U')) {
       drupal_set_message(t('You cannot repeat old events'), 'error');
@@ -129,8 +129,9 @@ class EventRepeaterForm extends FormBase {
       $form_state->getValue('repeats'),
       'Reapeted event once.',
       'Repeated event @repeats times.', [
-      '@repeats' => $form_state->getValue('repeats'),
-    ]));
+        '@repeats' => $form_state->getValue('repeats'),
+      ]
+    ));
     $form_state->setRedirect('entity.group.events', [
       'organization' => PathHelper::transliterate(Drupal::request()->get('organization')->label()),
       'group' => PathHelper::transliterate(Drupal::request()->get('group')->label()),
