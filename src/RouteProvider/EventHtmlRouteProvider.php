@@ -9,8 +9,6 @@ use Symfony\Component\Routing\Route;
 
 /**
  * Provides routes for Event entities.
- *
- * @see Drupal\Core\Entity\Routing\DefaultHtmlRouteProvider
  */
 class EventHtmlRouteProvider extends DefaultHtmlRouteProvider {
 
@@ -28,6 +26,9 @@ class EventHtmlRouteProvider extends DefaultHtmlRouteProvider {
     }
     if ($publish_form_route = $this->getPublishFormRoute($entity_type)) {
       $collection->add("entity.{$entity_type_id}.publish_form", $publish_form_route);
+    }
+    if ($repeat_form_route = $this->getRepeatFormRoute($entity_type)) {
+      $collection->add("entity.{$entity_type_id}.repeat_form", $repeat_form_route);
     }
     return $collection;
   }
@@ -220,6 +221,39 @@ class EventHtmlRouteProvider extends DefaultHtmlRouteProvider {
           '_title' => "Publish {$entity_type->getLabel()}",
         ])
         ->setRequirement('_custom_access', '\Drupal\effective_activism\AccessControlHandler\AccessControl::fromRouteIsManager')
+        ->setOption('parameters', [
+          Constant::ENTITY_ORGANIZATION => ['type' => Constant::ENTITY_ORGANIZATION],
+          Constant::ENTITY_GROUP => ['type' => Constant::ENTITY_GROUP],
+          $entity_type_id => ['type' => Constant::ENTITY_EVENT],
+        ]);
+      // Entity types with serial IDs can specify this in their route
+      // requirements, improving the matching process.
+      if ($this->getEntityTypeIdKeyType($entity_type) === 'integer') {
+        $route->setRequirement($entity_type_id, '\d+');
+      }
+      return $route;
+    }
+  }
+
+  /**
+   * Gets the repeat-form route.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
+   *   The entity type.
+   *
+   * @return \Symfony\Component\Routing\Route|null
+   *   The generated route, if available.
+   */
+  protected function getRepeatFormRoute(EntityTypeInterface $entity_type) {
+    if ($entity_type->hasLinkTemplate('repeat-form')) {
+      $entity_type_id = $entity_type->id();
+      $route = new Route($entity_type->getLinkTemplate('repeat-form'));
+      $route
+        ->setDefaults([
+          '_form' => '\Drupal\effective_activism\Form\EventRepeaterForm',
+          '_title' => "Repeat {$entity_type->getLabel()}",
+        ])
+        ->setRequirement('_custom_access', '\Drupal\effective_activism\AccessControlHandler\AccessControl::fromRouteIsGroupStaff')
         ->setOption('parameters', [
           Constant::ENTITY_ORGANIZATION => ['type' => Constant::ENTITY_ORGANIZATION],
           Constant::ENTITY_GROUP => ['type' => Constant::ENTITY_GROUP],
