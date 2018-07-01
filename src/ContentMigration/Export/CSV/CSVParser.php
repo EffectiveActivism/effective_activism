@@ -104,7 +104,14 @@ class CSVParser implements ParserInterface {
    * Set the number of items to be exported.
    */
   private function setItemCount() {
-    $this->itemCount = FilterHelper::getEvents($this->filter, 0, 0, FALSE);
+    // Check if export is of group events or entire organization.
+    if ($this->export->parent->isEmpty()) {
+      $this->itemCount = FilterHelper::getEvents($this->filter, 0, 0, FALSE);
+    }
+    else {
+      $group = $this->export->parent->first()->get('entity')->getTarget()->getValue();
+      $this->itemCount = FilterHelper::getEventsByGroup($this->filter, $group, 0, 0, FALSE);
+    }
     return $this;
   }
 

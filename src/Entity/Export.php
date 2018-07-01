@@ -50,6 +50,10 @@ use Drupal\user\UserInterface;
  *     "add-form" = "/o/{organization}/exports/add/{export_type}",
  *     "edit-form" = "/o/{organization}/exports/{export}/edit",
  *     "publish-form" = "/o/{organization}/exports/{export}/publish",
+ *     "group-canonical" = "/o/{organization}/g/{group}/exports/{export}",
+ *     "group-add-form" = "/o/{organization}/g/{group}/exports/add/{export_type}",
+ *     "group-edit-form" = "/o/{organization}/g/{group}/exports/{export}/edit",
+ *     "group-publish-form" = "/o/{organization}/g/{group}/exports/{export}/publish",
  *   },
  * )
  */
@@ -59,6 +63,7 @@ class Export extends RevisionableContentEntityBase implements ExportInterface {
 
   const WEIGHTS = [
     'organization',
+    'parent',
     'filter',
     'user_id',
   ];
@@ -165,6 +170,29 @@ class Export extends RevisionableContentEntityBase implements ExportInterface {
       ->setDisplayOptions('form', [
         'type' => 'entity_reference_autocomplete',
         'weight' => array_search('organization', self::WEIGHTS),
+        'settings' => [
+          'match_operator' => 'CONTAINS',
+          'size' => '60',
+          'autocomplete_type' => 'tags',
+          'placeholder' => '',
+        ],
+      ]);
+    $fields['parent'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(t('Parent'))
+      ->setDescription(t('The group of the export.'))
+      ->setRequired(FALSE)
+      ->setRevisionable(TRUE)
+      ->setSetting('target_type', 'group')
+      ->setSetting('handler', 'default')
+      ->setCardinality(1)
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'string',
+        'weight' => array_search('group', self::WEIGHTS),
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'entity_reference_autocomplete',
+        'weight' => array_search('group', self::WEIGHTS),
         'settings' => [
           'match_operator' => 'CONTAINS',
           'size' => '60',

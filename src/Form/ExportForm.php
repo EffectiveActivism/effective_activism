@@ -7,8 +7,10 @@ use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\effective_activism\Entity\Export;
 use Drupal\effective_activism\Entity\Filter;
+use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\Organization;
 use Drupal\effective_activism\Helper\OrganizationHelper;
+use Drupal\effective_activism\Helper\FilterHelper;
 use Drupal\effective_activism\Helper\PathHelper;
 use ReflectionClass;
 
@@ -22,12 +24,13 @@ class ExportForm extends ContentEntityForm {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, Organization $organization = NULL, Export $export = NULL) {
+  public function buildForm(array $form, FormStateInterface $form_state, Organization $organization = NULL, Group $group = NULL, Export $export = NULL) {
     $form = parent::buildForm($form, $form_state);
     $form['#theme'] = (new ReflectionClass($this))->getShortName();
     $entity = $this->entity;
     // Set values from path.
     $form['organization']['widget'][0]['target_id']['#default_value'] = Drupal::request()->get('organization');
+    $form['parent']['widget'][0]['target_id']['#default_value'] = Drupal::request()->get('group');
     // Remove filter options that do not belong to selected organization.
     if (!empty($form['organization']['widget'][0]['target_id']['#default_value'])) {
       $allowed_filter_ids = OrganizationHelper::getFilters($organization, 0, 0, FALSE);
@@ -75,7 +78,16 @@ class ExportForm extends ContentEntityForm {
         '@organization' => Drupal::request()->get('organization')->label(),
         '@filter' => Filter::load($filter_id)->label(),
       ]));
+      return;
     }
+    $filter = Filter::load($filter_id);
+    $events = Drupal::request()->get('group') === NULL ? FilterHelper::getEvents($filter, 0, 0, FALSE) : FilterHelper::getEventsByGroup($filter, Drupal::request()->get('group'), 0, 0, FALSE);
+    if (count($events) < 1) {
+      $form_state->setErrorByName('filter', $this->t('The filter <em>@filter</em> contains no events to export. Please select another filter or broaden the search scope for this filter.', [
+        '@filter' => Filter::load($filter_id)->label(),
+      ]));
+    }
+
   }
 
   /**
@@ -97,10 +109,18 @@ class ExportForm extends ContentEntityForm {
           '%label' => $entity->label(),
         ]));
     }
-    $form_state->setRedirect('entity.export.canonical', [
-      'organization' => PathHelper::transliterate(Drupal::request()->get('organization')->label()),
-      'export' => $entity->id(),
-    ]);
+    if (Drupal::request()->get('group') === NULL) {
+      $form_state->setRedirect('entity.export.canonical', [
+        'organization' => PathHelper::transliterate(Drupal::request()->get('organization')->label()),
+        'export' => $entity->id(),
+      ]);
+    } else {
+      $form_state->setRedirect('entity.export.group_canonical', [
+        'organization' => PathHelper::transliterate(Drupal::request()->get('organization')->label()),
+        'group' => PathHelper::transliterate(Drupal::request()->get('group')->label()),
+        'export' => $entity->id(),
+      ]);
+    }
   }
 
   /**
