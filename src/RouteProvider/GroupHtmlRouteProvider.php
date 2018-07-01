@@ -222,7 +222,7 @@ class GroupHtmlRouteProvider extends DefaultHtmlRouteProvider {
           '_form' => '\Drupal\effective_activism\Form\ChartForm',
           '_title' => "Results",
         ])
-        ->setRequirement('_entity_access', "{$entity_type_id}.view")
+        ->setRequirement('_entity_access', "{$entity_type_id}.update")
         ->setOption('parameters', [
           Constant::ENTITY_ORGANIZATION => ['type' => Constant::ENTITY_ORGANIZATION],
           $entity_type_id => ['type' => Constant::ENTITY_GROUP],
