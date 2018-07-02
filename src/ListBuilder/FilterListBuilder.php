@@ -34,6 +34,13 @@ class FilterListBuilder extends EntityListBuilder {
   protected $organization;
 
   /**
+   * A pager index to resolve multiple pagers on a page.
+   *
+   * @var int
+   */
+  protected $pagerIndex = 0;
+
+  /**
    * {@inheritdoc}
    */
   public function __construct(EntityTypeInterface $entity_type, EntityStorageInterface $storage, Organization $organization = NULL) {
@@ -70,6 +77,20 @@ class FilterListBuilder extends EntityListBuilder {
   }
 
   /**
+   * Sets an index for the pager.
+   *
+   * @var int $pager_index
+   *   The index to set.
+   *
+   * @return self
+   *   This instance.
+   */
+  public function setPagerIndex($pager_index) {
+    $this->pagerIndex = $pager_index;
+    return $this;
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function render() {
@@ -80,7 +101,10 @@ class FilterListBuilder extends EntityListBuilder {
       'max-age' => self::CACHE_MAX_AGE,
       'tags' => self::CACHE_TAGS,
     ];
-    $build['pager'] = ['#type' => 'pager'];
+    $build['pager'] = [
+      '#type' => 'pager',
+      '#element' => $this->pagerIndex,
+    ];
     return $build;
   }
 
