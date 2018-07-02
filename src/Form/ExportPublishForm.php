@@ -35,6 +35,15 @@ class ExportPublishForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, Organization $organization = NULL, Group $group = NULL, Export $export = NULL) {
+    // Export publish form can be viewed from two locations, organization level and group level.
+    // Only one location is valid, so we check to make sure that an invalid choice hasn't been made.
+    if (
+      (Drupal::request()->get('group') !== NULL && $export->parent->isEmpty()) ||
+      (Drupal::request()->get('group') === NULL && !$export->parent->isEmpty())
+      ) {
+      drupal_set_message($this->t('Please view this page from the proper path.'), 'error');
+      return $form;
+    }
     $form = parent::buildForm($form, $form_state);
     $form['#theme'] = (new ReflectionClass($this))->getShortName();
     return $form;
@@ -94,7 +103,7 @@ class ExportPublishForm extends ConfirmFormBase {
    */
   public function getCancelUrl() {
     $entity = Drupal::request()->get('export');
-    if ($entity->get('parent')->isEmpty()) {
+    if (Drupal::request()->get('group') === NULL) {
       return new Url(
         'entity.export.canonical', [
           'organization' => PathHelper::transliterate(Drupal::request()->get('organization')->label()),

@@ -19,7 +19,7 @@ use Drupal\user\UserInterface;
  *   label = @Translation("Export"),
  *   bundle_label = @Translation("Export type"),
  *   handlers = {
- *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
+ *     "view_builder" = "Drupal\effective_activism\ViewBuilder\ExportViewBuilder",
  *     "list_builder" = "Drupal\effective_activism\ListBuilder\ExportListBuilder",
  *     "form" = {
  *       "default" = "Drupal\effective_activism\Form\ExportForm",
