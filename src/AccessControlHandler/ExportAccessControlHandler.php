@@ -29,12 +29,7 @@ class ExportAccessControlHandler extends EntityAccessControlHandler {
         }
 
       case 'update':
-        if ($entity->get('parent')->isEmpty()) {
-          return AccessControl::isManager($entity->get('organization')->entity, $account);
-        }
-        else {
-          return AccessControl::isGroupStaff([$entity->get('parent')->entity], $account);
-        }
+        return AccessResult::forbidden();
 
       case 'delete':
         return AccessResult::forbidden();
