@@ -21,10 +21,15 @@ class ExportAccessControlHandler extends EntityAccessControlHandler {
   protected function checkAccess(EntityInterface $entity, $operation, AccountInterface $account) {
     switch ($operation) {
       case 'view':
-        return AccessControl::isManager($entity->get('organization')->entity, $account);
+        if ($entity->get('parent')->isEmpty()) {
+          return AccessControl::isManager($entity->get('organization')->entity, $account);
+        }
+        else {
+          return AccessControl::isGroupStaff([$entity->get('parent')->entity], $account);
+        }
 
       case 'update':
-        return AccessControl::isManager($entity->get('organization')->entity, $account);
+        return AccessResult::forbidden();
 
       case 'delete':
         return AccessResult::forbidden();
@@ -37,7 +42,12 @@ class ExportAccessControlHandler extends EntityAccessControlHandler {
    * {@inheritdoc}
    */
   protected function checkCreateAccess(AccountInterface $account, array $context, $entity_bundle = NULL) {
-    return AccessControl::isManager(Drupal::request()->get('organization'), $account);
+    if (Drupal::request()->get('group') === NULL) {
+      return AccessControl::isManager(Drupal::request()->get('organization'), $account);
+    }
+    else {
+      return AccessControl::isGroupStaff([Drupal::request()->get('group')], $account);
+    }
   }
 
 }

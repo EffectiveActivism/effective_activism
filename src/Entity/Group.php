@@ -49,6 +49,7 @@ use Drupal\effective_activism\Constant;
  *     "add-form" = "/o/{organization}/g/add",
  *     "edit-form" = "/o/{organization}/g/{group}/edit",
  *     "events" = "/o/{organization}/g/{group}/e",
+ *     "exports" = "/o/{organization}/g/{group}/exports",
  *     "imports" = "/o/{organization}/g/{group}/imports",
  *     "publish-form" = "/o/{organization}/g/{group}/publish",
  *     "results" = "/o/{organization}/g/{group}/results",

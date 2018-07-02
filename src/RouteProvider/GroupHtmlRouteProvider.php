@@ -21,11 +21,14 @@ class GroupHtmlRouteProvider extends DefaultHtmlRouteProvider {
     if ($event_overview_route = $this->getEventsRoute($entity_type)) {
       $collection->add("entity.{$entity_type_id}.events", $event_overview_route);
     }
-    if ($publish_form_route = $this->getPublishFormRoute($entity_type)) {
-      $collection->add("entity.{$entity_type_id}.publish_form", $publish_form_route);
+    if ($export_overview_route = $this->getExportsRoute($entity_type)) {
+      $collection->add("entity.{$entity_type_id}.exports", $export_overview_route);
     }
     if ($import_overview_route = $this->getImportsRoute($entity_type)) {
       $collection->add("entity.{$entity_type_id}.imports", $import_overview_route);
+    }
+    if ($publish_form_route = $this->getPublishFormRoute($entity_type)) {
+      $collection->add("entity.{$entity_type_id}.publish_form", $publish_form_route);
     }
     if ($result_overview_route = $this->getResultsRoute($entity_type)) {
       $collection->add("entity.{$entity_type_id}.results", $result_overview_route);
@@ -142,6 +145,33 @@ class GroupHtmlRouteProvider extends DefaultHtmlRouteProvider {
           '_title' => "Events",
         ])
         ->setRequirement('_entity_access', "{$entity_type_id}.view")
+        ->setOption('parameters', [
+          Constant::ENTITY_ORGANIZATION => ['type' => Constant::ENTITY_ORGANIZATION],
+          $entity_type_id => ['type' => Constant::ENTITY_GROUP],
+        ]);
+      return $route;
+    }
+  }
+
+  /**
+   * Gets the exports overview route.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
+   *   The entity type.
+   *
+   * @return \Symfony\Component\Routing\Route|null
+   *   The generated route, if available.
+   */
+  protected function getExportsRoute(EntityTypeInterface $entity_type) {
+    if ($entity_type->hasLinkTemplate('exports')) {
+      $entity_type_id = $entity_type->id();
+      $route = new Route($entity_type->getLinkTemplate('exports'));
+      $route
+        ->setDefaults([
+          '_entity_list' => 'export',
+          '_title' => "Exports",
+        ])
+        ->setRequirement('_entity_access', "{$entity_type_id}.update")
         ->setOption('parameters', [
           Constant::ENTITY_ORGANIZATION => ['type' => Constant::ENTITY_ORGANIZATION],
           $entity_type_id => ['type' => Constant::ENTITY_GROUP],
