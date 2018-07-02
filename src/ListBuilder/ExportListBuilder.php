@@ -80,6 +80,7 @@ class ExportListBuilder extends EntityListBuilder {
     }
     else {
       $query->condition('organization', $this->organization->id());
+      $query->notExists('parent');
     }
     // Sorting preference.
     if ($this->sortAsc) {
