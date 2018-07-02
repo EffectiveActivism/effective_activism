@@ -25,8 +25,9 @@ class ExportForm extends ContentEntityForm {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, Organization $organization = NULL, Group $group = NULL, Export $export = NULL) {
-    // Export edit forms can be viewed from two locations, organization level and group level.
-    // Only one location is valid, so we check to make sure that an invalid choice hasn't been made.
+    // Export edit forms can be viewed from two locations, organization level
+    // and group level. Only one location is valid, so we check to make sure
+    // that an invalid choice hasn't been made.
     if (
       $export !== NULL &&
       ((Drupal::request()->get('group') !== NULL && $export->parent->isEmpty()) ||
@@ -124,7 +125,8 @@ class ExportForm extends ContentEntityForm {
         'organization' => PathHelper::transliterate(Drupal::request()->get('organization')->label()),
         'export' => $entity->id(),
       ]);
-    } else {
+    }
+    else {
       $form_state->setRedirect('entity.export.group_canonical', [
         'organization' => PathHelper::transliterate(Drupal::request()->get('organization')->label()),
         'group' => PathHelper::transliterate(Drupal::request()->get('group')->label()),

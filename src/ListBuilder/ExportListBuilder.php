@@ -31,10 +31,10 @@ class ExportListBuilder extends EntityListBuilder {
   const DEFAULT_EMPTY_TEXT = 'No exports created yet.';
 
   /**
-  * Empty text.
-  *
-  * @var string
-  */
+   * Empty text.
+   *
+   * @var string
+   */
   protected $emptyText;
 
   /**

@@ -17,8 +17,9 @@ class ExportViewBuilder extends EntityViewBuilder {
   public function view(EntityInterface $entity, $view_mode = 'full', $langcode = NULL) {
     $build = parent::view($entity, $view_mode, $langcode);
     $export = $build['#export'];
-    // Export view pages can be viewed from two locations, organization level and group level.
-    // Only one location is valid, so we check to make sure that an invalid choice hasn't been made.
+    // Export view pages can be viewed from two locations, organization level
+    // and group level. Only one location is valid, so we check to make sure
+    // that an invalid choice hasn't been made.
     if (
       (Drupal::request()->get('group') !== NULL && $export->parent->isEmpty()) ||
       (Drupal::request()->get('group') === NULL && !$export->parent->isEmpty())
@@ -28,4 +29,5 @@ class ExportViewBuilder extends EntityViewBuilder {
     }
     return $build;
   }
+
 }

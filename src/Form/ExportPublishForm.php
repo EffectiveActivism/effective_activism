@@ -35,8 +35,9 @@ class ExportPublishForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, Organization $organization = NULL, Group $group = NULL, Export $export = NULL) {
-    // Export publish form can be viewed from two locations, organization level and group level.
-    // Only one location is valid, so we check to make sure that an invalid choice hasn't been made.
+    // Export publish form can be viewed from two locations, organization level
+    // and group level. Only one location is valid, so we check to make sure
+    // that an invalid choice hasn't been made.
     if (
       (Drupal::request()->get('group') !== NULL && $export->parent->isEmpty()) ||
       (Drupal::request()->get('group') === NULL && !$export->parent->isEmpty())
