@@ -30,7 +30,7 @@ class ExportHtmlRouteProvider extends DefaultHtmlRouteProvider {
       $collection->add("entity.{$entity_type_id}.group_edit_form", $group_edit_form_route);
     }
     if ($group_publish_form_route = $this->getGroupPublishFormRoute($entity_type)) {
-      $collection->add("entity.{$entity_type_id}.group_edit_form", $group_publish_form_route);
+      $collection->add("entity.{$entity_type_id}.group_publish_form", $group_publish_form_route);
     }
     if ($publish_form_route = $this->getPublishFormRoute($entity_type)) {
       $collection->add("entity.{$entity_type_id}.publish_form", $publish_form_route);
