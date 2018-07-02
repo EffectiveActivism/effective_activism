@@ -68,6 +68,13 @@ class EventListBuilder extends EntityListBuilder {
   protected $organization;
 
   /**
+   * A pager index to resolve multiple pagers on a page.
+   *
+   * @var int
+   */
+  protected $pagerIndex = 0;
+
+  /**
    * Sorting preference.
    *
    * @var bool
@@ -159,6 +166,20 @@ class EventListBuilder extends EntityListBuilder {
   }
 
   /**
+   * Sets an index for the pager.
+   *
+   * @var int $pager_index
+   *   The index to set.
+   *
+   * @return self
+   *   This instance.
+   */
+  public function setPagerIndex($pager_index) {
+    $this->pagerIndex = $pager_index;
+    return $this;
+  }
+
+  /**
    * Determine if sorting by start date should be ascending or descending.
    *
    * @var bool $preference
@@ -194,7 +215,10 @@ class EventListBuilder extends EntityListBuilder {
       'max-age' => self::CACHE_MAX_AGE,
       'tags' => self::CACHE_TAGS,
     ];
-    $build['pager'] = ['#type' => 'pager'];
+    $build['pager'] = [
+      '#type' => 'pager',
+      '#element' => $this->pagerIndex,
+    ];
     return $build;
   }
 
