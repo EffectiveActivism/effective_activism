@@ -7,6 +7,7 @@ use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Entity\RevisionableContentEntityBase;
 use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\user\UserInterface;
 
 /**
@@ -62,7 +63,7 @@ class Filter extends RevisionableContentEntityBase implements FilterInterface {
     'start_date',
     'end_date',
     'location',
-    'event_template',
+    'event_templates',
     'result_types',
     'user_id',
   ];
@@ -286,22 +287,22 @@ class Filter extends RevisionableContentEntityBase implements FilterInterface {
         'type' => 'location_default',
         'weight' => array_search('location', self::WEIGHTS),
       ]);
-    $fields['event_template'] = BaseFieldDefinition::create('entity_reference')
-      ->setLabel(t('Event template'))
+    $fields['event_templates'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(t('Event templates'))
       ->setRevisionable(TRUE)
-      ->setDescription(t('The event template used to create events with.'))
+      ->setDescription(t('The event templates used to create events with.'))
       ->setSetting('target_type', 'event_template')
       ->setSetting('handler', 'default')
-      ->setCardinality(1)
+      ->setCardinality(FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED)
       ->setRequired(FALSE)
       ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'string',
-        'weight' => array_search('event_template', self::WEIGHTS),
+        'weight' => array_search('event_templates', self::WEIGHTS),
       ])
       ->setDisplayOptions('form', [
-        'type' => 'options_select',
-        'weight' => array_search('event_template', self::WEIGHTS),
+        'type' => 'options_buttons',
+        'weight' => array_search('event_templates', self::WEIGHTS),
       ]);
     $fields['user_id'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Authored by'))
