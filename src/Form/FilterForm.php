@@ -46,15 +46,15 @@ class FilterForm extends ContentEntityForm {
       return $result;
     });
     $organization_templates = $organization_templates === NULL ? [] : $organization_templates;
-    foreach ($form['event_template']['widget']['#options'] as $key => $value) {
+    foreach ($form['event_templates']['widget']['#options'] as $key => $value) {
       if ($key === '_none') {
         continue;
       }
       elseif (!in_array($key, $organization_templates)) {
-        unset($form['event_template']['widget']['#options'][$key]);
+        unset($form['event_templates']['widget']['#options'][$key]);
       }
     }
-    asort($form['event_template']['widget']['#options']);
+    asort($form['event_templates']['widget']['#options']);
     return $form;
   }
 

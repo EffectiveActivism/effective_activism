@@ -43,8 +43,6 @@ class FilterHelper {
       $query->condition('end_date', $end_date->format(DATETIME_DATETIME_STORAGE_FORMAT), '<=');
     }
     if (!$filter->location->isEmpty()) {
-      $address = $filter->location->address;
-      $extra_location_information = $filter->location->extra_information;
       if (!empty($filter->location->address)) {
         $query->condition('location__address', $filter->location->address, '=');
       }
@@ -52,9 +50,11 @@ class FilterHelper {
         $query->condition('location__extra_information', $filter->location->extra_information, 'CONTAINS');
       }
     }
-    if (!$filter->event_template->isEmpty()) {
-      $event_template = $filter->event_template->target_id;
-      $query->condition('event_template', $event_template, '=');
+    if (!$filter->event_templates->isEmpty()) {
+      $event_templates = (array_map(function ($element) {
+        return $element['target_id'];
+      }, $filter->event_templates->getValue()));
+      $query->condition('event_template', $event_templates, 'IN');
     }
     if ($limit > 0) {
       $query->range($position, $limit + $position);
@@ -93,8 +93,6 @@ class FilterHelper {
       $query->condition('end_date', $end_date->format(DATETIME_DATETIME_STORAGE_FORMAT), '<=');
     }
     if (!$filter->location->isEmpty()) {
-      $address = $filter->location->address;
-      $extra_location_information = $filter->location->extra_information;
       if (!empty($filter->location->address)) {
         $query->condition('location__address', $filter->location->address, '=');
       }
@@ -102,9 +100,11 @@ class FilterHelper {
         $query->condition('location__extra_information', $filter->location->extra_information, 'CONTAINS');
       }
     }
-    if (!$filter->event_template->isEmpty()) {
-      $event_template = $filter->event_template->target_id;
-      $query->condition('event_template', $event_template, '=');
+    if (!$filter->event_templates->isEmpty()) {
+      $event_templates = (array_map(function ($element) {
+        return $element['target_id'];
+      }, $filter->event_templates->getValue()));
+      $query->condition('event_template', $event_templates, 'IN');
     }
     if ($limit > 0) {
       $query->range($position, $limit + $position);
@@ -132,6 +132,24 @@ class FilterHelper {
       ->condition('parent', $group_ids, 'IN')
       ->pager($page_count)
       ->sort('start_date');
+    if (!$filter->start_date->isEmpty()) {
+      $start_date = new DrupalDateTime($filter->start_date->value, new DateTimezone(DATETIME_STORAGE_TIMEZONE));
+      $query->condition('start_date', $start_date->format(DATETIME_DATETIME_STORAGE_FORMAT), '>=');
+    }
+    if (!$filter->location->isEmpty()) {
+      if (!empty($filter->location->address)) {
+        $query->condition('location__address', $filter->location->address, '=');
+      }
+      if (!empty($filter->location->extra_information)) {
+        $query->condition('location__extra_information', $filter->location->extra_information, 'CONTAINS');
+      }
+    }
+    if (!$filter->event_templates->isEmpty()) {
+      $event_templates = (array_map(function ($element) {
+        return $element['target_id'];
+      }, $filter->event_templates->getValue()));
+      $query->condition('event_template', $event_templates, 'IN');
+    }
     $result = $query->execute();
     return $load_entities ? Event::loadMultiple($result) : array_values($result);
   }
