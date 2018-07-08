@@ -36,3 +36,10 @@ highcharts:
     - core/jquery
     - core/drupal
     - core/drupalSettings
+
+scroll:
+  js:
+    assets/js/scroll.js: {}
+  dependencies:
+    - core/jquery
+    - core/underscore

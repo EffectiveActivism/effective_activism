@@ -79,6 +79,8 @@ class EventForm extends ContentEntityForm {
         }
       }
     }
+    // Attach scroll function.
+    $form['#attached']['library'][] = 'effective_activism/scroll';
     // Hide fields.
     $form['user_id']['#attributes']['class'][] = 'hidden';
     $form['revision_log_message']['#attributes']['class'][] = 'hidden';
