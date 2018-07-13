@@ -9,6 +9,7 @@ use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\RevisionableContentEntityBase;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
+use Drupal\link\Plugin\Field\FieldType\LinkItem;
 use Drupal\user\UserInterface;
 
 /**
@@ -69,6 +70,7 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
     'start_date',
     'end_date',
     'location',
+    'link',
     'results',
     'external_uid',
     'import',
@@ -258,6 +260,27 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
       ->setDisplayOptions('view', [
         'type' => 'basic_string',
         'weight' => array_search('description', self::WEIGHTS),
+      ]);
+    $fields['link'] = BaseFieldDefinition::create('link')
+      ->setLabel(t('Link'))
+      ->setDescription(t('An optional link to third-party sources of the event.'))
+      ->setRevisionable(TRUE)
+      ->setSettings([
+        'link_type' => LinkItem::LINK_EXTERNAL,
+        'title' => DRUPAL_DISABLED,
+      ])
+      ->setDefaultValue('')
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'string',
+        'weight' => array_search('link', self::WEIGHTS),
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'link',
+        'weight' => array_search('link', self::WEIGHTS),
+        'settings' => [
+          'placeholder' => t('Link'),
+        ],
       ]);
     $fields['results'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Results'))
