@@ -79,6 +79,9 @@ class EventForm extends ContentEntityForm {
         }
       }
     }
+    // Manually set placeholder on link element, as it doesn't support it via
+    // field settings.
+    $form['link']['widget'][0]['uri']['#placeholder'] = t('Link to event on other websites');
     // Attach scroll function.
     $form['#attached']['library'][] = 'effective_activism/scroll';
     // Hide fields.
