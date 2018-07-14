@@ -6,4 +6,4 @@ _core:
   default_config_hash: tbxNeI85jm0rFEfogRr2_iSb8rA3VAxJrHt7gCOLjKU
 id: leaflets
 label: Leaflets
-description: 'Type in the number of leaflets accepted at the event.'
+description: 'The number of leaflets accepted at the event.'
