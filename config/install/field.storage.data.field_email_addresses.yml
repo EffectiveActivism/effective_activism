@@ -1,0 +1,20 @@
+uuid: effd5277-ab52-4733-af70-d7907d52c0d0
+langcode: en
+status: true
+dependencies:
+  module:
+    - effective_activism
+id: data.field_email_addresses
+field_name: field_email_addresses
+entity_type: data
+type: integer
+settings:
+  unsigned: false
+  size: normal
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

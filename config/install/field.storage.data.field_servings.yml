@@ -1,0 +1,20 @@
+uuid: 2450c945-30dc-4b4a-8b17-f903b8e05bb5
+langcode: en
+status: true
+dependencies:
+  module:
+    - effective_activism
+id: data.field_servings
+field_name: field_servings
+entity_type: data
+type: integer
+settings:
+  unsigned: false
+  size: normal
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

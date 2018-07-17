@@ -10,6 +10,9 @@ use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
  * @ConfigEntityType(
  *   id = "export_type",
  *   label = @Translation("Export type"),
+ *   handlers = {
+ *     "access" = "Drupal\effective_activism\AccessControlHandler\ExportTypeAccessControlHandler",
+ *   },
  *   config_prefix = "export_type",
  *   bundle_of = "export",
  *   entity_keys = {

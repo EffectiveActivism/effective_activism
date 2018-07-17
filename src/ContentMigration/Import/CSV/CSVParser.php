@@ -246,7 +246,7 @@ class CSVParser extends EntityImportParser implements ParserInterface {
         case 'start_date':
         case 'end_date':
           if (!empty($data)) {
-            $date = \DateTime::createFromFormat('Y-m-d H:i', $data);
+            $date = DateTime::createFromFormat('Y-m-d H:i', $data);
             if (!$date || $date->format('Y-m-d H:i') !== $data) {
               throw new ParserValidationException(self::INVALID_DATE, $this->row, $this->convertColumn($this->column), $data);
             }
@@ -293,6 +293,7 @@ class CSVParser extends EntityImportParser implements ParserInterface {
           'extra_information' => $row[array_search('address_extra_information', self::CSVHEADERFORMAT)],
         ],
         $row[array_search('description', self::CSVHEADERFORMAT)],
+        NULL,
         NULL,
         $this->group->id(),
         NULL,
@@ -371,6 +372,7 @@ class CSVParser extends EntityImportParser implements ParserInterface {
           'extra_information' => $item[array_search('address_extra_information', self::CSVHEADERFORMAT)],
         ],
         $item[array_search('description', self::CSVHEADERFORMAT)],
+        NULL,
         $resultId,
         $this->group->id(),
         NULL,

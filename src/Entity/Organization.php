@@ -9,6 +9,7 @@ use Drupal\Core\Entity\RevisionableContentEntityBase;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\user\UserInterface;
+use Drupal\effective_activism\Constant;
 
 /**
  * Defines the Organization entity.
@@ -20,17 +21,17 @@ use Drupal\user\UserInterface;
  *   label = @Translation("Organization"),
  *   handlers = {
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
- *     "list_builder" = "Drupal\effective_activism\Helper\ListBuilder\OrganizationListBuilder",
- *     "views_data" = "Drupal\effective_activism\Helper\ViewsData\OrganizationViewsData",
+ *     "list_builder" = "Drupal\effective_activism\ListBuilder\OrganizationListBuilder",
  *     "form" = {
- *       "default" = "Drupal\effective_activism\Form\Organization\OrganizationForm",
- *       "add" = "Drupal\effective_activism\Form\Organization\OrganizationForm",
- *       "edit" = "Drupal\effective_activism\Form\Organization\OrganizationForm",
- *       "publish" = "Drupal\effective_activism\Form\Organization\OrganizationPublishForm",
+ *       "default" = "Drupal\effective_activism\Form\OrganizationForm",
+ *       "add" = "Drupal\effective_activism\Form\OrganizationForm",
+ *       "results" = "Drupal\effective_activism\Form\ChartForm",
+ *       "edit" = "Drupal\effective_activism\Form\OrganizationForm",
+ *       "publish" = "Drupal\effective_activism\Form\OrganizationPublishForm",
  *     },
- *     "access" = "Drupal\effective_activism\Helper\AccessControlHandler\OrganizationAccessControlHandler",
+ *     "access" = "Drupal\effective_activism\AccessControlHandler\OrganizationAccessControlHandler",
  *     "route_provider" = {
- *       "html" = "Drupal\effective_activism\Helper\RouteProvider\OrganizationHtmlRouteProvider",
+ *       "html" = "Drupal\effective_activism\RouteProvider\OrganizationHtmlRouteProvider",
  *     },
  *   },
  *   base_table = "organizations",
@@ -45,16 +46,19 @@ use Drupal\user\UserInterface;
  *     "status" = "status",
  *   },
  *  links = {
- *     "canonical" = "/manage/organizations/{organization}",
- *     "add-form" = "/manage/organizations/add",
- *     "edit-form" = "/manage/organizations/{organization}/edit",
- *     "publish-form" = "/manage/organizations/{organization}/publish",
- *     "collection" = "/manage/organizations",
- *     "groups" = "/manage/organizations/{organization}/groups",
- *     "event_templates" = "/manage/organizations/{organization}/event-templates",
- *     "exports" = "/manage/organizations/{organization}/exports",
- *     "filters" = "/manage/organizations/{organization}/filters",
- *     "results" = "/manage/organizations/{organization}/results",
+ *     "canonical" = "/o/{organization}",
+ *     "add-form" = "/o/add",
+ *     "collection" = "/o",
+ *     "edit-form" = "/o/{organization}/edit",
+ *     "events" = "/o/{organization}/e",
+ *     "event_templates" = "/o/{organization}/event-templates",
+ *     "exports" = "/o/{organization}/exports",
+ *     "filters" = "/o/{organization}/filters",
+ *     "groups" = "/o/{organization}/g",
+ *     "publish-form" = "/o/{organization}/publish",
+ *     "results" = "/o/{organization}/results",
+ *     "result_types" = "/o/{organization}/result-types",
+ *     "terms" = "/o/{organization}/tags",
  *   },
  * )
  */
@@ -73,6 +77,7 @@ class Organization extends RevisionableContentEntityBase implements Organization
     'location',
     'timezone',
     'managers',
+    'event_creation',
   ];
 
   /**
@@ -157,7 +162,7 @@ class Organization extends RevisionableContentEntityBase implements Organization
       ->setRevisionable(TRUE)
       ->setSetting('target_type', 'user')
       ->setSetting('handler', 'default')
-      ->setDefaultValueCallback('Drupal\node\Entity\Node::getCurrentUserId')
+      ->setDefaultValueCallback('Drupal\effective_activism\Helper\AccountHelper::getCurrentUserId')
       ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'author',
@@ -346,6 +351,27 @@ class Organization extends RevisionableContentEntityBase implements Organization
           'allow_existing' => TRUE,
         ],
         'weight' => array_search('managers', self::WEIGHTS),
+      ]);
+    $fields['event_creation'] = BaseFieldDefinition::create('list_integer')
+      ->setLabel(t('Event creation'))
+      ->setRevisionable(TRUE)
+      ->setRequired(TRUE)
+      ->setDefaultValue(0)
+      ->setSettings([
+        'allowed_values' => [
+          Constant::EVENT_CREATION_ALL => t('Show all event creation links'),
+          Constant::EVENT_CREATION_EVENT => t("Show only 'Create event' links"),
+          Constant::EVENT_CREATION_EVENT_TEMPLATE => t("Show only 'Create event from template' links"),
+        ],
+      ])
+      ->setDisplayOptions('view', [
+        'label' => 'above',
+        'type' => 'string',
+        'weight' => array_search('event_creation', self::WEIGHTS),
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'options_select',
+        'weight' => array_search('event_creation', self::WEIGHTS),
       ]);
     $fields['status'] = BaseFieldDefinition::create('boolean')
       ->setLabel(t('Publishing status'))

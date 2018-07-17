@@ -12,14 +12,15 @@ use Drupal\Core\Config\Entity\ConfigEntityInterface;
  *   id = "result_type",
  *   label = @Translation("Result type"),
  *   handlers = {
- *     "list_builder" = "Drupal\effective_activism\Helper\ListBuilder\ResultTypeListBuilder",
+ *     "list_builder" = "Drupal\effective_activism\ListBuilder\ResultTypeListBuilder",
  *     "form" = {
- *       "add" = "Drupal\effective_activism\Form\Result\ResultTypeForm",
- *       "edit" = "Drupal\effective_activism\Form\Result\ResultTypeForm",
+ *       "add" = "Drupal\effective_activism\Form\ResultTypeForm",
+ *       "delete" = "Drupal\effective_activism\Form\ResultTypeDeleteForm",
+ *       "edit" = "Drupal\effective_activism\Form\ResultTypeForm",
  *     },
- *     "access" = "Drupal\effective_activism\Helper\AccessControlHandler\ResultTypeAccessControlHandler",
+ *     "access" = "Drupal\effective_activism\AccessControlHandler\ResultTypeAccessControlHandler",
  *     "route_provider" = {
- *       "html" = "Drupal\effective_activism\Helper\RouteProvider\ResultTypeHtmlRouteProvider",
+ *       "html" = "Drupal\effective_activism\RouteProvider\ResultTypeHtmlRouteProvider",
  *     },
  *   },
  *   config_prefix = "result_type",
@@ -30,11 +31,10 @@ use Drupal\Core\Config\Entity\ConfigEntityInterface;
  *     "uuid" = "uuid"
  *   },
  *   links = {
- *     "canonical" = "/manage/result-types/{result_type}",
- *     "add-form" = "/manage/result-types/add",
- *     "edit-form" = "/manage/result-types/{result_type}/edit",
- *     "publish-form" = "/manage/result-types/{result_type}/publish",
- *     "collection" = "/manage/result-types",
+ *     "add-form" = "/o/{organization}/result-types/add",
+ *     "delete-form" = "/o/{organization}/result-types/{result_type}/delete",
+ *     "edit-form" = "/o/{organization}/result-types/{result_type}/edit",
+ *     "publish-form" = "/o/{organization}/result-types/{result_type}/publish",
  *   },
  * )
  */

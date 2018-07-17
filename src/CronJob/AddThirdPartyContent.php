@@ -12,7 +12,7 @@ use Drupal\effective_activism\Helper\ThirdPartyContentHelper;
  *
  * Adds a batch of third-party content entities every time cron is run.
  */
-class AddThirdPartyContent {
+class AddThirdPartyContent implements CronJobInterface {
 
   const BATCH_SIZE = 10;
 

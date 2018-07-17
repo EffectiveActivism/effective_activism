@@ -1,0 +1,16 @@
+uuid: d321f994-7890-47cc-b080-a9b708e75cd0
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.import_type.icalendar
+    - field.field.import.icalendar.field_url
+  module:
+    - user
+id: import.icalendar.default
+targetEntityType: import
+bundle: icalendar
+mode: default
+content: {  }
+hidden:
+  field_url: true

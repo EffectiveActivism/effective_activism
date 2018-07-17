@@ -2,9 +2,12 @@
 
 namespace Drupal\effective_activism\Helper;
 
+use DateTimeZone;
 use Drupal;
+use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\effective_activism\Entity\Event;
 use Drupal\effective_activism\Entity\Filter;
+use Drupal\effective_activism\Entity\Group;
 
 /**
  * Helper functions for querying events through filter.
@@ -32,20 +35,76 @@ class FilterHelper {
       ->condition('parent', $group_ids, 'IN')
       ->sort('start_date');
     if (!$filter->start_date->isEmpty()) {
-      $query->condition('start_date', $filter->start_date->date->format(DATETIME_DATETIME_STORAGE_FORMAT), '>=');
+      $start_date = new DrupalDateTime($filter->start_date->value, new DateTimezone(DATETIME_STORAGE_TIMEZONE));
+      $query->condition('start_date', $start_date->format(DATETIME_DATETIME_STORAGE_FORMAT), '>=');
     }
     if (!$filter->end_date->isEmpty()) {
-      $query->condition('end_date', $filter->end_date->date->format(DATETIME_DATETIME_STORAGE_FORMAT), '<=');
+      $end_date = new DrupalDateTime($filter->end_date->value, new DateTimezone(DATETIME_STORAGE_TIMEZONE));
+      $query->condition('end_date', $end_date->format(DATETIME_DATETIME_STORAGE_FORMAT), '<=');
     }
     if (!$filter->location->isEmpty()) {
-      $address = $filter->location->address;
-      $extra_location_information = $filter->location->extra_information;
       if (!empty($filter->location->address)) {
         $query->condition('location__address', $filter->location->address, '=');
       }
       if (!empty($filter->location->extra_information)) {
         $query->condition('location__extra_information', $filter->location->extra_information, 'CONTAINS');
       }
+    }
+    if (!$filter->event_templates->isEmpty()) {
+      $event_templates = (array_map(function ($element) {
+        return $element['target_id'];
+      }, $filter->event_templates->getValue()));
+      $query->condition('event_template', $event_templates, 'IN');
+    }
+    if ($limit > 0) {
+      $query->range($position, $limit + $position);
+    }
+    $result = $query->execute();
+    return $load_entities ? Event::loadMultiple($result) : array_values($result);
+  }
+
+  /**
+   * Get events matching filter.
+   *
+   * @param \Drupal\effective_activism\Entity\Filter $filter
+   *   The filter to get matching events from.
+   * @param \Drupal\effective_activism\Entity\Group $group
+   *   The group to get events from.
+   * @param int $position
+   *   The position to start from.
+   * @param int $limit
+   *   The number of events to return.
+   * @param bool $load_entities
+   *   Wether to return full entity objects or entity ids.
+   *
+   * @return array
+   *   An array of events that matches the filter.
+   */
+  public static function getEventsByGroup(Filter $filter, Group $group, $position = 0, $limit = 0, $load_entities = TRUE) {
+    $query = Drupal::entityQuery('event')
+      ->condition('parent', $group->id())
+      ->sort('start_date');
+    if (!$filter->start_date->isEmpty()) {
+      $start_date = new DrupalDateTime($filter->start_date->value, new DateTimezone(DATETIME_STORAGE_TIMEZONE));
+      $query->condition('start_date', $start_date->format(DATETIME_DATETIME_STORAGE_FORMAT), '>=');
+    }
+    if (!$filter->end_date->isEmpty()) {
+      $end_date = new DrupalDateTime($filter->end_date->value, new DateTimezone(DATETIME_STORAGE_TIMEZONE));
+      $query->condition('end_date', $end_date->format(DATETIME_DATETIME_STORAGE_FORMAT), '<=');
+    }
+    if (!$filter->location->isEmpty()) {
+      if (!empty($filter->location->address)) {
+        $query->condition('location__address', $filter->location->address, '=');
+      }
+      if (!empty($filter->location->extra_information)) {
+        $query->condition('location__extra_information', $filter->location->extra_information, 'CONTAINS');
+      }
+    }
+    if (!$filter->event_templates->isEmpty()) {
+      $event_templates = (array_map(function ($element) {
+        return $element['target_id'];
+      }, $filter->event_templates->getValue()));
+      $query->condition('event_template', $event_templates, 'IN');
     }
     if ($limit > 0) {
       $query->range($position, $limit + $position);
@@ -73,6 +132,24 @@ class FilterHelper {
       ->condition('parent', $group_ids, 'IN')
       ->pager($page_count)
       ->sort('start_date');
+    if (!$filter->start_date->isEmpty()) {
+      $start_date = new DrupalDateTime($filter->start_date->value, new DateTimezone(DATETIME_STORAGE_TIMEZONE));
+      $query->condition('start_date', $start_date->format(DATETIME_DATETIME_STORAGE_FORMAT), '>=');
+    }
+    if (!$filter->location->isEmpty()) {
+      if (!empty($filter->location->address)) {
+        $query->condition('location__address', $filter->location->address, '=');
+      }
+      if (!empty($filter->location->extra_information)) {
+        $query->condition('location__extra_information', $filter->location->extra_information, 'CONTAINS');
+      }
+    }
+    if (!$filter->event_templates->isEmpty()) {
+      $event_templates = (array_map(function ($element) {
+        return $element['target_id'];
+      }, $filter->event_templates->getValue()));
+      $query->condition('event_template', $event_templates, 'IN');
+    }
     $result = $query->execute();
     return $load_entities ? Event::loadMultiple($result) : array_values($result);
   }

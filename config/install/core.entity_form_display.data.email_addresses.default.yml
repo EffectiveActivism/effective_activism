@@ -1,0 +1,20 @@
+uuid: ea0d2c85-db3c-4398-8800-fc6cb6eb4520
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.data_type.email_addresses
+    - field.field.data.email_addresses.field_email_addresses
+id: data.email_addresses.default
+targetEntityType: data
+bundle: email_addresses
+mode: default
+content:
+  field_email_addresses:
+    weight: 26
+    settings:
+      placeholder: 'E-mail addresses'
+    third_party_settings: {  }
+    type: number
+    region: content
+hidden: {  }

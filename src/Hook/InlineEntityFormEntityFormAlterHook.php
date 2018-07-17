@@ -2,6 +2,9 @@
 
 namespace Drupal\effective_activism\Hook;
 
+use DateTimeZone;
+use Drupal\Core\Datetime\DrupalDateTime;
+
 /**
  * Implements hook_inline_entity_form_entity_form_alter().
  */
@@ -49,6 +52,29 @@ class InlineEntityFormEntityFormAlterHook implements HookInterface {
     $entity_form = &$args['entity_form'];
     $form_state = &$args['form_state'];
     $entity_type = $entity_form['#entity_type'];
+    if (
+      $entity_form['#op'] === 'add' &&
+      $entity_type === 'result'
+    ) {
+      $start_date = new DrupalDateTime($form_state->getValue('start_date')[0]['value'], new DateTimezone(DATETIME_STORAGE_TIMEZONE));
+      $end_date = new DrupalDateTime($form_state->getValue('end_date')[0]['value'], new DateTimezone(DATETIME_STORAGE_TIMEZONE));
+      if (
+        !$start_date->hasErrors() &&
+        !$end_date->hasErrors()
+      ) {
+        $interval = $start_date->diff($end_date);
+        // Cap interval calculation at one month as longer spans are
+        // unsupported at the moment.
+        if (
+          $interval->format('%m') === '0' &&
+          $interval->format('%y') === '0'
+        ) {
+          $entity_form['duration_days']['widget']['#default_value'] = $interval->format('%d');
+          $entity_form['duration_hours']['widget']['#default_value'] = $interval->format('%h');
+          $entity_form['duration_minutes']['widget']['#default_value'] = $interval->format('%i');
+        }
+      }
+    }
     if (in_array($entity_type, self::INLINE_ENTITY_TYPES)) {
       $entity_form['#theme'] = self::INLINE_ENTITY_FORM_TEMPLATES[$entity_type];
       // Hide revision and user fields.
