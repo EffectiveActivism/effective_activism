@@ -1,0 +1,7 @@
+uuid: 9d80fbda-6184-45fa-8ebc-05b575f94877
+langcode: en
+status: true
+dependencies: {  }
+id: email_addresses
+label: 'E-mail addresses'
+description: 'The number of e-mail addresses collected at the event.'
