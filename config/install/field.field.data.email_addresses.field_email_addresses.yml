@@ -1,0 +1,25 @@
+uuid: 095ab666-a887-46e6-87ca-64e2a179b0e5
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.data_type.email_addresses
+    - field.storage.data.field_email_addresses
+id: data.email_addresses.field_email_addresses
+field_name: field_email_addresses
+entity_type: data
+bundle: email_addresses
+label: 'E-mail addresses'
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  min: 0
+  max: 9999999
+  prefix: ''
+  suffix: ''
+field_type: integer
