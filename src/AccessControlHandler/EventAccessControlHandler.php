@@ -32,7 +32,7 @@ class EventAccessControlHandler extends EntityAccessControlHandler {
         return AccessControl::isGroupStaff([$entity->get('parent')->entity], $account);
 
       case 'delete':
-        return AccessResult::forbidden();
+        return AccessControl::isManager($entity->get('parent')->entity->get('organization')->entity, $account);
     }
     // Unknown operation, no opinion.
     return AccessResult::neutral();
