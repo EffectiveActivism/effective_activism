@@ -7,8 +7,11 @@ use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\EntityListBuilder;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Url;
 use Drupal\effective_activism\Constant;
 use Drupal\effective_activism\Entity\Organization;
+use Drupal\effective_activism\Helper\OrganizationHelper;
+use Drupal\effective_activism\Helper\PathHelper;
 use ReflectionClass;
 
 /**
@@ -42,6 +45,13 @@ class GroupListBuilder extends EntityListBuilder {
   protected $pagerIndex = 0;
 
   /**
+   * Whether to display map or not.
+   *
+   * @var bool
+   */
+  protected $displayMap = TRUE;
+
+  /**
    * {@inheritdoc}
    */
   public function __construct(EntityTypeInterface $entity_type, EntityStorageInterface $storage, Organization $organization = NULL) {
@@ -71,9 +81,24 @@ class GroupListBuilder extends EntityListBuilder {
    *
    * @var int $limit
    *   The limit to set.
+   *
+   * @return self
+   *   This instance.
+   *
    */
   public function setLimit($limit) {
     $this->limit = $limit;
+    return $this;
+  }
+
+  /**
+   * Hide map display of groups.
+   *
+   * @return self
+   *   This instance.
+   */
+  public function hideMap() {
+    $this->displayMap = FALSE;
     return $this;
   }
 
@@ -92,12 +117,43 @@ class GroupListBuilder extends EntityListBuilder {
   }
 
   /**
+   * Build a map of groups.
+   *
+   * @return array
+   *   Parameters for a map of groups.
+   */
+  public function getMap() {
+    $map = [];
+    foreach (OrganizationHelper::getGroups(Drupal::request()->get('organization')) as $group) {
+      $map[] = [
+        'gps' => [
+          'latitude' => $group->location->latitude,
+          'longitude' => $group->location->longitude,
+        ],
+        'title' => $group->label(),
+        'description' => $group->description->value,
+        'url' => (new Url('entity.group.canonical', [
+          'organization' => PathHelper::transliterate($group->organization->entity->label()),
+          'group' => PathHelper::transliterate($group->label()),
+        ]))->toString(),
+      ];
+    }
+    return $map;
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function render() {
     $build['#theme'] = (new ReflectionClass($this))->getShortName();
     $build['#storage']['entities']['organization'] = $this->organization;
     $build['#storage']['entities']['groups'] = $this->load();
+    $build['#attached']['library'][] = 'effective_activism/leaflet';
+    $build['#display']['map'] = $this->displayMap;
+    if ($this->displayMap === TRUE) {
+      $build['#attached']['drupalSettings']['leaflet']['map'] = $this->getMap();
+      $build['#attached']['drupalSettings']['leaflet']['key'] = Drupal::config('effective_activism.settings')->get('mapbox_api_key');
+    }
     $build['#cache'] = [
       'max-age' => self::CACHE_MAX_AGE,
       'tags' => self::CACHE_TAGS,

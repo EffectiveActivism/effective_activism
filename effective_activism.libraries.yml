@@ -21,6 +21,19 @@ datetimepicker:
     - core/drupalSettings
     - core/jquery.once
 
+leaflet:
+  js:
+    assets/js/leaflet.js: {}
+    vendor/drmonty/leaflet/js/leaflet.js: {}
+  css:
+    component:
+      vendor/drmonty/leaflet/css/leaflet.css: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/drupalSettings
+    - core/jquery.once
+
 highcharts:
   remote: https://code.highcharts.com/
   version: 5.0.12
