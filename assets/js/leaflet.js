@@ -18,9 +18,9 @@
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
         maxZoom: 18,
         id: 'mapbox.streets',
-        accessToken: 'pk.eyJ1IjoiYWN0aXZlZm9yYW5pbWFscyIsImEiOiJjamp1YXgzamowMzlqM3lxd3Q4YTVnbjhxIn0.1pBgnP88zkzKhqby_xK1RQ'
+        accessToken: drupalSettings.leaflet.key,
       }).addTo(map);
-      drupalSettings.leaflet.forEach(function(element) {
+      drupalSettings.leaflet.map.forEach(function(element) {
         // Add popup with element information.
         var popup = L.popup();
         if (element.description === null) {

@@ -151,7 +151,8 @@ class GroupListBuilder extends EntityListBuilder {
     $build['#attached']['library'][] = 'effective_activism/leaflet';
     $build['#display']['map'] = $this->displayMap;
     if ($this->displayMap === TRUE) {
-      $build['#attached']['drupalSettings']['leaflet'] = $this->getMap();
+      $build['#attached']['drupalSettings']['leaflet']['map'] = $this->getMap();
+      $build['#attached']['drupalSettings']['leaflet']['key'] = Drupal::config('effective_activism.settings')->get('mapbox_api_key');
     }
     $build['#cache'] = [
       'max-age' => self::CACHE_MAX_AGE,
