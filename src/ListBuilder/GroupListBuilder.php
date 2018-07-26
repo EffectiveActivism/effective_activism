@@ -84,7 +84,6 @@ class GroupListBuilder extends EntityListBuilder {
    *
    * @return self
    *   This instance.
-   *
    */
   public function setLimit($limit) {
     $this->limit = $limit;
