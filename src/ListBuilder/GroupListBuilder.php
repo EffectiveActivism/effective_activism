@@ -116,15 +116,19 @@ class GroupListBuilder extends EntityListBuilder {
   }
 
   /**
-   * Build a map of groups.
+   * Return a list of places.
    *
    * @return array
    *   Parameters for a map of groups.
    */
-  public function getMap() {
-    $map = [];
+  public function getPlaces() {
+    $places = [];
     foreach (OrganizationHelper::getGroups(Drupal::request()->get('organization')) as $group) {
-      $map[] = [
+      // Skip group if location is not set.
+      if (empty($group->location->latitude)) {
+         continue;
+      }
+      $places[] = [
         'gps' => [
           'latitude' => $group->location->latitude,
           'longitude' => $group->location->longitude,
@@ -137,7 +141,7 @@ class GroupListBuilder extends EntityListBuilder {
         ]))->toString(),
       ];
     }
-    return $map;
+    return $places;
   }
 
   /**
@@ -148,11 +152,15 @@ class GroupListBuilder extends EntityListBuilder {
     $build['#storage']['entities']['organization'] = $this->organization;
     $build['#storage']['entities']['groups'] = $this->load();
     $build['#attached']['library'][] = 'effective_activism/leaflet';
-    $build['#display']['map'] = $this->displayMap;
+    $places = $this->getPlaces();
+    if (empty($places)) {
+      $this->displayMap = FALSE;
+    }
     if ($this->displayMap === TRUE) {
-      $build['#attached']['drupalSettings']['leaflet']['map'] = $this->getMap();
+      $build['#attached']['drupalSettings']['leaflet']['places'] = $places;
       $build['#attached']['drupalSettings']['leaflet']['key'] = Drupal::config('effective_activism.settings')->get('mapbox_api_key');
     }
+    $build['#display']['map'] = $this->displayMap;
     $build['#cache'] = [
       'max-age' => self::CACHE_MAX_AGE,
       'tags' => self::CACHE_TAGS,

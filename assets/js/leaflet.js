@@ -20,7 +20,7 @@
         id: 'mapbox.streets',
         accessToken: drupalSettings.leaflet.key,
       }).addTo(map);
-      drupalSettings.leaflet.map.forEach(function(element) {
+      drupalSettings.leaflet.places.forEach(function(element) {
         // Add popup with element information.
         var popup = L.popup();
         if (element.description === null) {
