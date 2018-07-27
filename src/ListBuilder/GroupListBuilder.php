@@ -126,7 +126,7 @@ class GroupListBuilder extends EntityListBuilder {
     foreach (OrganizationHelper::getGroups(Drupal::request()->get('organization')) as $group) {
       // Skip group if location is not set.
       if (empty($group->location->latitude)) {
-         continue;
+        continue;
       }
       $places[] = [
         'gps' => [
