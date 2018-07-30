@@ -7,6 +7,7 @@ use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Entity\RevisionableContentEntityBase;
 use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\user\UserInterface;
 
 /**
@@ -19,17 +20,16 @@ use Drupal\user\UserInterface;
  *   label = @Translation("Filter"),
  *   handlers = {
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
- *     "list_builder" = "Drupal\effective_activism\Helper\ListBuilder\FilterListBuilder",
- *     "views_data" = "Drupal\effective_activism\Helper\ViewsData\FilterViewsData",
+ *     "list_builder" = "Drupal\effective_activism\ListBuilder\FilterListBuilder",
  *     "form" = {
- *       "default" = "Drupal\effective_activism\Form\Filter\FilterForm",
- *       "add" = "Drupal\effective_activism\Form\Filter\FilterForm",
- *       "edit" = "Drupal\effective_activism\Form\Filter\FilterForm",
- *       "publish" = "Drupal\effective_activism\Form\Filter\FilterPublishForm",
+ *       "default" = "Drupal\effective_activism\Form\FilterForm",
+ *       "add" = "Drupal\effective_activism\Form\FilterForm",
+ *       "edit" = "Drupal\effective_activism\Form\FilterForm",
+ *       "publish" = "Drupal\effective_activism\Form\FilterPublishForm",
  *     },
- *     "access" = "Drupal\effective_activism\Helper\AccessControlHandler\FilterAccessControlHandler",
+ *     "access" = "Drupal\effective_activism\AccessControlHandler\FilterAccessControlHandler",
  *     "route_provider" = {
- *       "html" = "Drupal\effective_activism\Helper\RouteProvider\FilterHtmlRouteProvider",
+ *       "html" = "Drupal\effective_activism\RouteProvider\FilterHtmlRouteProvider",
  *     },
  *   },
  *   base_table = "filter",
@@ -45,15 +45,10 @@ use Drupal\user\UserInterface;
  *     "status" = "status",
  *   },
  *   links = {
- *     "canonical" = "/manage/filters/{filter}",
- *     "add-form" = "/manage/filters/add",
- *     "edit-form" = "/manage/filters/{filter}/edit",
- *     "publish-form" = "/manage/filters/{filter}/publish",
- *     "version-history" = "/manage/filters/{filter}/revisions",
- *     "revision" = "/manage/filters/{filter}/revisions/{filter_revision}/view",
- *     "revision_revert" = "/manage/filters/{filter}/revisions/{filter_revision}/revert",
- *     "revision_delete" = "/manage/filters/{filter}/revisions/{filter_revision}/delete",
- *     "collection" = "/manage/filters",
+ *     "canonical" = "/o/{organization}/filters/{filter}",
+ *     "add-form" = "/o/{organization}/filters/add",
+ *     "edit-form" = "/o/{organization}/filters/{filter}/edit",
+ *     "publish-form" = "/o/{organization}/filters/{filter}/publish",
  *   },
  * )
  */
@@ -68,6 +63,7 @@ class Filter extends RevisionableContentEntityBase implements FilterInterface {
     'start_date',
     'end_date',
     'location',
+    'event_templates',
     'result_types',
     'user_id',
   ];
@@ -217,8 +213,14 @@ class Filter extends RevisionableContentEntityBase implements FilterInterface {
         'weight' => array_search('organization', self::WEIGHTS),
       ])
       ->setDisplayOptions('form', [
-        'type' => 'organization_selector',
+        'type' => 'entity_reference_autocomplete',
         'weight' => array_search('organization', self::WEIGHTS),
+        'settings' => [
+          'match_operator' => 'CONTAINS',
+          'size' => '60',
+          'autocomplete_type' => 'tags',
+          'placeholder' => '',
+        ],
       ]);
     $fields['start_date'] = BaseFieldDefinition::create('datetime')
       ->setLabel(t('Start date'))
@@ -228,7 +230,6 @@ class Filter extends RevisionableContentEntityBase implements FilterInterface {
       ->setSettings([
         'default_value' => '',
         'text_processing' => 0,
-        'datetime_type' => 'date',
       ])
       ->setDefaultValue([
         0 => NULL,
@@ -236,10 +237,13 @@ class Filter extends RevisionableContentEntityBase implements FilterInterface {
       ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'datetime_default',
+        'settings' => [
+          'format_type' => 'iso_8601',
+        ],
         'weight' => array_search('start_date', self::WEIGHTS),
       ])
       ->setDisplayOptions('form', [
-        'type' => 'datetime_default',
+        'type' => 'datetimepicker_widget',
         'weight' => array_search('start_date', self::WEIGHTS),
       ]);
     $fields['end_date'] = BaseFieldDefinition::create('datetime')
@@ -250,7 +254,6 @@ class Filter extends RevisionableContentEntityBase implements FilterInterface {
       ->setSettings([
         'default_value' => '',
         'text_processing' => 0,
-        'datetime_type' => 'date',
       ])
       ->setDefaultValue([
         0 => NULL,
@@ -258,10 +261,13 @@ class Filter extends RevisionableContentEntityBase implements FilterInterface {
       ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'datetime_default',
+        'settings' => [
+          'format_type' => 'iso_8601',
+        ],
         'weight' => array_search('end_date', self::WEIGHTS),
       ])
       ->setDisplayOptions('form', [
-        'type' => 'datetime_default',
+        'type' => 'datetimepicker_widget',
         'weight' => array_search('end_date', self::WEIGHTS),
       ]);
     $fields['location'] = BaseFieldDefinition::create('location')
@@ -280,6 +286,23 @@ class Filter extends RevisionableContentEntityBase implements FilterInterface {
       ->setDisplayOptions('form', [
         'type' => 'location_default',
         'weight' => array_search('location', self::WEIGHTS),
+      ]);
+    $fields['event_templates'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(t('Event templates'))
+      ->setRevisionable(TRUE)
+      ->setDescription(t('The event templates used to create events with.'))
+      ->setSetting('target_type', 'event_template')
+      ->setSetting('handler', 'default')
+      ->setCardinality(FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED)
+      ->setRequired(FALSE)
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'string',
+        'weight' => array_search('event_templates', self::WEIGHTS),
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'options_buttons',
+        'weight' => array_search('event_templates', self::WEIGHTS),
       ]);
     $fields['user_id'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Authored by'))

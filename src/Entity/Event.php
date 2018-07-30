@@ -9,6 +9,7 @@ use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\RevisionableContentEntityBase;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
+use Drupal\link\Plugin\Field\FieldType\LinkItem;
 use Drupal\user\UserInterface;
 
 /**
@@ -21,17 +22,19 @@ use Drupal\user\UserInterface;
  *   label = @Translation("Event"),
  *   handlers = {
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
- *     "list_builder" = "Drupal\effective_activism\Helper\ListBuilder\EventListBuilder",
- *     "views_data" = "Drupal\effective_activism\Helper\ViewsData\EventViewsData",
+ *     "list_builder" = "Drupal\effective_activism\ListBuilder\EventListBuilder",
  *     "form" = {
- *       "default" = "Drupal\effective_activism\Form\Event\EventForm",
- *       "add" = "Drupal\effective_activism\Form\Event\EventForm",
- *       "edit" = "Drupal\effective_activism\Form\Event\EventForm",
- *       "publish" = "Drupal\effective_activism\Form\Event\EventPublishForm",
+ *       "default" = "Drupal\effective_activism\Form\EventForm",
+ *       "add" = "Drupal\effective_activism\Form\EventForm",
+ *       "add-from-template" = "Drupal\effective_activism\Form\EventTemplateSelectionForm",
+ *       "delete" = "Drupal\effective_activism\Form\EventDeleteForm",
+ *       "edit" = "Drupal\effective_activism\Form\EventForm",
+ *       "publish" = "Drupal\effective_activism\Form\EventPublishForm",
+ *       "repeat" = "Drupal\effective_acitivism\Form\EventRepeaterForm",
  *     },
- *     "access" = "Drupal\effective_activism\Helper\AccessControlHandler\EventAccessControlHandler",
+ *     "access" = "Drupal\effective_activism\AccessControlHandler\EventAccessControlHandler",
  *     "route_provider" = {
- *       "html" = "Drupal\effective_activism\Helper\RouteProvider\EventHtmlRouteProvider",
+ *       "html" = "Drupal\effective_activism\RouteProvider\EventHtmlRouteProvider",
  *     },
  *   },
  *   base_table = "events",
@@ -45,18 +48,22 @@ use Drupal\user\UserInterface;
  *     "status" = "status",
  *   },
  *   links = {
- *     "canonical" = "/manage/events/{event}",
- *     "add-form" = "/manage/events/add",
- *     "add-from-template-form" = "/manage/events/add/{event_template}",
- *     "edit-form" = "/manage/events/{event}/edit",
- *     "publish-form" = "/manage/events/{event}/publish",
- *     "collection" = "/manage/events",
+ *     "canonical" = "/o/{organization}/g/{group}/e/{event}",
+ *     "add-form" = "/o/{organization}/g/{group}/e/add",
+ *     "add-from-template" = "/o/{organization}/g/{group}/e/add-from-template",
+ *     "add-from-template-form" = "/o/{organization}/g/{group}/e/add/{event_template}",
+ *     "delete-form" = "/o/{organization}/g/{group}/e/{event}/delete",
+ *     "edit-form" = "/o/{organization}/g/{group}/e/{event}/edit",
+ *     "publish-form" = "/o/{organization}/g/{group}/e/{event}/publish",
+ *     "repeat-form" = "/o/{organization}/g/{group}/e/{event}/repeat",
  *   },
  * )
  */
 class Event extends RevisionableContentEntityBase implements EventInterface {
 
   use EntityChangedTrait;
+
+  const THEME_ID = self::class;
 
   const WEIGHTS = [
     'title',
@@ -65,6 +72,7 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
     'start_date',
     'end_date',
     'location',
+    'link',
     'results',
     'external_uid',
     'import',
@@ -186,10 +194,13 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
       ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'datetime_default',
+        'settings' => [
+          'format_type' => 'iso_8601',
+        ],
         'weight' => array_search('start_date', self::WEIGHTS),
       ])
       ->setDisplayOptions('form', [
-        'type' => 'datetime_default',
+        'type' => 'datetimepicker_widget',
         'weight' => array_search('start_date', self::WEIGHTS),
       ]);
     $fields['end_date'] = BaseFieldDefinition::create('datetime')
@@ -210,10 +221,13 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
       ->setDisplayOptions('view', [
         'label' => 'hidden',
         'type' => 'datetime_default',
+        'settings' => [
+          'format_type' => 'iso_8601',
+        ],
         'weight' => array_search('end_date', self::WEIGHTS),
       ])
       ->setDisplayOptions('form', [
-        'type' => 'datetime_default',
+        'type' => 'datetimepicker_widget',
         'weight' => array_search('end_date', self::WEIGHTS),
       ]);
     $fields['location'] = BaseFieldDefinition::create('location')
@@ -249,6 +263,24 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
         'type' => 'basic_string',
         'weight' => array_search('description', self::WEIGHTS),
       ]);
+    $fields['link'] = BaseFieldDefinition::create('link')
+      ->setLabel(t('Link'))
+      ->setDescription(t('An optional link to third-party sources of the event.'))
+      ->setRevisionable(TRUE)
+      ->setSettings([
+        'link_type' => LinkItem::LINK_EXTERNAL,
+        'title' => DRUPAL_DISABLED,
+      ])
+      ->setDefaultValue('')
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'string',
+        'weight' => array_search('link', self::WEIGHTS),
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'link',
+        'weight' => array_search('link', self::WEIGHTS),
+      ]);
     $fields['results'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Results'))
       ->setRevisionable(TRUE)
@@ -281,8 +313,14 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
         'weight' => array_search('parent', self::WEIGHTS),
       ])
       ->setDisplayOptions('form', [
-        'type' => 'group_selector',
+        'type' => 'entity_reference_autocomplete',
         'weight' => array_search('parent', self::WEIGHTS),
+        'settings' => [
+          'match_operator' => 'CONTAINS',
+          'size' => '60',
+          'autocomplete_type' => 'tags',
+          'placeholder' => '',
+        ],
       ]);
     $fields['external_uid'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Name'))
@@ -295,7 +333,7 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
       ->setDefaultValue('')
       ->setDisplayOptions('view', [
         'label' => 'hidden',
-        'type' => 'hidden',
+        'region' => 'hidden',
         'weight' => array_search('external_uid', self::WEIGHTS),
       ])
       ->setDisplayOptions('form', [
@@ -380,10 +418,10 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
       ->setRevisionable(TRUE)
       ->setSetting('target_type', 'user')
       ->setSetting('handler', 'default')
-      ->setDefaultValueCallback('Drupal\node\Entity\Node::getCurrentUserId')
+      ->setDefaultValueCallback('Drupal\effective_activism\Helper\AccountHelper::getCurrentUserId')
       ->setDisplayOptions('view', [
         'label' => 'hidden',
-        'type' => 'hidden',
+        'region' => 'hidden',
       ])
       ->setDisplayOptions('form', [
         'type' => 'entity_reference_autocomplete',

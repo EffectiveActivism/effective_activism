@@ -1,0 +1,19 @@
+uuid: 24e0d727-81a6-4446-b8bb-3c1de0f38a8f
+langcode: en
+status: true
+dependencies:
+  module:
+    - effective_activism
+    - link
+id: import.field_url
+field_name: field_url
+entity_type: import
+type: link
+settings: {  }
+module: link
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

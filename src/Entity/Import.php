@@ -20,17 +20,16 @@ use Drupal\user\UserInterface;
  *   bundle_label = @Translation("Import type"),
  *   handlers = {
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
- *     "list_builder" = "Drupal\effective_activism\Helper\ListBuilder\ImportListBuilder",
- *     "views_data" = "Drupal\effective_activism\Helper\ViewsData\ImportViewsData",
+ *     "list_builder" = "Drupal\effective_activism\ListBuilder\ImportListBuilder",
  *     "form" = {
- *       "default" = "Drupal\effective_activism\Form\Import\ImportForm",
- *       "add" = "Drupal\effective_activism\Form\Import\ImportForm",
- *       "edit" = "Drupal\effective_activism\Form\Import\ImportForm",
- *       "publish" = "Drupal\effective_activism\Form\Import\ImportPublishForm",
+ *       "default" = "Drupal\effective_activism\Form\ImportForm",
+ *       "add" = "Drupal\effective_activism\Form\ImportForm",
+ *       "edit" = "Drupal\effective_activism\Form\ImportForm",
+ *       "publish" = "Drupal\effective_activism\Form\ImportPublishForm",
  *     },
- *     "access" = "Drupal\effective_activism\Helper\AccessControlHandler\ImportAccessControlHandler",
+ *     "access" = "Drupal\effective_activism\AccessControlHandler\ImportAccessControlHandler",
  *     "route_provider" = {
- *       "html" = "Drupal\effective_activism\Helper\RouteProvider\ImportHtmlRouteProvider",
+ *       "html" = "Drupal\effective_activism\RouteProvider\ImportHtmlRouteProvider",
  *     },
  *   },
  *   base_table = "imports",
@@ -47,11 +46,10 @@ use Drupal\user\UserInterface;
  *   },
  *   bundle_entity_type = "import_type",
  *   links = {
- *     "canonical" = "/manage/imports/{import}",
- *     "add-form" = "/manage/imports/add/{import_type}",
- *     "edit-form" = "/manage/imports/{import}/edit",
- *     "publish-form" = "/manage/imports/{import}/publish",
- *     "collection" = "/manage/imports",
+ *     "add-form" = "/o/{organization}/g/{group}/imports/add/{import_type}",
+ *     "canonical" = "/o/{organization}/g/{group}/imports/{import}",
+ *     "edit-form" = "/o/{organization}/g/{group}/imports/{import}/edit",
+ *     "publish-form" = "/o/{organization}/g/{group}/imports/{import}/publish",
  *   },
  * )
  */
@@ -164,8 +162,14 @@ class Import extends RevisionableContentEntityBase implements ImportInterface {
         'weight' => array_search('parent', self::WEIGHTS),
       ])
       ->setDisplayOptions('form', [
-        'type' => 'group_selector',
+        'type' => 'entity_reference_autocomplete',
         'weight' => array_search('parent', self::WEIGHTS),
+        'settings' => [
+          'match_operator' => 'CONTAINS',
+          'size' => '60',
+          'autocomplete_type' => 'tags',
+          'placeholder' => '',
+        ],
       ]);
     $fields['user_id'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Authored by'))

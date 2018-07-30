@@ -2,9 +2,11 @@
 
 namespace Drupal\effective_activism\Helper;
 
+use Drupal;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\effective_activism\Entity\DataType;
+use Drupal\effective_activism\Entity\Event;
 use Drupal\effective_activism\Entity\ResultType;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\field\Entity\FieldConfig;
@@ -44,12 +46,64 @@ class ResultTypeHelper {
    *   Whether the import name exists within the organization or not.
    */
   public static function isUniqueImportName($importName, $organization_id) {
-    $result = \Drupal::entityQuery('result_type')
+    $result = Drupal::entityQuery('result_type')
       ->condition('organization', $organization_id)
       ->condition('importname', $importName)
       ->count()
       ->execute();
     return $result === 0 ? TRUE : FALSE;
+  }
+
+  /**
+   * Get events with results of the result type.
+   *
+   * @param \Drupal\effective_activism\Entity\ResultType $result_type
+   *   The result type.
+   * @param int $position
+   *   The position to start from.
+   * @param int $limit
+   *   The number of events to return.
+   * @param bool $load_entities
+   *   Wether to return full entity objects or entity ids.
+   *
+   * @return \Drupal\effective_activism\Entity\ResultType
+   *   The loaded result type entity.
+   */
+  public static function getEvents(ResultType $result_type, $position = 0, $limit = 0, $load_entities = TRUE) {
+    $results = Drupal::entityQuery('result')
+      ->condition('type', $result_type->id())
+      ->execute();
+    if (empty($results)) {
+      return [];
+    }
+    $query = Drupal::entityQuery('event')
+      ->condition('results', $results, 'IN');
+    if ($limit > 0) {
+      $query->range($position, $limit + $position);
+    }
+    $result = $query->execute();
+    return $load_entities ? Event::loadMultiple($result) : array_values($result);
+  }
+
+  /**
+   * Load a result type by import name and organization id.
+   *
+   * @param string $import_name
+   *   The import name of the result type.
+   * @param int $organization_id
+   *   The organization id.
+   *
+   * @return \Drupal\effective_activism\Entity\ResultType
+   *   The loaded result type entity.
+   */
+  public static function getResultTypeByImportName($import_name, $organization_id) {
+    $result = Drupal::entityQuery('result_type')
+      ->condition('importname', $import_name)
+      ->condition('organization', $organization_id)
+      ->sort('organization')
+      ->sort('label')
+      ->execute();
+    return !empty($result) ? ResultType::load(array_pop($result)) : NULL;
   }
 
   /**
@@ -67,7 +121,7 @@ class ResultTypeHelper {
     while (TRUE) {
       // Id must be no more than 32 characters long.
       $id = uniqid(substr($import_name, 0, 19));
-      $result = \Drupal::entityQuery('result_type')
+      $result = Drupal::entityQuery('result_type')
         ->condition('id', $id)
         ->count()
         ->execute();
@@ -80,24 +134,20 @@ class ResultTypeHelper {
   }
 
   /**
-   * Load a result type by import name and organization id.
+   * Returns TRUE if result type has results.
    *
-   * @param string $import_name
-   *   The import name of the result type.
-   * @param int $organization_id
-   *   The organization id.
+   * @param \Drupal\effective_activism\Entity\ResultType $result_type
+   *   The result type to check.
    *
-   * @return \Drupal\effective_activism\Entity\ResultType
-   *   The loaded result type entity.
+   * @return bool
+   *   Returns TRUE if result type has result, FALSE otherwise.
    */
-  public static function getResultTypeByImportName($import_name, $organization_id) {
-    $result = \Drupal::entityQuery('result_type')
-      ->condition('importname', $import_name)
-      ->condition('organization', $organization_id)
-      ->sort('organization')
-      ->sort('label')
+  public static function hasResults(ResultType $result_type) {
+    $results = Drupal::entityQuery('result')
+      ->condition('type', $result_type->id())
+      ->count()
       ->execute();
-    return !empty($result) ? ResultType::load(array_pop($result)) : NULL;
+    return (int) $results === 0 ? FALSE : TRUE;
   }
 
   /**
@@ -222,7 +272,7 @@ class ResultTypeHelper {
       }
     }
     // Hide any fields that arent enabled.
-    foreach (\Drupal::service('entity_field.manager')->getFieldDefinitions($entity_type_id, $bundle_id) as $field_name => $field_definition) {
+    foreach (Drupal::service('entity_field.manager')->getFieldDefinitions($entity_type_id, $bundle_id) as $field_name => $field_definition) {
       if (strpos($field_name, 'data_') === 0 && !in_array($field_name, $enabled_fields)) {
         $field = FieldConfig::loadByName($entity_type_id, $bundle_id, $field_name);
         $field->setRequired(FALSE)->save();

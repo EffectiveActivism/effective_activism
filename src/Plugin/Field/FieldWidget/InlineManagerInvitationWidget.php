@@ -6,7 +6,6 @@ use Drupal;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\effective_activism\Constant;
-use Drupal\effective_activism\Entity\Organization;
 use Drupal\effective_activism\Helper\InvitationHelper;
 use Drupal\effective_activism\Helper\MailHelper;
 use Drupal\inline_entity_form\Plugin\Field\FieldWidget\InlineEntityFormComplex;
@@ -113,9 +112,8 @@ class InlineManagerInvitationWidget extends InlineEntityFormComplex {
    *   The form state of the form.
    */
   public static function invite(array $form, FormStateInterface $form_state) {
-    $entity_id = $form_state->getTemporaryValue('entity_id');
-    if (!empty($entity_id)) {
-      $entity = Organization::load($entity_id);
+    $entity = Drupal::request()->get('organization');
+    if (!empty($entity)) {
       $email = $form_state->getValue([
         'managers',
         'form',

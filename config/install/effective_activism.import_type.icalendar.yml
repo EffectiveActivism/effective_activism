@@ -1,0 +1,6 @@
+uuid: 12d1e96c-74d4-4449-976a-dd6676cab028
+langcode: en
+status: true
+dependencies: {  }
+id: icalendar
+label: ICalendar

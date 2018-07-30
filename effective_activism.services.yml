@@ -2,4 +2,4 @@ services:
   effective_activism.param_converter:
     class: Drupal\effective_activism\Helper\ParamConverter
     tags:
-      - { name: paramconverter }
+      - { name: paramconverter, priority: 30 }

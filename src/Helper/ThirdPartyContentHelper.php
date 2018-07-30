@@ -67,7 +67,8 @@ class ThirdPartyContentHelper {
     $query = Drupal::entityQuery('event');
     $query
       ->exists('location.latitude')
-      ->exists('location.longitude');
+      ->exists('location.longitude')
+      ->condition('status', 1);
     $all_events_ids = $query->execute();
     // Look for events with third-party content.
     $query = Drupal::entityQuery('event');

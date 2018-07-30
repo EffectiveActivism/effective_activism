@@ -4,4 +4,4 @@ status: true
 dependencies: {  }
 id: paid_views
 label: 'Paid views'
-description: 'Type in the number of paid viewers at the event.'
+description: 'The number of paid viewers at the event.'

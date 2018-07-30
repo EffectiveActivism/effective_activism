@@ -3,11 +3,9 @@
 namespace Drupal\effective_activism\ContentMigration\Export\CSV;
 
 use Drupal;
-use Drupal\Core\Entity\EntityInterface;
-use Drupal\effective_activism\Entity\Event;
 use Drupal\effective_activism\Entity\Export;
-use Drupal\effective_activism\Entity\Organization;
-use Drupal\effective_activism\Helper\OrganizationHelper;
+use Drupal\effective_activism\Entity\Filter;
+use Drupal\effective_activism\Helper\FilterHelper;
 use Drupal\effective_activism\ContentMigration\ParserInterface;
 
 /**
@@ -23,17 +21,15 @@ class CSVParser implements ParserInterface {
     'created',
     'default_langcode',
     'external_uid',
-    'field_latitude',
-    'field_longitude',
     'field_timestamp',
     'import',
     'langcode',
-    'location',
     'organization',
     'revision_created',
     'revision_log_message',
     'revision_id',
     'revision_user',
+    'revision_default',
     'status',
     'tid',
     'type',
@@ -52,11 +48,11 @@ class CSVParser implements ParserInterface {
   private $itemCount;
 
   /**
-   * Organization.
+   * Filter.
    *
-   * @var \Drupal\effective_activism\Entity\Organization
+   * @var \Drupal\effective_activism\Entity\Filter
    */
-  private $organization;
+  private $filter;
 
   /**
    * Export.
@@ -68,13 +64,13 @@ class CSVParser implements ParserInterface {
   /**
    * Creates the CSVParser Object.
    *
-   * @param \Drupal\effective_activism\Entity\Organization $organization
-   *   The organization to export events from.
+   * @param \Drupal\effective_activism\Entity\Filter $filter
+   *   The filter to export events with.
    * @param \Drupal\effective_activism\Entity\Export $export
    *   The export to save the file to.
    */
-  public function __construct(Organization $organization, Export $export) {
-    $this->organization = $organization;
+  public function __construct(Filter $filter, Export $export) {
+    $this->filter = $filter;
     $this->export = $export;
     $this->setItemCount();
     return $this;
@@ -108,7 +104,14 @@ class CSVParser implements ParserInterface {
    * Set the number of items to be exported.
    */
   private function setItemCount() {
-    $this->itemCount = OrganizationHelper::getEvents($this->organization, 0, 0, FALSE);
+    // Check if export is of group events or entire organization.
+    if ($this->export->parent->isEmpty()) {
+      $this->itemCount = FilterHelper::getEvents($this->filter, 0, 0, FALSE);
+    }
+    else {
+      $group = $this->export->parent->first()->get('entity')->getTarget()->getValue();
+      $this->itemCount = FilterHelper::getEventsByGroup($this->filter, $group, 0, 0, FALSE);
+    }
     return $this;
   }
 
@@ -130,126 +133,48 @@ class CSVParser implements ParserInterface {
    * {@inheritdoc}
    */
   public function processItem($event) {
-    $event = Event::load($event);
-    $row = [];
-    foreach ($event->toArray() as $field_name => $data) {
-      if (!in_array($field_name, self::FIELDS_BLACKLIST)) {
-        foreach ($data as $delta => $properties) {
-          foreach ($properties as $key => $value) {
-            switch ($key) {
-              case 'value':
-                $row[$field_name] = $value;
-                break;
-
-              case 'target_id':
-                $referenced_entity = $this->unpackEntityReference($event, $field_name, $delta);
-                $row[key($referenced_entity)][] = current($referenced_entity);
-                break;
-            }
-          }
-        }
-      }
-      // Special handling of addresses.
-      if ($field_name === 'location') {
-        $row['address'] = $data[0]['address'];
-        $row['address_extra_information'] = $data[0]['extra_information'];
-        $row['latitude'] = $data[0]['latitude'];
-        $row['longitude'] = $data[0]['longitude'];
-      }
-    }
-    // Convert values to CSV-formatted strings.
+    $row = $this->unpackEntity($event, 'event');
     foreach ($row as $key => $value) {
       if (is_array($value)) {
-        foreach ($value as $entityArray) {
-          unset($row[$key]);
-          // This will overwrite preceding entity references of the same type.
-          $row = array_merge($row, $this->collapseEntityArray($key, $entityArray));
-        }
+        $value = $this->collapseArray($value);
       }
-      else {
-        $row[$key] = $this->formatValue($value);
-      }
+      $row[$this->formatValue($key)] = $this->formatValue($value);
     }
     return $row;
   }
 
   /**
-   * Unpacks an entity.
+   * Collapses an array to a single value.
    *
-   * @param \Drupal\Core\Entity\EntityInterface $parent_entity
-   *   The parent entity.
-   * @param string $parent_field_name
-   *   The field name of the parent entity reference field.
-   * @param int $field_delta
-   *   The delta of the field.
+   * @param array $array
+   *   The array to collapse.
    *
    * @return string
-   *   An array of the entity fields, with the entity bundle id as key.
+   *   The formatted value.
    */
-  private function unpackEntityReference(EntityInterface $parent_entity, $parent_field_name, $field_delta = 0) {
-    // For entities without bundles, simply return the name of the entity.
-    if ($parent_entity->get($parent_field_name)->get($field_delta)->entity->getEntityType()->getBundleEntityType() === NULL) {
-      return [
-        $parent_field_name => [
-          $parent_entity->get($parent_field_name)->get($field_delta)->entity->getEntityType()->id() => $parent_entity->get($parent_field_name)->get($field_delta)->entity->label(),
-        ],
-      ];
-    }
-    // Set entity type/import name.
-    $bundle_entity_type = $parent_entity->get($parent_field_name)->get($field_delta)->entity->getEntityType()->getBundleEntityType();
-    $bundle_id = $parent_entity->get($parent_field_name)->get($field_delta)->entity->bundle();
-    $bundle = Drupal::entityTypeManager()->getStorage($bundle_entity_type)->load($bundle_id);
-    if ($bundle && $bundle->get('importname') !== NULL) {
-      $entity_identifier = $bundle->get('importname');
-    }
-    else {
-      $entity_identifier = $parent_entity->get($parent_field_name)->get($field_delta)->entity->bundle();
-    }
-    // Iterate entity fields.
-    foreach ($parent_entity->get($parent_field_name)->get($field_delta)->entity->toArray() as $field_name => $data) {
-      if (!in_array($field_name, self::FIELDS_BLACKLIST)) {
-        foreach ($data as $delta) {
-          foreach ($delta as $key => $value) {
-            switch ($key) {
-              case 'value':
-                $pieces[$field_name] = $value;
-                break;
-
-              case 'target_id':
-                $pieces[$field_name] = $this->unpackEntityReference($parent_entity->get($parent_field_name)->get($field_delta)->entity, $field_name);
-                break;
-            }
+  private function collapseArray(array $array) {
+    $formatted_value = NULL;
+    foreach ($array as $key => $value) {
+      if (is_array($value)) {
+        $value = $this->collapseArray($value);
+      }
+      if ($formatted_value === NULL) {
+        $formatted_value = $value;
+      }
+      else {
+        if (is_numeric($value)) {
+          $formatted_value += $value;
+        }
+        else {
+          if (!in_array($value, array_map(function ($value) {
+            return trim($value);
+          }, explode(',', $formatted_value)))) {
+            $formatted_value .= ', ' . $value;
           }
         }
       }
     }
-    return [
-      $entity_identifier => $pieces,
-    ];
-  }
-
-  /**
-   * Recusively collapses an entity array to a CSV-formatted string.
-   *
-   * @param string $entity_bundle_id
-   *   The entity array bundle.
-   * @param array $array
-   *   The entity array to collapse.
-   *
-   * @return array
-   *   Array with entity bundle id as key and CSV-formatted string as value.
-   */
-  private function collapseEntityArray($entity_bundle_id, array $array) {
-    $row = [];
-    foreach ($array as $field_name => $value) {
-      if (is_array($value)) {
-        $row = array_merge($row, $this->collapseEntityArray(sprintf('%s_%s', $entity_bundle_id, $field_name), $value));
-      }
-      else {
-        $row[sprintf('%s_%s', $entity_bundle_id, $field_name)] = self::formatValue($value);
-      }
-    }
-    return $row;
+    return $formatted_value;
   }
 
   /**
@@ -262,7 +187,108 @@ class CSVParser implements ParserInterface {
    *   A CSV-formatted string.
    */
   private function formatValue($value) {
-    return strpos($value, ',') !== FALSE ? sprintf('"%s"', str_replace('"', '""', $value)) : str_replace('"', '""', $value);
+    return (strpos($value, ',') !== FALSE || strpos($value, ';') !== FALSE) ? sprintf('"%s"', str_replace('"', '""', $value)) : $value;
+  }
+
+  /**
+   * Unpack entity.
+   *
+   * @param string $entity_id
+   *   The entity id to unpack.
+   * @param string $entity_type
+   *   The entity type to unpack.
+   * @param array $ignore_fields
+   *   Additional fields to ignore on top of the field blacklist.
+   *
+   * @return array
+   *   A row containing the entity data.
+   */
+  private function unpackEntity($entity_id, $entity_type, array $ignore_fields = []) {
+    $entity = Drupal::entityTypeManager()
+      ->getStorage($entity_type)
+      ->load($entity_id);
+    $row = [];
+    foreach ($entity->toArray() as $field_name => $data) {
+      if (!in_array($field_name, array_merge(self::FIELDS_BLACKLIST, $ignore_fields))) {
+        $label = (string) $entity->get($field_name)->getFieldDefinition()->getLabel();
+        // Temporary fix to remove duplicate entity references.
+        // Todo: AFA-242 Remove duplicate entity reference of third-party
+        // content.
+        if (isset($data[0]['target_id'])) {
+          $data = array_unique($data, SORT_REGULAR);
+        }
+        foreach ($data as $delta => $properties) {
+          foreach ($properties as $key => $value) {
+            if (!empty($value)) {
+              switch ($key) {
+                case 'value':
+                  $row[$label] = $value;
+                  break;
+
+                case 'address':
+                  $row['Address'] = $value;
+                  break;
+
+                case 'extra_information':
+                  $row['Address extra information'] = $value;
+                  break;
+
+                case 'latitude':
+                  $row['Latitude'] = $value;
+                  break;
+
+                case 'longitude':
+                  $row['Longitude'] = $value;
+                  break;
+
+                case 'target_id':
+                  $referenced_entity_bundle_type = $entity->get($field_name)->get($delta)->entity->getEntityType()->getBundleEntityType();
+                  // If the referenced entity does not have a bundle, we do not
+                  // iterate its content.
+                  if ($referenced_entity_bundle_type === NULL) {
+                    $row[$label][] = (string) $entity->get($field_name)->get($delta)->entity->label();
+                  }
+                  else {
+                    $referenced_entity_type = $entity->get($field_name)->get($delta)->entity->getEntityType()->id();
+                    $referenced_entity_bundle_id = $entity->get($field_name)->get($delta)->entity->bundle();
+                    $referenced_bundle = Drupal::entityTypeManager()->getStorage($referenced_entity_bundle_type)->load($referenced_entity_bundle_id);
+                    // Append the entity type label, except for Data and term
+                    // entities.
+                    if (!in_array((string) $entity->get($field_name)->get($delta)->entity->getEntityType()->getLabel(), [
+                      'Data',
+                      'Taxonomy term',
+                    ])) {
+                      $referenced_entity_label = sprintf(
+                        '%s: %s',
+                        $entity->get($field_name)->get($delta)->entity->getEntityType()->getLabel(),
+                        $referenced_bundle->label()
+                      );
+                    }
+                    else {
+                      $referenced_entity_label = $referenced_bundle->label();
+                    }
+                    // Iterate referenced entity and exclude certain fields.
+                    $referenced_entity = $this->unpackEntity($value, $referenced_entity_type, [
+                      'field_latitude',
+                      'field_longitude',
+                    ]);
+                    foreach ($referenced_entity as $referenced_field_label => $referenced_field_value) {
+                      if ($referenced_entity_label === $referenced_field_label) {
+                        $row[$referenced_entity_label][] = $referenced_field_value;
+                      }
+                      else {
+                        $row[sprintf('%s - %s', $referenced_entity_label, $referenced_field_label)][] = $referenced_field_value;
+                      }
+                    }
+                  }
+                  break;
+              }
+            }
+          }
+        }
+      }
+    }
+    return $row;
   }
 
   /**
@@ -275,15 +301,26 @@ class CSVParser implements ParserInterface {
    *   A header row containing all header keys.
    */
   public static function buildHeaders(array $rows) {
-    // Force some column names to be first.
-    $headers = [
-      'parent_group',
-      'title',
+    // Force some columns to be first.
+    $order = [
+      'Group',
+      'Start date',
+      'End date',
+      'Address',
+      'Address extra information',
+      'Latitude',
+      'Longitude',
+      'Title',
+      'Description',
+      'Event template',
     ];
+    $headers = [];
     foreach ($rows as $row) {
       $keys = array_keys($row);
       $headers = array_unique(array_merge($headers, $keys));
     }
+    sort($headers);
+    $headers = array_unique(array_merge($order, $headers));
     return $headers;
   }
 

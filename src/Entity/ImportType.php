@@ -10,6 +10,9 @@ use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
  * @ConfigEntityType(
  *   id = "import_type",
  *   label = @Translation("Import type"),
+ *   handlers = {
+ *     "access" = "Drupal\effective_activism\AccessControlHandler\ImportTypeAccessControlHandler",
+ *   },
  *   config_prefix = "import_type",
  *   bundle_of = "import",
  *   entity_keys = {

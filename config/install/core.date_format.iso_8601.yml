@@ -1,0 +1,8 @@
+uuid: dc6b76eb-b247-45ca-b9d1-474d397d57b8
+langcode: en
+status: true
+dependencies: {  }
+id: iso_8601
+label: 'ISO 8601'
+locked: false
+pattern: 'Y-m-d H:i'

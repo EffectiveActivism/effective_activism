@@ -6,4 +6,4 @@ _core:
   default_config_hash: 1uuzKjJEUr12bNnUeG4nLrdUtRf3A9GRtDDlpZrcpHU
 id: signatures
 label: Signatures
-description: 'Type in the number of signatures received at the event.'
+description: 'The number of signatures received at the event.'

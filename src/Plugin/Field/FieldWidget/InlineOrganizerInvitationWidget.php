@@ -6,7 +6,6 @@ use Drupal;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\effective_activism\Constant;
-use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Helper\InvitationHelper;
 use Drupal\effective_activism\Helper\MailHelper;
 use Drupal\inline_entity_form\Plugin\Field\FieldWidget\InlineEntityFormComplex;
@@ -113,9 +112,8 @@ class InlineOrganizerInvitationWidget extends InlineEntityFormComplex {
    *   The form state of the form.
    */
   public static function invite(array $form, FormStateInterface $form_state) {
-    $entity_id = $form_state->getTemporaryValue('entity_id');
-    if (!empty($entity_id)) {
-      $entity = Group::load($entity_id);
+    $entity = Drupal::request()->get('group');
+    if (!empty($entity)) {
       $email = $form_state->getValue([
         'organizers',
         'form',
@@ -130,7 +128,7 @@ class InlineOrganizerInvitationWidget extends InlineEntityFormComplex {
         }
         // Display message of invitation status.
         switch ($status) {
-          case InvitationHelper::STATUS_ALREADY_MANAGER:
+          case InvitationHelper::STATUS_ALREADY_ORGANIZER:
             drupal_set_message(t('The user is already an organizer of this group.'), 'warning');
             break;
 

@@ -11,10 +11,7 @@ use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
  *   id = "data_type",
  *   label = @Translation("Data type"),
  *   handlers = {
- *     "list_builder" = "Drupal\effective_activism\Helper\ListBuilder\DataTypeListBuilder",
- *     "route_provider" = {
- *       "html" = "Drupal\effective_activism\Helper\RouteProvider\DataTypeHtmlRouteProvider",
- *     },
+ *     "access" = "Drupal\effective_activism\AccessControlHandler\DataTypeAccessControlHandler",
  *   },
  *   config_prefix = "data_type",
  *   bundle_of = "data",
@@ -23,12 +20,6 @@ use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
  *     "label" = "label",
  *     "uuid" = "uuid"
  *   },
- *   links = {
- *     "canonical" = "/manage/data-types/{data_type}",
- *     "add-form" = "/manage/data-types/add",
- *     "edit-form" = "/manage/data-types/{data_type}/edit",
- *     "collection" = "/manage/data-types"
- *   }
  * )
  */
 class DataType extends ConfigEntityBundleBase implements DataTypeInterface {

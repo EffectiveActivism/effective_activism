@@ -63,6 +63,7 @@ abstract class EntityImportParser {
     unset($fields[array_search('revision_created', $fields)]);
     unset($fields[array_search('revision_user', $fields)]);
     unset($fields[array_search('revision_log_message', $fields)]);
+    unset($fields[array_search('revision_default', $fields)]);
     $fields = array_values($fields);
     return $fields;
   }
