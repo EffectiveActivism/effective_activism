@@ -1,0 +1,25 @@
+uuid: 5b1bb9f8-0eba-4696-87f7-43995c409475
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.third_party_content_type.city_pulse
+    - field.storage.third_party_content.field_timestamp
+id: third_party_content.city_pulse.field_timestamp
+field_name: field_timestamp
+entity_type: third_party_content
+bundle: city_pulse
+label: Timestamp
+description: 'The time to read events from. Local time as derived from GPS coordinates is assumed.'
+required: true
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  min: 0
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

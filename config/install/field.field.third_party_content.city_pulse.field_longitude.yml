@@ -1,0 +1,25 @@
+uuid: c37126a3-1c42-4673-a316-f9d9ea8e6556
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.third_party_content_type.city_pulse
+    - field.storage.third_party_content.field_longitude
+id: third_party_content.city_pulse.field_longitude
+field_name: field_longitude
+entity_type: third_party_content
+bundle: city_pulse
+label: Longitude
+description: ''
+required: true
+translatable: false
+default_value:
+  -
+    value: !!float 0
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: decimal
