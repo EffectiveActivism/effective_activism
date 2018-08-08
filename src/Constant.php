@@ -100,6 +100,14 @@ class Constant {
   const THIRD_PARTY_CONTENT_TYPE_WEATHER_INFORMATION = 'weather_information';
 
   /**
+   * The third-party content that uses time.
+   */
+  const THIRD_PARTY_CONTENT_TIME_AWARE = [
+    self::THIRD_PARTY_CONTENT_TYPE_CITY_PULSE,
+    self::THIRD_PARTY_CONTENT_TYPE_WEATHER_INFORMATION
+  ];
+
+  /**
    * Cache tags.
    */
   const CACHE_TAG_USER = 'user';

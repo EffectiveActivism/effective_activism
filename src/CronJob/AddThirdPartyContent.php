@@ -20,78 +20,42 @@ class AddThirdPartyContent implements CronJobInterface {
    * {@inheritdoc}
    */
   public static function run() {
-    // Add weather information.
-    $event_ids_without_weather_information = ThirdPartyContentHelper::getEventsWithoutThirdPartyContentType(Constant::THIRD_PARTY_CONTENT_TYPE_WEATHER_INFORMATION, self::BATCH_SIZE);
-    if (!empty($event_ids_without_weather_information)) {
-      foreach ($event_ids_without_weather_information as $id) {
-        $event = Event::load($id);
-        // Create or get matching third-party content.
-        $weather_information = ThirdPartyContentHelper::getThirdPartyContent([
-          'type' => Constant::THIRD_PARTY_CONTENT_TYPE_WEATHER_INFORMATION,
-          'field_latitude' => $event->get('location')->latitude,
-          'field_longitude' => $event->get('location')->longitude,
-          'field_timestamp' => $event->get('start_date')->date->format('U'),
-        ]);
-        if ($weather_information === FALSE) {
-          Drupal::logger('effective_activism')->warning(sprintf('Failed to create weather information for event with id %s', $id));
-          return;
+    // Get third-party content types.
+    $bundles = Drupal::entityManager()->getBundleInfo(Constant::ENTITY_THIRD_PARTY_CONTENT);
+    // Add third-party content for each bundle.
+    foreach ($bundles as $bundle => $info) {
+      $event_ids = ThirdPartyContentHelper::getEventsWithoutThirdPartyContentType($bundle, self::BATCH_SIZE);
+      if (!empty($event_ids)) {
+        foreach ($event_ids as $id) {
+          $event = Event::load($id);
+          // Create or get matching third-party content.
+          if (in_array($bundle, Constant::THIRD_PARTY_CONTENT_TIME_AWARE)) {
+            $third_party_content = ThirdPartyContentHelper::getThirdPartyContent([
+              'type' => $bundle,
+              'field_latitude' => $event->get('location')->latitude,
+              'field_longitude' => $event->get('location')->longitude,
+              'field_timestamp' => $event->get('start_date')->date->format('U'),
+            ]);
+          }
+          else {
+            $third_party_content = ThirdPartyContentHelper::getThirdPartyContent([
+              'type' => $bundle,
+              'field_latitude' => $event->get('location')->latitude,
+              'field_longitude' => $event->get('location')->longitude,
+            ]);
+          }
+          if ($third_party_content === FALSE) {
+            Drupal::logger('effective_activism')->warning(sprintf('Failed to create %s for event with id %d', $bundle, $id));
+            return;
+          }
+          // Add entity to event.
+          $event->third_party_content[] = [
+            'target_id' => $third_party_content->id(),
+          ];
+          $event->setNewRevision();
+          $event->save();
         }
-        // Add entity to event.
-        $event->third_party_content[] = [
-          'target_id' => $weather_information->id(),
-        ];
-        $event->setNewRevision();
-        $event->save();
       }
-      Drupal::logger('effective_activism')->info(sprintf('%d event(s) added weather information', count($event_ids_without_weather_information)));
-    }
-    // Add demographics.
-    $event_ids_without_demographics = ThirdPartyContentHelper::getEventsWithoutThirdPartyContentType(Constant::THIRD_PARTY_CONTENT_TYPE_DEMOGRAPHICS, self::BATCH_SIZE);
-    if (!empty($event_ids_without_demographics)) {
-      foreach ($event_ids_without_demographics as $id) {
-        $event = Event::load($id);
-        // Create or get matching third-party content.
-        $demographics = ThirdPartyContentHelper::getThirdPartyContent([
-          'type' => Constant::THIRD_PARTY_CONTENT_TYPE_DEMOGRAPHICS,
-          'field_latitude' => $event->get('location')->latitude,
-          'field_longitude' => $event->get('location')->longitude,
-        ]);
-        if ($demographics === FALSE) {
-          Drupal::logger('effective_activism')->warning(sprintf('Failed to create demographics for event with id %s', $id));
-          return;
-        }
-        // Add entity to event.
-        $event->third_party_content[] = [
-          'target_id' => $demographics->id(),
-        ];
-        $event->setNewRevision();
-        $event->save();
-      }
-      Drupal::logger('effective_activism')->info(sprintf('%d event(s) added demographics', count($event_ids_without_demographics)));
-    }
-    // Add extended location information.
-    $event_ids_without_extended_location_information = ThirdPartyContentHelper::getEventsWithoutThirdPartyContentType(Constant::THIRD_PARTY_CONTENT_TYPE_EXTENDED_LOCATION_INFORMATION, self::BATCH_SIZE);
-    if (!empty($event_ids_without_extended_location_information)) {
-      foreach ($event_ids_without_extended_location_information as $id) {
-        $event = Event::load($id);
-        // Create or get matching third-party content.
-        $extended_location_information = ThirdPartyContentHelper::getThirdPartyContent([
-          'type' => Constant::THIRD_PARTY_CONTENT_TYPE_EXTENDED_LOCATION_INFORMATION,
-          'field_latitude' => $event->get('location')->latitude,
-          'field_longitude' => $event->get('location')->longitude,
-        ]);
-        if ($extended_location_information === FALSE) {
-          Drupal::logger('effective_activism')->warning(sprintf('Failed to create extended location information for event with id %s', $id));
-          return;
-        }
-        // Add entity to event.
-        $event->third_party_content[] = [
-          'target_id' => $extended_location_information->id(),
-        ];
-        $event->setNewRevision();
-        $event->save();
-      }
-      Drupal::logger('effective_activism')->info(sprintf('%d event(s) added extended location information', count($event_ids_without_extended_location_information)));
     }
   }
 

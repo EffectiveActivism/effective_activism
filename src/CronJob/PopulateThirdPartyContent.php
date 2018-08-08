@@ -7,6 +7,7 @@ use Drupal\effective_activism\Constant;
 use Drupal\effective_activism\Entity\ThirdPartyContent;
 use Drupal\effective_activism\ThirdPartyApi\ArcGis;
 use Drupal\effective_activism\ThirdPartyApi\DarkSky;
+use Drupal\effective_activism\ThirdPartyApi\GDELT;
 use Drupal\effective_activism\ThirdPartyApi\GoogleMaps;
 use Drupal\effective_activism\ThirdPartyApi\ThirdPartyApiException;
 
@@ -17,7 +18,7 @@ use Drupal\effective_activism\ThirdPartyApi\ThirdPartyApiException;
  */
 class PopulateThirdPartyContent implements CronJobInterface {
 
-  const BATCH_SIZE = 100;
+  const BATCH_SIZE = 10;
 
   /**
    * {@inheritdoc}
@@ -35,8 +36,8 @@ class PopulateThirdPartyContent implements CronJobInterface {
         $api = NULL;
         try {
           switch ($third_party_content->getType()) {
-            case Constant::THIRD_PARTY_CONTENT_TYPE_WEATHER_INFORMATION:
-              $api = new DarkSky($third_party_content);
+            case Constant::THIRD_PARTY_CONTENT_TYPE_CITY_PULSE:
+              $api = new GDELT($third_party_content);
               break;
 
             case Constant::THIRD_PARTY_CONTENT_TYPE_DEMOGRAPHICS:
@@ -45,6 +46,10 @@ class PopulateThirdPartyContent implements CronJobInterface {
 
             case Constant::THIRD_PARTY_CONTENT_TYPE_EXTENDED_LOCATION_INFORMATION:
               $api = new GoogleMaps($third_party_content);
+              break;
+
+            case Constant::THIRD_PARTY_CONTENT_TYPE_WEATHER_INFORMATION:
+              $api = new DarkSky($third_party_content);
               break;
 
           }
