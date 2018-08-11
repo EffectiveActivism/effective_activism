@@ -16,11 +16,9 @@ content:
   field_goldenstein_scale:
     weight: 4
     label: above
-    settings:
-      thousand_separator: ''
-      prefix_suffix: true
+    settings: {  }
     third_party_settings: {  }
-    type: number_decimal
+    type: list_default
     region: content
   field_latitude:
     weight: 1
@@ -59,10 +57,8 @@ content:
   field_tone:
     weight: 5
     label: above
-    settings:
-      thousand_separator: ''
-      prefix_suffix: true
+    settings: {  }
     third_party_settings: {  }
-    type: number_decimal
+    type: list_default
     region: content
 hidden: {  }

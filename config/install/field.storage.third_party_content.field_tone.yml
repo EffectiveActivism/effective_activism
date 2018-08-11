@@ -4,12 +4,42 @@ status: true
 dependencies:
   module:
     - effective_activism
+    - options
 id: third_party_content.field_tone
 field_name: field_tone
 entity_type: third_party_content
-type: float
-settings: {  }
-module: core
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: extremely_negative
+      label: 'Extremely negative'
+    -
+      value: highly_negative
+      label: 'Highly negative'
+    -
+      value: moderately_negative
+      label: 'Moderately negative'
+    -
+      value: lightly_negative
+      label: 'Lightly negative'
+    -
+      value: neutral
+      label: Neutral
+    -
+      value: lightly_positive
+      label: 'Lightly positive'
+    -
+      value: moderately_positive
+      label: 'Moderately positive'
+    -
+      value: highly_positive
+      label: 'Highly positive'
+    -
+      value: extremely_positive
+      label: 'Extremely positive'
+  allowed_values_function: ''
+module: options
 locked: false
 cardinality: 1
 translatable: true

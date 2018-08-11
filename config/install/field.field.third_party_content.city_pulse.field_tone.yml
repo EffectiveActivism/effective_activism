@@ -5,21 +5,17 @@ dependencies:
   config:
     - effective_activism.third_party_content_type.city_pulse
     - field.storage.third_party_content.field_tone
+  module:
+    - options
 id: third_party_content.city_pulse.field_tone
 field_name: field_tone
 entity_type: third_party_content
 bundle: city_pulse
 label: Tone
-description: 'This is the average "tone" of the event. The score ranges from -100 (extremely negative) to +100 (extremely positive). Common values range between -10 and +10, with 0 indicating neutral.'
+description: 'The average "tone" of the event. The score ranges from -100 (extremely negative) to +100 (extremely positive). Common values range between -10 and +10, with 0 indicating neutral.'
 required: false
 translatable: false
-default_value:
-  -
-    value: !!float 0
+default_value: {  }
 default_value_callback: ''
-settings:
-  min: !!float -100
-  max: !!float 100
-  prefix: ''
-  suffix: ''
-field_type: float
+settings: {  }
+field_type: list_string

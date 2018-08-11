@@ -15,10 +15,9 @@ mode: default
 content:
   field_goldenstein_scale:
     weight: 4
-    settings:
-      placeholder: 'Goldenstein scale'
+    settings: {  }
     third_party_settings: {  }
-    type: number
+    type: options_select
     region: content
   field_latitude:
     weight: 1
@@ -51,9 +50,8 @@ content:
     region: content
   field_tone:
     weight: 5
-    settings:
-      placeholder: Tone
+    settings: {  }
     third_party_settings: {  }
-    type: number
+    type: options_select
     region: content
 hidden: {  }
