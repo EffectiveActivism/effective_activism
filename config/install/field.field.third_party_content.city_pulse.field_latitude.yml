@@ -1,0 +1,25 @@
+uuid: c4f97972-703c-4fdd-9c3e-9a8ad39fcc60
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.third_party_content_type.city_pulse
+    - field.storage.third_party_content.field_latitude
+id: third_party_content.city_pulse.field_latitude
+field_name: field_latitude
+entity_type: third_party_content
+bundle: city_pulse
+label: Latitude
+description: ''
+required: true
+translatable: false
+default_value:
+  -
+    value: !!float 0
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: decimal

@@ -1,0 +1,7 @@
+uuid: 70bb2814-e3c5-4f88-bcc0-4dfcd395a3d5
+langcode: en
+status: true
+dependencies: {  }
+id: city_pulse
+label: 'City pulse'
+description: 'Stores data about the tone and Goldenstein Scale of a particular area at a certain time.'

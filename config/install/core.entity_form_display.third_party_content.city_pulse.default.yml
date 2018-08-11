@@ -1,0 +1,57 @@
+uuid: fbe7d0a6-b3c3-49a5-a665-c1eebfe5a624
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.third_party_content_type.city_pulse
+    - field.field.third_party_content.city_pulse.field_latitude
+    - field.field.third_party_content.city_pulse.field_longitude
+    - field.field.third_party_content.city_pulse.field_goldenstein_scale
+    - field.field.third_party_content.city_pulse.field_tone
+id: third_party_content.city_pulse.default
+targetEntityType: third_party_content
+bundle: city_pulse
+mode: default
+content:
+  field_goldenstein_scale:
+    weight: 4
+    settings: {  }
+    third_party_settings: {  }
+    type: options_select
+    region: content
+  field_latitude:
+    weight: 1
+    settings:
+      placeholder: Latitude
+    third_party_settings: {  }
+    type: number
+    region: content
+  field_longitude:
+    weight: 2
+    settings:
+      placeholder: Longitude
+    third_party_settings: {  }
+    type: number
+    region: content
+  field_news_sources:
+    weight: 6
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_timestamp:
+    weight: 3
+    settings:
+      placeholder: Timestamp
+    third_party_settings: {  }
+    type: number
+    region: content
+  field_tone:
+    weight: 5
+    settings: {  }
+    third_party_settings: {  }
+    type: options_select
+    region: content
+hidden: {  }
