@@ -7,7 +7,9 @@ use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\RevisionableContentEntityBase;
 use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\user\UserInterface;
+use Drupal\effective_activism\Helper\ExportHelper;
 
 /**
  * Defines the Export entity.
@@ -65,6 +67,9 @@ class Export extends RevisionableContentEntityBase implements ExportInterface {
     'organization',
     'parent',
     'filter',
+    'column_event',
+    'column_result',
+    'column_third_party_content',
     'user_id',
   ];
 
@@ -219,6 +224,59 @@ class Export extends RevisionableContentEntityBase implements ExportInterface {
           'allow_existing' => TRUE,
         ],
         'weight' => array_search('filter', self::WEIGHTS),
+      ]);
+    $fields['columns_event'] = BaseFieldDefinition::create('list_string')
+      ->setLabel(t('Event columns'))
+      ->setCardinality(FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED)
+      ->setRevisionable(TRUE)
+      ->setRequired(FALSE)
+      ->setDefaultValue(array_keys(ExportHelper::getColumns('event')))
+      ->setSettings([
+        'allowed_values' => ExportHelper::getColumns('event'),
+      ])
+      ->setDisplayOptions('view', [
+        'label' => 'above',
+        'type' => 'list_default',
+        'weight' => array_search('columns_event', self::WEIGHTS),
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'options_buttons',
+        'weight' => array_search('columns_event', self::WEIGHTS),
+      ]);
+    $fields['columns_result'] = BaseFieldDefinition::create('list_string')
+      ->setLabel(t('Result columns'))
+      ->setCardinality(FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED)
+      ->setRevisionable(TRUE)
+      ->setRequired(FALSE)
+      ->setDefaultValue(array_keys(ExportHelper::getColumns('result')))
+      ->setSettings([
+        'allowed_values' => ExportHelper::getColumns('result'),
+      ])
+      ->setDisplayOptions('view', [
+        'label' => 'above',
+        'type' => 'list_default',
+        'weight' => array_search('columns_result', self::WEIGHTS),
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'options_buttons',
+        'weight' => array_search('columns_result', self::WEIGHTS),
+      ]);
+    $fields['columns_third_party_content'] = BaseFieldDefinition::create('list_string')
+      ->setLabel(t('Third-party content columns'))
+      ->setCardinality(FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED)
+      ->setRevisionable(TRUE)
+      ->setRequired(FALSE)
+      ->setSettings([
+        'allowed_values' => ExportHelper::getColumns('third_party_content'),
+      ])
+      ->setDisplayOptions('view', [
+        'label' => 'above',
+        'type' => 'list_default',
+        'weight' => array_search('columns_third_party_content', self::WEIGHTS),
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'options_buttons',
+        'weight' => array_search('columns_third_party_content', self::WEIGHTS),
       ]);
     $fields['user_id'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Authored by'))

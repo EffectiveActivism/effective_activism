@@ -9,8 +9,8 @@ use Drupal\effective_activism\Entity\Export;
 use Drupal\effective_activism\Entity\Filter;
 use Drupal\effective_activism\Entity\Group;
 use Drupal\effective_activism\Entity\Organization;
-use Drupal\effective_activism\Helper\OrganizationHelper;
 use Drupal\effective_activism\Helper\FilterHelper;
+use Drupal\effective_activism\Helper\OrganizationHelper;
 use Drupal\effective_activism\Helper\PathHelper;
 use ReflectionClass;
 

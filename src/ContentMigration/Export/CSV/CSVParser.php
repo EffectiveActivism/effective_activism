@@ -133,7 +133,9 @@ class CSVParser implements ParserInterface {
    * {@inheritdoc}
    */
   public function processItem($event) {
-    $row = $this->unpackEntity($event, 'event');
+    $row = $this->unpackEntity($event, 'event', [], array_map(function ($element) {
+      return $element['value'];
+    }, $this->export->columns_event->getValue()));
     foreach ($row as $key => $value) {
       if (is_array($value)) {
         $value = $this->collapseArray($value);
@@ -199,16 +201,22 @@ class CSVParser implements ParserInterface {
    *   The entity type to unpack.
    * @param array $ignore_fields
    *   Additional fields to ignore on top of the field blacklist.
+   * @param array $whitelist
+   *   Whitelisted fields.
    *
    * @return array
    *   A row containing the entity data.
    */
-  private function unpackEntity($entity_id, $entity_type, array $ignore_fields = []) {
+  private function unpackEntity($entity_id, $entity_type, array $ignore_fields = [], array $whitelist = []) {
     $entity = Drupal::entityTypeManager()
       ->getStorage($entity_type)
       ->load($entity_id);
     $row = [];
     foreach ($entity->toArray() as $field_name => $data) {
+      // Skip fields that aren't whitelisted (if set).
+      if (!empty($whitelist) && !in_array($field_name, $whitelist)) {
+        continue;
+      }
       if (!in_array($field_name, array_merge(self::FIELDS_BLACKLIST, $ignore_fields))) {
         $label = (string) $entity->get($field_name)->getFieldDefinition()->getLabel();
         // Temporary fix to remove duplicate entity references.
@@ -267,11 +275,24 @@ class CSVParser implements ParserInterface {
                     else {
                       $referenced_entity_label = $referenced_bundle->label();
                     }
+                    // Add field whitelist to result type.
+                    $embedded_whitelist = [];
+                    if ($referenced_entity_type === 'result') {
+                      $embedded_whitelist = array_map(function ($element) {
+                        return $element['value'];
+                      }, $this->export->columns_result->getValue());
+                    }
+                    // Add field whitelist to third_party_content type.
+                    elseif ($referenced_entity_type === 'third_party_content') {
+                      $embedded_whitelist = array_map(function ($element) {
+                        return $element['value'];
+                      }, $this->export->columns_third_party_content->getValue());
+                    }
                     // Iterate referenced entity and exclude certain fields.
                     $referenced_entity = $this->unpackEntity($value, $referenced_entity_type, [
                       'field_latitude',
                       'field_longitude',
-                    ]);
+                    ], $embedded_whitelist);
                     foreach ($referenced_entity as $referenced_field_label => $referenced_field_value) {
                       if ($referenced_entity_label === $referenced_field_label) {
                         $row[$referenced_entity_label][] = $referenced_field_value;
@@ -320,6 +341,12 @@ class CSVParser implements ParserInterface {
       $headers = array_unique(array_merge($headers, $keys));
     }
     sort($headers);
+    // Remove columns from column order that isn't already present in headers.
+    foreach ($order as $key => $value) {
+      if (!in_array($value, $headers)) {
+        unset($order[$key]);
+      }
+    }
     $headers = array_unique(array_merge($order, $headers));
     return $headers;
   }
