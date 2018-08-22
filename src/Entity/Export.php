@@ -230,7 +230,7 @@ class Export extends RevisionableContentEntityBase implements ExportInterface {
       ->setCardinality(FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED)
       ->setRevisionable(TRUE)
       ->setRequired(FALSE)
-      ->setDefaultValue(array_keys(ExportHelper::getColumns('event')))
+      ->setDefaultValue(array_diff(array_keys(ExportHelper::getColumns('event')), ['third_party_content']))
       ->setSettings([
         'allowed_values' => ExportHelper::getColumns('event'),
       ])
