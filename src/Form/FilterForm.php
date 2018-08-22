@@ -55,6 +55,17 @@ class FilterForm extends ContentEntityForm {
       }
     }
     asort($form['event_templates']['widget']['#options']);
+    // Restrict result types to those belonging to organization.
+    $organization_result_types = OrganizationHelper::getResultTypes($organization, FALSE);
+    foreach ($form['result_types']['widget']['#options'] as $key => $value) {
+      if ($key === '_none') {
+        continue;
+      }
+      elseif (!in_array($key, $organization_result_types)) {
+        unset($form['result_types']['widget']['#options'][$key]);
+      }
+    }
+    asort($form['result_types']['widget']['#options']);
     return $form;
   }
 

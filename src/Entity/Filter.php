@@ -304,6 +304,23 @@ class Filter extends RevisionableContentEntityBase implements FilterInterface {
         'type' => 'options_buttons',
         'weight' => array_search('event_templates', self::WEIGHTS),
       ]);
+    $fields['result_types'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(t('Result types'))
+      ->setRevisionable(TRUE)
+      ->setDescription(t('The types of results added to the events.'))
+      ->setSetting('target_type', 'result_type')
+      ->setSetting('handler', 'default')
+      ->setCardinality(FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED)
+      ->setRequired(FALSE)
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'string',
+        'weight' => array_search('result_types', self::WEIGHTS),
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'options_buttons',
+        'weight' => array_search('result_types', self::WEIGHTS),
+      ]);
     $fields['user_id'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Authored by'))
       ->setDescription(t('The user ID of author of the filter.'))
