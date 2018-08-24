@@ -102,6 +102,10 @@ class DarkSky extends ThirdPartyApi {
             ) {
               $this->thirdpartycontent->field_temperature = ($minimum_temperature + $maximum_temperature) / 2;
             }
+            $this->thirdpartycontent->source = [
+              'uri' => 'https://darksky.net/poweredby/',
+              'title' => t('DarkSky'),
+            ];
           }
           else {
             throw new DarkSkyException(sprintf('Unexpected format on JSON string: %s', substr($response, 0, 1000)));
