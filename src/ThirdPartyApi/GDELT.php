@@ -267,6 +267,10 @@ class GDELT extends ThirdPartyApi {
           }
         }
         $this->thirdpartycontent->field_news_sources = isset($row['f2_']) ? array_slice(array_unique(explode(' ', $row['f2_'])), 0, self::MAX_NEWS_SOURCES) : NULL;
+        $this->thirdpartycontent->source = [
+          'uri' => 'https://www.gdeltproject.org/about.html',
+          'title' => t('GDELT'),
+        ];
       }
       catch (GoogleException $exception) {
         throw new GDELTException($exception->getMessage());

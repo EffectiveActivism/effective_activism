@@ -172,6 +172,10 @@ class ArcGis extends ThirdPartyApi {
             $this->thirdpartycontent->field_average_household_size = isset($attributes->AVGHHSZ) ? $attributes->AVGHHSZ : NULL;
             $this->thirdpartycontent->field_male_population = isset($attributes->TOTMALES) ? $attributes->TOTMALES : NULL;
             $this->thirdpartycontent->field_female_population = isset($attributes->TOTFEMALES) ? $attributes->TOTFEMALES : NULL;
+            $this->thirdpartycontent->source = [
+              'uri' => 'https://www.arcgis.com',
+              'title' => t('ArcGis'),
+            ];
           }
           else {
             throw new ArcGisException(sprintf('Unexpected format on JSON string: %s', substr($response, 0, 1000)));

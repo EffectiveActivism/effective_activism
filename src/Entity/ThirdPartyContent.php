@@ -7,6 +7,7 @@ use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\RevisionableContentEntityBase;
 use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\link\Plugin\Field\FieldType\LinkItem;
 use Drupal\user\UserInterface;
 
 /**
@@ -39,6 +40,11 @@ use Drupal\user\UserInterface;
 class ThirdPartyContent extends RevisionableContentEntityBase implements ThirdPartyContentInterface {
 
   use EntityChangedTrait;
+
+  const WEIGHTS = [
+    'source',
+    'user_id',
+  ];
 
   /**
    * {@inheritdoc}
@@ -122,6 +128,24 @@ class ThirdPartyContent extends RevisionableContentEntityBase implements ThirdPa
    */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $fields = parent::baseFieldDefinitions($entity_type);
+    $fields['source'] = BaseFieldDefinition::create('link')
+      ->setLabel(t('Source'))
+      ->setDescription(t('The source of the third-party content.'))
+      ->setRevisionable(TRUE)
+      ->setSettings([
+        'link_type' => LinkItem::LINK_EXTERNAL,
+        'title' => DRUPAL_OPTIONAL,
+      ])
+      ->setDefaultValue('')
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'string',
+        'weight' => array_search('source', self::WEIGHTS),
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'link',
+        'weight' => array_search('source', self::WEIGHTS),
+      ]);
     $fields['user_id'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Authored by'))
       ->setDescription(t('The user ID of author of the ThirdPartyContent entity.'))
