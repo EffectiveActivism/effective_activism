@@ -143,7 +143,7 @@ class ThirdPartyContent extends RevisionableContentEntityBase implements ThirdPa
         'weight' => array_search('source', self::WEIGHTS),
       ])
       ->setDisplayOptions('form', [
-        'type' => 'link',
+        'type' => 'link_default',
         'weight' => array_search('source', self::WEIGHTS),
       ]);
     $fields['user_id'] = BaseFieldDefinition::create('entity_reference')

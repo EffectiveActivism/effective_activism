@@ -278,7 +278,7 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
         'weight' => array_search('link', self::WEIGHTS),
       ])
       ->setDisplayOptions('form', [
-        'type' => 'link',
+        'type' => 'link_default',
         'weight' => array_search('link', self::WEIGHTS),
       ]);
     $fields['results'] = BaseFieldDefinition::create('entity_reference')
