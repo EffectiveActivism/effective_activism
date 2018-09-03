@@ -3,6 +3,7 @@
 namespace Drupal\effective_activism\Hook;
 
 use Drupal\effective_activism\CronJob\AddThirdPartyContent;
+use Drupal\effective_activism\CronJob\CleanUpOrphanThirdPartyContent;
 use Drupal\effective_activism\CronJob\PopulateThirdPartyContent;
 
 /**
@@ -33,6 +34,7 @@ class CronHook implements HookInterface {
   public function invoke(array $args) {
     AddThirdPartyContent::run();
     PopulateThirdPartyContent::run();
+    CleanUpOrphanThirdPartyContent::run();
   }
 
 }
