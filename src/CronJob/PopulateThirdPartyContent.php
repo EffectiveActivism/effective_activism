@@ -44,7 +44,7 @@ class PopulateThirdPartyContent implements CronJobInterface {
         $event_query
           ->sort('start_date', 'DESC')
           ->condition('third_party_content', $id)
-          ->range(0,1);
+          ->range(0, 1);
         $event_ids = $event_query->execute();
         if (!empty($event_ids)) {
           $event = Event::load(array_pop($event_ids));
@@ -77,7 +77,8 @@ class PopulateThirdPartyContent implements CronJobInterface {
               // Populate entity with API data.
               if (isset($api)) {
                 $api->request();
-              } else {
+              }
+              else {
                 throw new ThirdPartyAPIException('Unknown third-party content bundle');
               }
             }

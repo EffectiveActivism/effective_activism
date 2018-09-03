@@ -3,9 +3,6 @@
 namespace Drupal\effective_activism\CronJob;
 
 use Drupal;
-use Drupal\effective_activism\Constant;
-use Drupal\effective_activism\Entity\Event;
-use Drupal\effective_activism\Helper\ThirdPartyContentHelper;
 
 /**
  * This cron job removes third-party content entities that aren't referenced.
@@ -22,7 +19,7 @@ class CleanUpOrphanThirdPartyContent implements CronJobInterface {
   public static function run() {
     $third_party_content_to_delete = [];
     $position = Drupal::config('effective_activism.cron')->get('cleanuporphanthirdpartycontent.position');
-    $query =  Drupal::entityQuery('third_party_content');
+    $query = Drupal::entityQuery('third_party_content');
     $third_party_content_ids = $query
       ->range($position, self::BATCH_SIZE)
       ->execute();
