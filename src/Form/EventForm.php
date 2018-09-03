@@ -158,8 +158,8 @@ class EventForm extends ContentEntityForm {
           $address !== $original_address) &&
         !$entity->third_party_content->isEmpty()
       ) {
-        // If other events are using the third-party content, remove it from this
-        // event. The AddThirdPartyContent cron job will pick it up.
+        // If other events are using the third-party content, remove it from
+        // this event. The AddThirdPartyContent cron job will pick it up.
         $third_party_content_entities = [];
         foreach ($entity->third_party_content->getValue() as $delta => $value) {
           $query = Drupal::entityQuery('event');
