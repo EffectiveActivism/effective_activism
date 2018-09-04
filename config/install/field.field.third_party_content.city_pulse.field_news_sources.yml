@@ -9,7 +9,7 @@ id: third_party_content.city_pulse.field_news_sources
 field_name: field_news_sources
 entity_type: third_party_content
 bundle: city_pulse
-label: News sources
+label: 'News sources'
 description: ''
 required: false
 translatable: false
