@@ -1,0 +1,9 @@
+uuid: 3efcafa7-eb5b-4f2e-ae1b-21d6dfa2522b
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: tbxNeI85jm0rFEfogRr2_iSb8rA3VAxJrHt7gCOLjKU
+id: vr_views
+label: VR views
+description: 'The number of viewers of a virtual reality show.'
