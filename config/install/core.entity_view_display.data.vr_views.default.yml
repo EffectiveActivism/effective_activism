@@ -1,0 +1,26 @@
+uuid: e60d28ea-334d-400d-8776-17083d1bc120
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.data_type.vr_views
+    - field.field.data.vr_views.field_vr_views
+  module:
+    - user
+_core:
+  default_config_hash: TssBgSlU3d6MzXquMPn1S9Ft5MFr0Fl1waw5mpttCR4
+id: data.vr_views.default
+targetEntityType: data
+bundle: vr_views
+mode: default
+content:
+  field_vr_views:
+    weight: 1
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
+    region: content
+hidden: {  }
