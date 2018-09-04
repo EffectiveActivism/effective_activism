@@ -177,4 +177,5 @@ class EventForm extends ContentEntityForm {
   public function ajaxCallback(array &$form, FormStateInterface $form_state) {
     return $form;
   }
+
 }

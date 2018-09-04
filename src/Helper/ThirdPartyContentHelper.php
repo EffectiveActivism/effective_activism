@@ -188,4 +188,5 @@ class ThirdPartyContentHelper {
       $event->get('third_party_content')->setValue([]);
     }
   }
+
 }
