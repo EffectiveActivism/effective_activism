@@ -14,7 +14,7 @@ use Drupal\effective_activism\Entity\Organization;
 use Drupal\effective_activism\Entity\ResultType;
 use Drupal\effective_activism\Helper\EventTemplateHelper;
 use Drupal\effective_activism\Helper\PathHelper;
-use Drupal\effective_activism\Entity\ThirdPartyContent;
+use Drupal\effective_activism\Helper\ThirdPartyContentHelper;
 use ReflectionClass;
 
 /**
@@ -144,49 +144,7 @@ class EventForm extends ContentEntityForm {
   public function save(array $form, FormStateInterface $form_state) {
     $entity = $this->entity;
     if (!$entity->isNew()) {
-      // If event address or times are changed, we need to update the
-      // third-party content.
-      $original_entity = Drupal::entityTypeManager()->getStorage('event')->loadUnchanged($entity->id());
-      $start_date_value = $entity->get('start_date')->getValue();
-      $start_date = new DrupalDateTime($start_date_value[0]['value'], new DateTimezone(DATETIME_STORAGE_TIMEZONE));
-      $original_start_date_value = $original_entity->get('start_date')->getValue();
-      $original_start_date = new DrupalDateTime($original_start_date_value[0]['value'], new DateTimezone(DATETIME_STORAGE_TIMEZONE));
-      $address = isset($entity->location->address) ? $entity->get('location')->address : NULL;
-      $original_address = isset($entity->original->location->address) ? $original_entity->get('location')->address : NULL;
-      if (
-        ($start_date->getTimestamp() !== $original_start_date->getTimestamp() ||
-          $address !== $original_address) &&
-        !$entity->third_party_content->isEmpty()
-      ) {
-        // If other events are using the third-party content, remove it from
-        // this event. The AddThirdPartyContent cron job will pick it up.
-        $third_party_content_entities = [];
-        foreach ($entity->third_party_content->getValue() as $delta => $value) {
-          $query = Drupal::entityQuery('event');
-          $number_of_events = $query
-            ->condition('third_party_content', $value['target_id'])
-            ->count()
-            ->execute();
-          // Only keep third-party content that isn't used by other events.
-          if ((int) $number_of_events === 1) {
-            $third_party_content_entities[] = ['target_id' => $value['target_id']];
-            $third_party_content = ThirdPartyContent::load($value['target_id']);
-            $third_party_content->setPublished(FALSE);
-            // Re-add location and time information, as applicable.
-            $third_party_content->set('field_latitude', $entity->get('location')->latitude);
-            $third_party_content->set('field_longitude', $entity->get('location')->longitude);
-            if (in_array($third_party_content->bundle(), Constant::THIRD_PARTY_CONTENT_TIME_AWARE)) {
-              $third_party_content->set('field_timestamp', $entity->get('start_date')->date->format('U'));
-            }
-            $third_party_content->setNewRevision(TRUE);
-            $third_party_content->save();
-          }
-        }
-        // If the number of third_party_content references has changed, re-add.
-        if (count($entity->third_party_content->getValue()) !== count($third_party_content_entities)) {
-          $entity->get('third_party_content')->setValue($third_party_content_entities);
-        }
-      }
+      ThirdPartyContentHelper::shuffleThirdPartyContent($entity);
     }
     $entity->setNewRevision();
     $status = parent::save($form, $form_state);
