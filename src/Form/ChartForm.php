@@ -189,8 +189,8 @@ class ChartForm extends FormBase {
     }
     $lower_bound = DateTime::createFromFormat(self::DRUPAL_DATE_FORMAT, $oldest_event->get(self::SORT_CRITERIA)->value);
     $higher_bound = DateTime::createFromFormat(self::DRUPAL_DATE_FORMAT, $newest_event->get(self::SORT_CRITERIA)->value)->modify(self::TIME_OPTIONS[$form_state->getValue('series_1_interval')]['modifier']);
-    // Special case for quarterly intervals, as they are unsupported in DateInterval.
-    // We round of to nearest year start.
+    // Special case for quarterly intervals, as they are unsupported in
+    // DateInterval. We round of to nearest year start.
     if ($form_state->getValue('series_1_interval') === 'quarterly') {
       $lower_bound->modify(sprintf('first day of January %d', $lower_bound->format('Y')));
     }
