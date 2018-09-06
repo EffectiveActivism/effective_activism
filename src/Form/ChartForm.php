@@ -37,11 +37,29 @@ class ChartForm extends FormBase {
       'interval' => 'P1D',
       'modifier' => '+1 day',
     ],
+    'weekly' => [
+      'label' => 'Weekly',
+      'slice' => 'Y - W',
+      'interval' => 'P1W',
+      'modifier' => '+1 week',
+    ],
     'monthly' => [
       'label' => 'Monthly',
       'slice' => 'Y - M',
       'interval' => 'P1M',
       'modifier' => '+1 month',
+    ],
+    'quarterly' => [
+      'label' => 'Quarterly',
+      'slice' => 'Y - M',
+      'interval' => 'P3M',
+      'modifier' => '+3 months',
+    ],
+    'yearly' => [
+      'label' => 'Yearly',
+      'slice' => 'Y',
+      'interval' => 'P1Y',
+      'modifier' => '+1 year',
     ],
   ];
 
@@ -169,12 +187,19 @@ class ChartForm extends FormBase {
       $response->addCommand(new InsertCommand(NULL, $form['messages']));
       return $response;
     }
+    $lower_bound = DateTime::createFromFormat(self::DRUPAL_DATE_FORMAT, $oldest_event->get(self::SORT_CRITERIA)->value);
+    $higher_bound = DateTime::createFromFormat(self::DRUPAL_DATE_FORMAT, $newest_event->get(self::SORT_CRITERIA)->value)->modify(self::TIME_OPTIONS[$form_state->getValue('series_1_interval')]['modifier']);
+    // Special case for quarterly intervals, as they are unsupported in DateInterval.
+    // We round of to nearest year start.
+    if ($form_state->getValue('series_1_interval') === 'quarterly') {
+      $lower_bound->modify(sprintf('first day of January %d', $lower_bound->format('Y')));
+    }
     // Create timesliced array.
     // Add extra time to end date to ensure it is added.
     $period = new DatePeriod(
-      DateTime::createFromFormat(self::DRUPAL_DATE_FORMAT, $oldest_event->get(self::SORT_CRITERIA)->value),
+      $lower_bound,
       new DateInterval(self::TIME_OPTIONS[$form_state->getValue('series_1_interval')]['interval']),
-      DateTime::createFromFormat(self::DRUPAL_DATE_FORMAT, $newest_event->get(self::SORT_CRITERIA)->value)->modify(self::TIME_OPTIONS[$form_state->getValue('series_1_interval')]['modifier'])
+      $higher_bound
     );
     $categories = [];
     foreach ($period as $date) {
