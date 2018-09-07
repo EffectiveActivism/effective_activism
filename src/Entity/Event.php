@@ -73,6 +73,7 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
     'end_date',
     'location',
     'link',
+    'photos',
     'results',
     'external_uid',
     'import',
@@ -280,6 +281,26 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
       ->setDisplayOptions('form', [
         'type' => 'link_default',
         'weight' => array_search('link', self::WEIGHTS),
+      ]);
+    $fields['photos'] = BaseFieldDefinition::create('image')
+      ->setLabel(t('Photos'))
+      ->setDescription(t('Upload photos from the event.'))
+      ->setCardinality(10)
+      ->setSettings([
+        'file_directory' => 'photos',
+        'alt_field_required' => FALSE,
+        'file_extensions' => 'png jpg jpeg',
+        'max_filesize' => '1 MB',
+      ])
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'default',
+        'weight' => array_search('photos', self::WEIGHTS),
+      ])
+      ->setDisplayOptions('form', [
+        'label' => 'hidden',
+        'type' => 'image_image',
+        'weight' => array_search('photos', self::WEIGHTS),
       ]);
     $fields['results'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Results'))
