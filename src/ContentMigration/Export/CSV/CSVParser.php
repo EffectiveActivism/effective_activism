@@ -25,6 +25,7 @@ class CSVParser implements ParserInterface {
     'import',
     'langcode',
     'organization',
+    'photos',
     'revision_created',
     'revision_log_message',
     'revision_id',
