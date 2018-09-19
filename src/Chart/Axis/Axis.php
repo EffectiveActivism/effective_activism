@@ -25,14 +25,14 @@ abstract class Axis implements AxisInterface {
   /**
    * The type of axis.
    *
-   * @var strnig
+   * @var string
    */
   private $type;
 
   /**
    * The settings for the axis.
    *
-   * @var \Drupal\effective_acitism\Chart\Axis\AxisSettingsInterface
+   * @var \Drupal\effective_activism\Chart\Axis\AxisSettingsInterface
    */
   private $settings;
 
