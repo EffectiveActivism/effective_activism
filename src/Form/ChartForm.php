@@ -298,7 +298,7 @@ class ChartForm extends FormBase {
         'floating' => TRUE,
         'backgroundColor' => '#FFFFFF',
       ],
-      'yAxis' =>  [
+      'yAxis' => [
         (object) [
           'lineWidth' => 1,
           'title' => (object) [
@@ -340,13 +340,13 @@ class ChartForm extends FormBase {
           'turboThreshold' => 0,
           'labels' => [
             'format' => '{value}',
-            'style' => (object)[
+            'style' => (object) [
               'color' => 'Highcharts.getOptions().colors[1]',
             ],
           ],
-          'title' => (object)[
+          'title' => (object) [
             'text' => '',
-            'style' => (object)[
+            'style' => (object) [
               'color' => 'Highcharts.getOptions().colors[1]',
             ],
           ],
@@ -368,13 +368,13 @@ class ChartForm extends FormBase {
         'turboThreshold' => 0,
         'labels' => [
           'format' => '{value}',
-          'style' => (object)[
+          'style' => (object) [
             'color' => 'Highcharts.getOptions().colors[1]',
           ],
         ],
-        'title' => (object)[
+        'title' => (object) [
           'text' => '',
-          'style' => (object)[
+          'style' => (object) [
             'color' => 'Highcharts.getOptions().colors[1]',
           ],
         ],
@@ -395,13 +395,13 @@ class ChartForm extends FormBase {
         'turboThreshold' => 0,
         'labels' => [
           'format' => '{value}',
-          'style' => (object)[
+          'style' => (object) [
             'color' => 'Highcharts.getOptions().colors[1]',
           ],
         ],
-        'title' => (object)[
+        'title' => (object) [
           'text' => '',
-          'style' => (object)[
+          'style' => (object) [
             'color' => 'Highcharts.getOptions().colors[1]',
           ],
         ],
@@ -422,13 +422,13 @@ class ChartForm extends FormBase {
         'turboThreshold' => 0,
         'labels' => [
           'format' => '{value}',
-          'style' => (object)[
+          'style' => (object) [
             'color' => 'Highcharts.getOptions().colors[1]',
           ],
         ],
-        'title' => (object)[
+        'title' => (object) [
           'text' => '',
-          'style' => (object)[
+          'style' => (object) [
             'color' => 'Highcharts.getOptions().colors[1]',
           ],
         ],
