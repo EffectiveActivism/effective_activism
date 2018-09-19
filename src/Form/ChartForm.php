@@ -252,7 +252,7 @@ class ChartForm extends FormBase {
           $duration[$time_slice] += (int) ($result_entity->entity->get('duration_days')->value * 24 * 60 + $result_entity->entity->get('duration_hours')->value * 60 + $result_entity->entity->get('duration_minutes')->value);
         }
         else {
-          $duration[$time_slice] += (int) ($result_entity->entity->get('duration_days')->value * 24 * 60 + $result_entity->entity->get('duration_hours')->value * 60 + $result_entity->entity->get('duration_minutes')->value);
+          $duration[$time_slice] = (int) ($result_entity->entity->get('duration_days')->value * 24 * 60 + $result_entity->entity->get('duration_hours')->value * 60 + $result_entity->entity->get('duration_minutes')->value);
         }
         foreach ($result_entity->entity->getFields() as $result_field) {
           if (strpos($result_field->getName(), 'data_') === 0) {
