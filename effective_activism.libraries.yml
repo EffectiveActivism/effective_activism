@@ -34,6 +34,12 @@ leaflet:
     - core/drupalSettings
     - core/jquery.once
 
+leaflet-heatmap:
+  js:
+    assets/js/leaflet-heatmap.js: {}
+  dependencies:
+    - effective_activism/leaflet
+
 highcharts:
   remote: https://code.highcharts.com/
   version: 5.0.12

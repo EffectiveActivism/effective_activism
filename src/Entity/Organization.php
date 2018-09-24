@@ -25,9 +25,10 @@ use Drupal\effective_activism\Constant;
  *     "form" = {
  *       "default" = "Drupal\effective_activism\Form\OrganizationForm",
  *       "add" = "Drupal\effective_activism\Form\OrganizationForm",
- *       "results" = "Drupal\effective_activism\Form\ChartForm",
  *       "edit" = "Drupal\effective_activism\Form\OrganizationForm",
+ *       "map" = "Drupal\effective_activism\Form\MapForm",
  *       "publish" = "Drupal\effective_activism\Form\OrganizationPublishForm",
+ *       "results" = "Drupal\effective_activism\Form\ChartForm",
  *     },
  *     "access" = "Drupal\effective_activism\AccessControlHandler\OrganizationAccessControlHandler",
  *     "route_provider" = {
@@ -46,8 +47,8 @@ use Drupal\effective_activism\Constant;
  *     "status" = "status",
  *   },
  *  links = {
- *     "canonical" = "/o/{organization}",
  *     "add-form" = "/o/add",
+ *     "canonical" = "/o/{organization}",
  *     "collection" = "/o",
  *     "edit-form" = "/o/{organization}/edit",
  *     "events" = "/o/{organization}/e",
@@ -55,6 +56,7 @@ use Drupal\effective_activism\Constant;
  *     "exports" = "/o/{organization}/exports",
  *     "filters" = "/o/{organization}/filters",
  *     "groups" = "/o/{organization}/g",
+ *     "map" = "/o/{organization}/map",
  *     "publish-form" = "/o/{organization}/publish",
  *     "results" = "/o/{organization}/results",
  *     "result_types" = "/o/{organization}/result-types",

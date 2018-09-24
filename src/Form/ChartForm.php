@@ -153,8 +153,8 @@ class ChartForm extends FormBase {
       '#suffix' => '</div>',
       '#type' => 'markup',
       '#markup' => '<div id="chart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>',
-      '#title' => $this->t('Event template'),
-      '#description' => $this->t('The event template to use.'),
+      '#title' => $this->t('Chart'),
+      '#description' => $this->t('The results in chart-form.'),
       '#attached' => [
         'library' => [
           'effective_activism/highcharts',
