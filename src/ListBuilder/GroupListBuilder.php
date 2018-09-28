@@ -7,11 +7,9 @@ use Drupal\Core\Cache\Cache;
 use Drupal\Core\Entity\EntityListBuilder;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
-use Drupal\Core\Url;
 use Drupal\effective_activism\Constant;
 use Drupal\effective_activism\Entity\Organization;
-use Drupal\effective_activism\Helper\OrganizationHelper;
-use Drupal\effective_activism\Helper\PathHelper;
+use Drupal\effective_activism\Helper\MapHelper;
 use ReflectionClass;
 
 /**
@@ -116,49 +114,24 @@ class GroupListBuilder extends EntityListBuilder {
   }
 
   /**
-   * Return a list of places.
-   *
-   * @return array
-   *   Parameters for a map of groups.
-   */
-  public function getPlaces() {
-    $places = [];
-    foreach (OrganizationHelper::getGroups(Drupal::request()->get('organization')) as $group) {
-      // Skip group if location is not set.
-      if (empty($group->location->latitude)) {
-        continue;
-      }
-      $places[] = [
-        'gps' => [
-          'latitude' => $group->location->latitude,
-          'longitude' => $group->location->longitude,
-        ],
-        'title' => $group->label(),
-        'description' => $group->description->value,
-        'url' => (new Url('entity.group.canonical', [
-          'organization' => PathHelper::transliterate($group->organization->entity->label()),
-          'group' => PathHelper::transliterate($group->label()),
-        ]))->toString(),
-      ];
-    }
-    return $places;
-  }
-
-  /**
    * {@inheritdoc}
    */
   public function render() {
     $build['#theme'] = (new ReflectionClass($this))->getShortName();
     $build['#storage']['entities']['organization'] = $this->organization;
     $build['#storage']['entities']['groups'] = $this->load();
-    $build['#attached']['library'][] = 'effective_activism/leaflet';
-    $places = $this->getPlaces();
+    $build['#attached']['library'] = [
+      'effective_activism/leaflet',
+      'effective_activism/leaflet-markercluster',
+    ];
+    $places = MapHelper::getGroupPlaces(Drupal::request()->get('organization'));
     if (empty($places)) {
       $this->displayMap = FALSE;
     }
     if ($this->displayMap === TRUE) {
       $build['#attached']['drupalSettings']['leaflet']['places'] = $places;
       $build['#attached']['drupalSettings']['leaflet']['key'] = Drupal::config('effective_activism.settings')->get('mapbox_api_key');
+      $build['#attached']['drupalSettings']['leaflet']['type'] = 'map';
     }
     $build['#display']['map'] = $this->displayMap;
     $build['#cache'] = [
