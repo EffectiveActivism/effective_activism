@@ -40,6 +40,16 @@ leaflet-heatmap:
   dependencies:
     - effective_activism/leaflet
 
+leaflet-markercluster:
+  js:
+    assets/js/leaflet.markercluster.js: {}
+  css:
+    component:
+      assets/css/MarkerCluster.css: {}
+      assets/css/MarkerCluster.Default.css: {}
+  dependencies:
+    - effective_activism/leaflet
+
 highcharts:
   remote: https://code.highcharts.com/
   version: 5.0.12
