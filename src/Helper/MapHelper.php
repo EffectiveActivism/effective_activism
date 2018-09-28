@@ -17,9 +17,9 @@ class MapHelper {
   /**
    * Returns a list of events formatted for leaflet.js.
    *
-   * @param Filter $filter
+   * @param \Drupal\effective_activism\Entity\Filter $filter
    *   The filter to apply.
-   * @param Group $group
+   * @param \Drupal\effective_activism\Entity\Group $group
    *   An optional group.
    * @param string $data_type
    *   An optional data type.
