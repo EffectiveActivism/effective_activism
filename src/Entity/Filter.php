@@ -63,6 +63,7 @@ class Filter extends RevisionableContentEntityBase implements FilterInterface {
     'start_date',
     'end_date',
     'location',
+    'location_precision',
     'event_templates',
     'result_types',
     'user_id',
@@ -286,6 +287,29 @@ class Filter extends RevisionableContentEntityBase implements FilterInterface {
       ->setDisplayOptions('form', [
         'type' => 'location_default',
         'weight' => array_search('location', self::WEIGHTS),
+      ]);
+    $fields['location_precision'] = BaseFieldDefinition::create('list_string')
+      ->setLabel(t('Location precision'))
+      ->setRevisionable(TRUE)
+      ->setRequired(FALSE)
+      ->setDefaultValue('0')
+      ->setSettings([
+        'allowed_values' => [
+          '0' => t('Exact location'),
+          '1' => t('1 kilometer radius'),
+          '5' => t('5 kilometers radius'),
+          '10' => t('10 kilometers radius'),
+          '100' => t('100 kilometers radius'),
+        ],
+      ])
+      ->setDisplayOptions('view', [
+        'label' => 'above',
+        'type' => 'string',
+        'weight' => array_search('location_precision', self::WEIGHTS),
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'options_select',
+        'weight' => array_search('location_precision', self::WEIGHTS),
       ]);
     $fields['event_templates'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Event templates'))

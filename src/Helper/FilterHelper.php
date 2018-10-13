@@ -14,6 +14,9 @@ use Drupal\effective_activism\Entity\Group;
  */
 class FilterHelper {
 
+  // https://en.wikipedia.org/wiki/Earth_radius.
+  const EARTH_RADIUS = 6371000;
+
   /**
    * Get events matching filter.
    *
@@ -44,8 +47,26 @@ class FilterHelper {
       $end_date = new DrupalDateTime($filter->end_date->value, new DateTimezone(DATETIME_STORAGE_TIMEZONE));
       $query->condition('end_date', $end_date->format(DATETIME_DATETIME_STORAGE_FORMAT), '<=');
     }
+    // Filter by location precision.
+    if (!$filter->location->isEmpty() && !$filter->location_precision->isEmpty() && $filter->location_precision->getValue() !== '0') {
+      // Distance in meters from center.
+      $precision = $filter->location_precision->getValue();
+      $distance = (int) $precision[0]['value'] * 1000;
+      // Calculate bounding box.
+      $offset_latitude = $distance / self::EARTH_RADIUS;
+      $offset_longitude = $distance / (self::EARTH_RADIUS * cos(pi() * $filter->location->latitude / 180));
+      $bounding_box_latitude_north = $filter->location->latitude + $offset_latitude * 180 / pi();
+      $bounding_box_latitude_south = $filter->location->latitude - $offset_latitude * 180 / pi();
+      $bounding_box_longitude_west = $filter->location->longitude - $offset_longitude * 180 / pi();
+      $bounding_box_longitude_east = $filter->location->longitude + $offset_longitude * 180 / pi();
+      $query
+        ->condition('location__latitude', $bounding_box_latitude_north, '<')
+        ->condition('location__latitude', $bounding_box_latitude_south, '>')
+        ->condition('location__longitude', $bounding_box_longitude_east, '<')
+        ->condition('location__longitude', $bounding_box_longitude_west, '>');
+    }
     // Filter by location.
-    if (!$filter->location->isEmpty()) {
+    elseif (!$filter->location->isEmpty()) {
       if (!empty($filter->location->address)) {
         $query->condition('location__address', $filter->location->address, '=');
       }
@@ -105,8 +126,26 @@ class FilterHelper {
       $end_date = new DrupalDateTime($filter->end_date->value, new DateTimezone(DATETIME_STORAGE_TIMEZONE));
       $query->condition('end_date', $end_date->format(DATETIME_DATETIME_STORAGE_FORMAT), '<=');
     }
+    // Filter by location precision.
+    if (!$filter->location->isEmpty() && !$filter->location_precision->isEmpty() && $filter->location_precision->getValue() !== '0') {
+      // Distance in meters from center.
+      $precision = $filter->location_precision->getValue();
+      $distance = (int) $precision[0]['value'] * 1000;
+      // Calculate bounding box.
+      $offset_latitude = $distance / self::EARTH_RADIUS;
+      $offset_longitude = $distance / (self::EARTH_RADIUS * cos(pi() * $filter->location->latitude / 180));
+      $bounding_box_latitude_north = $filter->location->latitude + $offset_latitude * 180 / pi();
+      $bounding_box_latitude_south = $filter->location->latitude - $offset_latitude * 180 / pi();
+      $bounding_box_longitude_west = $filter->location->longitude - $offset_longitude * 180 / pi();
+      $bounding_box_longitude_east = $filter->location->longitude + $offset_longitude * 180 / pi();
+      $query
+        ->condition('location__latitude', $bounding_box_latitude_north, '<')
+        ->condition('location__latitude', $bounding_box_latitude_south, '>')
+        ->condition('location__longitude', $bounding_box_longitude_east, '<')
+        ->condition('location__longitude', $bounding_box_longitude_west, '>');
+    }
     // Filter by location.
-    if (!$filter->location->isEmpty()) {
+    elseif (!$filter->location->isEmpty()) {
       if (!empty($filter->location->address)) {
         $query->condition('location__address', $filter->location->address, '=');
       }
