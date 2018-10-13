@@ -291,7 +291,7 @@ class Filter extends RevisionableContentEntityBase implements FilterInterface {
     $fields['location_precision'] = BaseFieldDefinition::create('list_string')
       ->setLabel(t('Location precision'))
       ->setRevisionable(TRUE)
-      ->setRequired(FALSE)
+      ->setRequired(TRUE)
       ->setDefaultValue('0')
       ->setSettings([
         'allowed_values' => [
