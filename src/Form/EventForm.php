@@ -14,6 +14,7 @@ use Drupal\effective_activism\Entity\Organization;
 use Drupal\effective_activism\Entity\ResultType;
 use Drupal\effective_activism\Helper\EventTemplateHelper;
 use Drupal\effective_activism\Helper\PathHelper;
+use Drupal\effective_activism\Helper\ThirdPartyContentHelper;
 use ReflectionClass;
 
 /**
@@ -142,6 +143,9 @@ class EventForm extends ContentEntityForm {
    */
   public function save(array $form, FormStateInterface $form_state) {
     $entity = $this->entity;
+    if (!$entity->isNew()) {
+      ThirdPartyContentHelper::shuffleThirdPartyContent($entity);
+    }
     $entity->setNewRevision();
     $status = parent::save($form, $form_state);
     switch ($status) {

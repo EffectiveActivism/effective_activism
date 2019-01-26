@@ -51,6 +51,7 @@ use Drupal\effective_activism\Constant;
  *     "events" = "/o/{organization}/g/{group}/e",
  *     "exports" = "/o/{organization}/g/{group}/exports",
  *     "imports" = "/o/{organization}/g/{group}/imports",
+ *     "map" = "/o/{organization}/g/{group}/map",
  *     "publish-form" = "/o/{organization}/g/{group}/publish",
  *     "results" = "/o/{organization}/g/{group}/results",
  *   },

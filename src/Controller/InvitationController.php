@@ -93,7 +93,7 @@ class InvitationController extends ControllerBase {
           if ($group && (AccessControl::isOrganizer($group)->isAllowed() || AccessControl::isManager($group->organization->entity)->isAllowed())) {
             $access = TRUE;
             $redirect_parameters = [
-              'organization' => PathHelper::transliterate(Drupal::request()->get('organization')->label()),
+              'organization' => PathHelper::transliterate($group->organization->entity->label()),
               'group' => PathHelper::transliterate($group->label()),
             ];
           }

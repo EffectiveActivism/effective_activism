@@ -1,0 +1,48 @@
+uuid: 0ad1d84b-67ca-4304-8380-43114c034886
+langcode: en
+status: true
+dependencies:
+  module:
+    - effective_activism
+    - options
+id: third_party_content.field_goldenstein_scale
+field_name: field_goldenstein_scale
+entity_type: third_party_content
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: extreme_conflict
+      label: 'Extreme conflict'
+    -
+      value: high_conflict
+      label: 'High conflict'
+    -
+      value: moderate_conflict
+      label: 'Moderate conflict'
+    -
+      value: light_conflict
+      label: 'Light conflict'
+    -
+      value: neutral
+      label: Neutral
+    -
+      value: light_cooperation
+      label: 'Light cooperation'
+    -
+      value: moderate_cooperation
+      label: 'Moderate cooperation'
+    -
+      value: high_cooperation
+      label: 'High cooperation'
+    -
+      value: extreme_cooperation
+      label: 'Extreme cooperation'
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

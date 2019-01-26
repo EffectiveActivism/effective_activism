@@ -27,6 +27,9 @@ class GroupHtmlRouteProvider extends DefaultHtmlRouteProvider {
     if ($import_overview_route = $this->getImportsRoute($entity_type)) {
       $collection->add("entity.{$entity_type_id}.imports", $import_overview_route);
     }
+    if ($map_route = $this->getMapRoute($entity_type)) {
+      $collection->add("entity.{$entity_type_id}.map", $map_route);
+    }
     if ($publish_form_route = $this->getPublishFormRoute($entity_type)) {
       $collection->add("entity.{$entity_type_id}.publish_form", $publish_form_route);
     }
@@ -197,6 +200,33 @@ class GroupHtmlRouteProvider extends DefaultHtmlRouteProvider {
         ->setDefaults([
           '_entity_list' => 'import',
           '_title' => "Imports",
+        ])
+        ->setRequirement('_entity_access', "{$entity_type_id}.update")
+        ->setOption('parameters', [
+          Constant::ENTITY_ORGANIZATION => ['type' => Constant::ENTITY_ORGANIZATION],
+          $entity_type_id => ['type' => Constant::ENTITY_GROUP],
+        ]);
+      return $route;
+    }
+  }
+
+  /**
+   * Gets the map route.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
+   *   The entity type.
+   *
+   * @return \Symfony\Component\Routing\Route|null
+   *   The generated route, if available.
+   */
+  protected function getMapRoute(EntityTypeInterface $entity_type) {
+    if ($entity_type->hasLinkTemplate('map')) {
+      $entity_type_id = $entity_type->id();
+      $route = new Route($entity_type->getLinkTemplate('map'));
+      $route
+        ->setDefaults([
+          '_form' => '\Drupal\effective_activism\Form\MapForm',
+          '_title' => "Map",
         ])
         ->setRequirement('_entity_access', "{$entity_type_id}.update")
         ->setOption('parameters', [

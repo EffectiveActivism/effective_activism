@@ -157,6 +157,10 @@ class GoogleMaps extends ThirdPartyApi {
                 }
               }
             }
+            $this->thirdpartycontent->source = [
+              'uri' => 'https://cloud.google.com/maps-platform/',
+              'title' => t('Google Maps'),
+            ];
           }
           else {
             throw new GoogleMapsException(sprintf('Unexpected format on JSON string: %s', substr($response, 0, 1000)));

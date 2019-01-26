@@ -32,26 +32,6 @@ class Constant {
   const ENTITY_THIRD_PARTY_CONTENT_TYPE = 'third_party_content_type';
 
   /**
-   * Slugs for parameter upcasting.
-   */
-  const SLUG_POSTFIX = '_slug';
-  const SLUG_ORGANIZATION = self::ENTITY_ORGANIZATION . self::SLUG_POSTFIX;
-  const SLUG_GROUP = self::ENTITY_GROUP . self::SLUG_POSTFIX;
-  const SLUG_EVENT = self::ENTITY_EVENT . self::SLUG_POSTFIX;
-  const SLUG_EVENT_TEMPLATE = self::ENTITY_EVENT_TEMPLATE . self::SLUG_POSTFIX;
-  const SLUG_EXPORT = self::ENTITY_EXPORT . self::SLUG_POSTFIX;
-  const SLUG_EXPORT_TYPE = self::ENTITY_EXPORT_TYPE . self::SLUG_POSTFIX;
-  const SLUG_FILTER = self::ENTITY_FILTER . self::SLUG_POSTFIX;
-  const SLUG_RESULT = self::ENTITY_RESULT . self::SLUG_POSTFIX;
-  const SLUG_RESULT_TYPE = self::ENTITY_RESULT_TYPE . self::SLUG_POSTFIX;
-  const SLUG_DATA = self::ENTITY_DATA . self::SLUG_POSTFIX;
-  const SLUG_DATA_TYPE = self::ENTITY_DATA_TYPE . self::SLUG_POSTFIX;
-  const SLUG_IMPORT = self::ENTITY_IMPORT . self::SLUG_POSTFIX;
-  const SLUG_IMPORT_TYPE = self::ENTITY_IMPORT_TYPE . self::SLUG_POSTFIX;
-  const SLUG_THIRD_PARTY_CONTENT = self::ENTITY_THIRD_PARTY_CONTENT . self::SLUG_POSTFIX;
-  const SLUG_THIRD_PARTY_CONTENT_TYPE = self::ENTITY_THIRD_PARTY_CONTENT_TYPE . self::SLUG_POSTFIX;
-
-  /**
    * The default result types.
    */
   const DEFAULT_RESULT_TYPES = [
@@ -114,9 +94,18 @@ class Constant {
   /**
    * Third-party content types.
    */
-  const THIRD_PARTY_CONTENT_TYPE_WEATHER_INFORMATION = 'weather_information';
+  const THIRD_PARTY_CONTENT_TYPE_CITY_PULSE = 'city_pulse';
   const THIRD_PARTY_CONTENT_TYPE_DEMOGRAPHICS = 'demographics';
   const THIRD_PARTY_CONTENT_TYPE_EXTENDED_LOCATION_INFORMATION = 'extended_location_information';
+  const THIRD_PARTY_CONTENT_TYPE_WEATHER_INFORMATION = 'weather_information';
+
+  /**
+   * The third-party content that uses time.
+   */
+  const THIRD_PARTY_CONTENT_TIME_AWARE = [
+    self::THIRD_PARTY_CONTENT_TYPE_CITY_PULSE,
+    self::THIRD_PARTY_CONTENT_TYPE_WEATHER_INFORMATION,
+  ];
 
   /**
    * Cache tags.

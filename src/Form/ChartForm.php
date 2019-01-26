@@ -37,11 +37,29 @@ class ChartForm extends FormBase {
       'interval' => 'P1D',
       'modifier' => '+1 day',
     ],
+    'weekly' => [
+      'label' => 'Weekly',
+      'slice' => 'Y - W',
+      'interval' => 'P1W',
+      'modifier' => '+1 week',
+    ],
     'monthly' => [
       'label' => 'Monthly',
       'slice' => 'Y - M',
       'interval' => 'P1M',
       'modifier' => '+1 month',
+    ],
+    'quarterly' => [
+      'label' => 'Quarterly',
+      'slice' => 'Y - M',
+      'interval' => 'P3M',
+      'modifier' => '+3 months',
+    ],
+    'yearly' => [
+      'label' => 'Yearly',
+      'slice' => 'Y',
+      'interval' => 'P1Y',
+      'modifier' => '+1 year',
     ],
   ];
 
@@ -54,6 +72,7 @@ class ChartForm extends FormBase {
   const SORT_CRITERIA = 'start_date';
 
   const CHART_TYPE_OPTIONS = [
+    '_none' => 'Off',
     'line' => 'Line',
     'column' => 'Column',
   ];
@@ -89,20 +108,44 @@ class ChartForm extends FormBase {
     ];
     $form['series_1_type'] = [
       '#type' => 'select',
-      '#title' => $this->t('Type'),
-      '#default_value' => 'line',
-      '#description' => $this->t('The chart type.'),
+      '#title' => $this->t('Results'),
+      '#default_value' => 'column',
+      '#description' => $this->t('Result visualization.'),
       '#options' => self::CHART_TYPE_OPTIONS,
       '#required' => TRUE,
     ];
     $form['series_1_interval'] = [
       '#type' => 'select',
       '#title' => $this->t('Interval'),
-      '#default_value' => 'line',
+      '#default_value' => 'monthly',
       '#description' => $this->t('The time interval.'),
       '#options' => array_combine(array_keys(self::TIME_OPTIONS), array_map(function ($element) {
         return $element['label'];
       }, self::TIME_OPTIONS)),
+      '#required' => TRUE,
+    ];
+    $form['series_2_type'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Participants'),
+      '#default_value' => '_none',
+      '#description' => $this->t('The number of participants at events.'),
+      '#options' => self::CHART_TYPE_OPTIONS,
+      '#required' => TRUE,
+    ];
+    $form['series_3_type'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Duration'),
+      '#default_value' => '_none',
+      '#description' => $this->t('The duration of time of events.'),
+      '#options' => self::CHART_TYPE_OPTIONS,
+      '#required' => TRUE,
+    ];
+    $form['series_4_type'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Events'),
+      '#default_value' => '_none',
+      '#description' => $this->t('The number of events.'),
+      '#options' => self::CHART_TYPE_OPTIONS,
       '#required' => TRUE,
     ];
     $form['chart'] = [
@@ -110,8 +153,8 @@ class ChartForm extends FormBase {
       '#suffix' => '</div>',
       '#type' => 'markup',
       '#markup' => '<div id="chart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>',
-      '#title' => $this->t('Event template'),
-      '#description' => $this->t('The event template to use.'),
+      '#title' => $this->t('Chart'),
+      '#description' => $this->t('The results in chart-form.'),
       '#attached' => [
         'library' => [
           'effective_activism/highcharts',
@@ -169,27 +212,50 @@ class ChartForm extends FormBase {
       $response->addCommand(new InsertCommand(NULL, $form['messages']));
       return $response;
     }
+    $lower_bound = DateTime::createFromFormat(self::DRUPAL_DATE_FORMAT, $oldest_event->get(self::SORT_CRITERIA)->value);
+    $higher_bound = DateTime::createFromFormat(self::DRUPAL_DATE_FORMAT, $newest_event->get(self::SORT_CRITERIA)->value)->modify(self::TIME_OPTIONS[$form_state->getValue('series_1_interval')]['modifier']);
+    // Special case for quarterly intervals, as they are unsupported in
+    // DateInterval. We round of to nearest year start.
+    if ($form_state->getValue('series_1_interval') === 'quarterly') {
+      $lower_bound->modify(sprintf('first day of January %d', $lower_bound->format('Y')));
+    }
     // Create timesliced array.
     // Add extra time to end date to ensure it is added.
     $period = new DatePeriod(
-      DateTime::createFromFormat(self::DRUPAL_DATE_FORMAT, $oldest_event->get(self::SORT_CRITERIA)->value),
+      $lower_bound,
       new DateInterval(self::TIME_OPTIONS[$form_state->getValue('series_1_interval')]['interval']),
-      DateTime::createFromFormat(self::DRUPAL_DATE_FORMAT, $newest_event->get(self::SORT_CRITERIA)->value)->modify(self::TIME_OPTIONS[$form_state->getValue('series_1_interval')]['modifier'])
+      $higher_bound
     );
     $categories = [];
     foreach ($period as $date) {
       $categories[] = $date->format(self::TIME_OPTIONS[$form_state->getValue('series_1_interval')]['slice']);
     }
     // Populate categories and data.
-    $series_value_label = '';
-    $series_data = $participants = [];
+    $series_data = $participants = $duration = $number_of_events = [];
     foreach ($events as $event) {
+      $time_slice = DateTime::createFromFormat(self::DRUPAL_DATE_FORMAT, $event->get(self::SORT_CRITERIA)->value)->format(self::TIME_OPTIONS[$form_state->getValue('series_1_interval')]['slice']);
+      if (isset($number_of_events[$time_slice])) {
+        $number_of_events[$time_slice] += 1;
+      }
+      else {
+        $number_of_events[$time_slice] = 1;
+      }
       foreach ($event->get('results') as $result_entity) {
         $result_type_label = $result_entity->entity->type->entity->label();
-        $time_slice = DateTime::createFromFormat(self::DRUPAL_DATE_FORMAT, $event->get(self::SORT_CRITERIA)->value)->format(self::TIME_OPTIONS[$form_state->getValue('series_1_interval')]['slice']);
+        if (isset($participants[$time_slice])) {
+          $participants[$time_slice] += (int) $result_entity->entity->get('participant_count')->value;
+        }
+        else {
+          $participants[$time_slice] = (int) $result_entity->entity->get('participant_count')->value;
+        }
+        if (isset($duration[$time_slice])) {
+          $duration[$time_slice] += (int) ($result_entity->entity->get('duration_days')->value * 24 * 60 + $result_entity->entity->get('duration_hours')->value * 60 + $result_entity->entity->get('duration_minutes')->value);
+        }
+        else {
+          $duration[$time_slice] = (int) ($result_entity->entity->get('duration_days')->value * 24 * 60 + $result_entity->entity->get('duration_hours')->value * 60 + $result_entity->entity->get('duration_minutes')->value);
+        }
         foreach ($result_entity->entity->getFields() as $result_field) {
           if (strpos($result_field->getName(), 'data_') === 0) {
-            $data_type_label = $result_field->getDataDefinition()->getLabel();
             // Result field may be empty if previously added and removed from
             // result type.
             if (!$result_field->isEmpty()) {
@@ -215,6 +281,7 @@ class ChartForm extends FormBase {
     $chart = new HighChartsChart([
       'chart' => (object) [
         'zoomType' => 'xy',
+        'height' => 600,
       ],
       'title' => (object) [
         'text' => $filter->getName(),
@@ -231,12 +298,70 @@ class ChartForm extends FormBase {
         'floating' => TRUE,
         'backgroundColor' => '#FFFFFF',
       ],
+      'yAxis' => [
+        (object) [
+          'lineWidth' => 1,
+          'title' => (object) [
+            'text' => sprintf('Results %s', self::CHART_TYPE_OPTIONS[$form_state->getValue('series_1_type')]),
+          ],
+        ],
+        (object) [
+          'lineWidth' => 1,
+          'opposite' => TRUE,
+          'title' => (object) [
+            'text' => sprintf('Participants %s', self::CHART_TYPE_OPTIONS[$form_state->getValue('series_2_type')]),
+          ],
+        ],
+        (object) [
+          'lineWidth' => 1,
+          'opposite' => TRUE,
+          'title' => (object) [
+            'text' => sprintf('Duration %s', self::CHART_TYPE_OPTIONS[$form_state->getValue('series_3_type')]),
+          ],
+        ],
+        (object) [
+          'lineWidth' => 1,
+          'opposite' => TRUE,
+          'title' => (object) [
+            'text' => sprintf('Events %s', self::CHART_TYPE_OPTIONS[$form_state->getValue('series_4_type')]),
+          ],
+        ],
+      ],
     ]);
-    // Calculate series.
-    foreach ($series_data as $series_name => $data) {
+    if ($form_state->getValue('series_1_type') !== '_none') {
+      // Add data series.
+      foreach ($series_data as $series_name => $data) {
+        $series = [];
+        foreach ($categories as $time_slice) {
+          $series[] = isset($data[$time_slice]) ? $data[$time_slice] : 0;
+        }
+        $chart->attach(new HighChartsAxis(HighChartsAxis::TYPE_LINE, [
+          // Axis settings.
+          'turboThreshold' => 0,
+          'labels' => [
+            'format' => '{value}',
+            'style' => (object) [
+              'color' => 'Highcharts.getOptions().colors[1]',
+            ],
+          ],
+          'title' => (object) [
+            'text' => '',
+            'style' => (object) [
+              'color' => 'Highcharts.getOptions().colors[1]',
+            ],
+          ],
+          // Series settings.
+          'name' => $series_name,
+          'type' => $form_state->getValue('series_1_type'),
+          'yAxis' => 0,
+        ], $series));
+      }
+    }
+    // Add participants.
+    if ($form_state->getValue('series_2_type') !== '_none') {
       $series = [];
       foreach ($categories as $time_slice) {
-        $series[] = isset($data[$time_slice]) ? $data[$time_slice] : 0;
+        $series[] = isset($participants[$time_slice]) ? $participants[$time_slice] : 0;
       }
       $chart->attach(new HighChartsAxis(HighChartsAxis::TYPE_LINE, [
         // Axis settings.
@@ -254,9 +379,63 @@ class ChartForm extends FormBase {
           ],
         ],
         // Series settings.
-        'name' => $series_name,
-        'type' => $form_state->getValue('series_1_type'),
-        'yAxis' => 0,
+        'name' => 'Participants',
+        'type' => $form_state->getValue('series_2_type'),
+        'yAxis' => 1,
+      ], $series));
+    }
+    // Add duration.
+    if ($form_state->getValue('series_3_type') !== '_none') {
+      $series = [];
+      foreach ($categories as $time_slice) {
+        $series[] = isset($duration[$time_slice]) ? $duration[$time_slice] : 0;
+      }
+      $chart->attach(new HighChartsAxis(HighChartsAxis::TYPE_LINE, [
+        // Axis settings.
+        'turboThreshold' => 0,
+        'labels' => [
+          'format' => '{value}',
+          'style' => (object) [
+            'color' => 'Highcharts.getOptions().colors[1]',
+          ],
+        ],
+        'title' => (object) [
+          'text' => '',
+          'style' => (object) [
+            'color' => 'Highcharts.getOptions().colors[1]',
+          ],
+        ],
+        // Series settings.
+        'name' => 'Duration (minutes)',
+        'type' => $form_state->getValue('series_3_type'),
+        'yAxis' => 2,
+      ], $series));
+    }
+    // Add events.
+    if ($form_state->getValue('series_4_type') !== '_none') {
+      $series = [];
+      foreach ($categories as $time_slice) {
+        $series[] = isset($number_of_events[$time_slice]) ? $number_of_events[$time_slice] : 0;
+      }
+      $chart->attach(new HighChartsAxis(HighChartsAxis::TYPE_LINE, [
+        // Axis settings.
+        'turboThreshold' => 0,
+        'labels' => [
+          'format' => '{value}',
+          'style' => (object) [
+            'color' => 'Highcharts.getOptions().colors[1]',
+          ],
+        ],
+        'title' => (object) [
+          'text' => '',
+          'style' => (object) [
+            'color' => 'Highcharts.getOptions().colors[1]',
+          ],
+        ],
+        // Series settings.
+        'name' => 'Events',
+        'type' => $form_state->getValue('series_4_type'),
+        'yAxis' => 3,
       ], $series));
     }
     $category_axis = new HighChartsAxis(HighChartsAxis::TYPE_CATEGORIES, [

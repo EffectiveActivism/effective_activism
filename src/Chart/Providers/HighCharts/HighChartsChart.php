@@ -21,12 +21,10 @@ class HighChartsChart extends Chart implements ChartInterface {
     $y_axes = [];
     $series = [];
     foreach ($this->getDataAxes() as $data_axis) {
-      $y_axes[] = (object) $data_axis->getSettings();
       $series[] = (object) array_merge($data_axis->getSettings(), ['data' => $data_axis->getData()]);
     }
     return (object) array_merge($this->getSettings(), [
       'xAxis' => $x_axes,
-      'yAxis' => $y_axes,
       'series' => $series,
     ]);
   }

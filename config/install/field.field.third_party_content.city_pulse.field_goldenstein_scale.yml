@@ -1,0 +1,21 @@
+uuid: 94155aa0-83a6-486f-9eec-f277987acc66
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.third_party_content_type.city_pulse
+    - field.storage.third_party_content.field_goldenstein_scale
+  module:
+    - options
+id: third_party_content.city_pulse.field_goldenstein_scale
+field_name: field_goldenstein_scale
+entity_type: third_party_content
+bundle: city_pulse
+label: 'Goldenstein scale'
+description: 'An average measure of the type of conflict or cooperation in a certain area and point in time.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

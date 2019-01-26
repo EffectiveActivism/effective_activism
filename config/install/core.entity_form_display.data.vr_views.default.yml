@@ -1,0 +1,22 @@
+uuid: 805f018e-902a-49ef-9bba-526a10b5b4db
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.data_type.vr_views
+    - field.field.data.vr_views.field_vr_views
+_core:
+  default_config_hash: VNVIkP_K8zmUcFDBhOMYwlmWDnBLYSYK_E_pL4ltrRY
+id: data.vr_views.default
+targetEntityType: data
+bundle: vr_views
+mode: default
+content:
+  field_vr_views:
+    weight: 26
+    settings:
+      placeholder: VR views
+    third_party_settings: {  }
+    type: number
+    region: content
+hidden: {  }
