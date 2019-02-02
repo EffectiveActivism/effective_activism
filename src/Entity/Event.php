@@ -290,7 +290,7 @@ class Event extends RevisionableContentEntityBase implements EventInterface {
         'file_directory' => 'photos',
         'alt_field_required' => FALSE,
         'file_extensions' => 'png jpg jpeg',
-        'max_filesize' => '1 MB',
+        'max_filesize' => '10 MB',
       ])
       ->setDisplayOptions('view', [
         'label' => 'hidden',
