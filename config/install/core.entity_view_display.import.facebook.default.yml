@@ -1,0 +1,16 @@
+uuid: 7a6dc911-ba4b-42e7-9515-51358541b99f
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.import_type.facebook
+    - field.field.import.facebook.facebook_id
+  module:
+    - user
+id: import.facebook.default
+targetEntityType: import
+bundle: facebook
+mode: default
+content: {  }
+hidden:
+  facebook_id: true

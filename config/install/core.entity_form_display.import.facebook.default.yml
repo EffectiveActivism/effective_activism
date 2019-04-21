@@ -1,0 +1,23 @@
+uuid: cc27edcc-b734-45e3-9022-bf352fac2bd1
+langcode: en
+status: true
+dependencies:
+  config:
+    - effective_activism.import_type.facebook
+    - field.field.import.facebook.facebook_id
+  module:
+    - effective_activism
+id: import.facebook.default
+targetEntityType: import
+bundle: facebook
+mode: default
+content:
+  facebook_id:
+    type: string_textfield
+    weight: 3
+    region: content
+    settings:
+      size: 60
+      placeholder: 'Facebook profile, group or page id'
+    third_party_settings: {  }
+hidden: {  }

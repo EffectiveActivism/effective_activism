@@ -1,4 +1,3 @@
-
 # Location autocomplete.
 effective_activism.location.autocomplete:
   path: '/locations/autocomplete'
@@ -18,3 +17,11 @@ effective_activism.invitation.remove:
     parameters:
       invitation:
         type: 'invitation'
+
+# Facebook web hook listener.
+effective_activism.facebook_webhook:
+  path: '/fb-webhook'
+  defaults:
+    _controller: '\Drupal\effective_activism\Controller\FacebookWebHookController::content'
+  requirements:
+    _permission: 'access content'

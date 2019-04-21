@@ -1,0 +1,20 @@
+uuid: a52047af-4e7e-416e-a1e0-60cf0970dee4
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.import.facebook_id
+  module:
+    - user
+id: import.facebook.facebook_id
+field_name: facebook_id
+entity_type: import
+bundle: facebook
+label: 'Facebook Id'
+description: 'To import events from Facebook, you need to input a Facebook profile, page or group ID. To see how, follow <a href="https://www.facebook.com/help/1397933243846983">these instructions</a> (facebook.com).'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

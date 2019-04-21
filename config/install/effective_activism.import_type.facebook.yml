@@ -1,0 +1,6 @@
+uuid: 607fa675-3d5e-4187-8d76-3c33158ce7be
+langcode: en
+status: true
+dependencies: {  }
+id: facebook
+label: 'Facebook events'
