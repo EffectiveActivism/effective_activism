@@ -21,6 +21,11 @@ class GroupPublishForm extends ConfirmFormBase {
 
   const FORM_ID = 'publish_group';
 
+  /**
+   * Is published.
+   *
+   * @var bool
+   */
   private $isPublished;
 
   /**

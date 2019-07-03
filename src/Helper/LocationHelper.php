@@ -5,7 +5,6 @@ namespace Drupal\effective_activism\Helper;
 use Drupal;
 use Drupal\effective_activism\Constant;
 use Drupal\Component\Utility\UrlHelper;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Functions for storing and retrieving locations from the Google Maps API.

@@ -9,6 +9,11 @@ use Drupal\effective_activism\Entity\ThirdPartyContent;
  */
 abstract class ThirdPartyApi {
 
+  /**
+   * Third-party content.
+   *
+   * @var \Drupal\effective_activism\Entity\ThirdPartyContent
+   */
   protected $thirdpartycontent;
 
   /**
