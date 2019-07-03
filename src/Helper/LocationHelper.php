@@ -14,6 +14,10 @@ class LocationHelper {
 
   const AUTOCOMPLETE_URL = 'https://maps.googleapis.com/maps/api/place/autocomplete/json';
   const GEOCODE_URL = 'https://maps.googleapis.com/maps/api/geocode/json';
+  // Addresses suggested by autocomplete, but return no match themselves.
+  const SPECIAL_ADDRESSES = [
+    'Volkspark Rehberge, Windhuker Str., Berlin, Germany',
+  ];
 
   /**
    * Validates an address.
@@ -44,7 +48,7 @@ class LocationHelper {
     }
     else {
       $valid_addresses = self::getAddressSuggestions($address);
-      if ($valid_addresses !== FALSE && in_array($address, $valid_addresses)) {
+      if ($valid_addresses !== FALSE && (in_array($address, $valid_addresses) || in_array($address, self::SPECIAL_ADDRESSES))) {
         // Get coordinates and store valid address in cache.
         $coordinates = self::getCoordinates($address);
         $database->insert(Constant::LOCATION_CACHE_TABLE)->fields([
