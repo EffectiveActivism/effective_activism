@@ -20,7 +20,18 @@ class Publisher {
   const UNPUBLISH = FALSE;
   const BATCHSIZE = 50;
 
+  /**
+   * Entity.
+   *
+   * @var \Drupal\Core\Entity\EntityInterface
+   */
   private $entity;
+
+  /**
+   * Entities.
+   *
+   * @var array
+   */
   private $entities = [];
 
   /**

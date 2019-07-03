@@ -22,6 +22,11 @@ class ExportPublishForm extends ConfirmFormBase {
 
   const FORM_ID = 'publish_export';
 
+  /**
+   * Is published.
+   *
+   * @var bool
+   */
   private $isPublished;
 
   /**

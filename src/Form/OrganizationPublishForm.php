@@ -20,6 +20,11 @@ class OrganizationPublishForm extends ConfirmFormBase {
 
   const FORM_ID = 'publish_organization';
 
+  /**
+   * Is published.
+   *
+   * @var bool
+   */
   private $isPublished;
 
   /**
