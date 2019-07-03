@@ -21,6 +21,11 @@ class FilterPublishForm extends ConfirmFormBase {
 
   const FORM_ID = 'publish_filter';
 
+  /**
+   * Is published.
+   *
+   * @var bool
+   */
   private $isPublished;
 
   /**

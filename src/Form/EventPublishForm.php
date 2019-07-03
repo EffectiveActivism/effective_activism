@@ -21,6 +21,11 @@ class EventPublishForm extends ConfirmFormBase {
 
   const FORM_ID = 'publish_event';
 
+  /**
+   * Is published.
+   *
+   * @var bool
+   */
   private $isPublished;
 
   /**

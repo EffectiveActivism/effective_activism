@@ -22,6 +22,11 @@ class ImportPublishForm extends ConfirmFormBase {
 
   const FORM_ID = 'publish_import';
 
+  /**
+   * Is published.
+   *
+   * @var bool
+   */
   private $isPublished;
 
   /**
